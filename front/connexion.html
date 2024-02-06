@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion</title>
+</head>
+<body>
+    <h1>Sign in</h1>
+    <form action="http://localhost:8000/api/signin" method="post">
+        <label for="username">Username:</label><br>
+        <input type="text" id="username" name="username"><br>
+
+        <label for="mail">Mail:</label><br>
+        <input type="email" id="mail" name="mail"><br>
+    
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password"><br>
+    
+        <input type="submit" value="Submit">
+    </form>
+
+    <h1>Log in</h1>
+    <form action="http://localhost:8000/api/login" method="post">
+        <label for="userOrMail">Username or Mail:</label><br>
+        <input type="text" id="userOrMail" name="userOrMail"><br>
+
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password"><br>
+    
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
