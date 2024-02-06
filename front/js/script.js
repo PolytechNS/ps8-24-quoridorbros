@@ -118,7 +118,7 @@ class ClientBoard {
     }
   }
 
-  updateBoard(updatedBoard) {
+  updateBoard(gameState) {
     this.isItMyTurn = !this.isItMyTurn;
 
     //Empêche le joueur de cliquer si ce n'est pas son tour
@@ -133,7 +133,7 @@ class ClientBoard {
         let div = this.divBoard[y][x];
 
         if (isCell(x, y)) {
-          switch (updatedBoard[y][x]) {
+          switch (gameState.board[y][x]) {
             case PLAYER_TWO:
               div.setAttribute("id", "joueur-2");
               break;
@@ -152,8 +152,8 @@ class ClientBoard {
               break;
           }
         } else if (
-          updatedBoard[y][x] == WALL_PLAYER_ONE ||
-          updatedBoard[y][x] == WALL_PLAYER_TWO
+          gameState.board[y][x] == WALL_PLAYER_ONE ||
+          gameState.board[y][x] == WALL_PLAYER_TWO
         ) {
           div.classList.add("placed");
         }
@@ -405,8 +405,18 @@ class Game {
   }
 
   nextTurn() {
-    this.clientBoard1.updateBoard(this.generateClientBoardTab(this.players[0]));
-    this.clientBoard2.updateBoard(this.generateClientBoardTab(this.players[1]));
+    let gameStatePlayer1 = {
+      player: this.players[0],
+      otherPlayerNbWalls: this.players[1].nbWalls,
+      board: this.generateClientBoardTab(this.players[0]),
+    };
+    let gameStatePlayer2 = {
+      player: this.players[1],
+      otherPlayerNbWalls: this.players[0].nbWalls,
+      board: this.generateClientBoardTab(this.players[1]),
+    };
+    this.clientBoard1.updateBoard(gameStatePlayer1);
+    this.clientBoard2.updateBoard(gameStatePlayer2);
     if (this.isGameFinished()) {
       this.clientBoard1.playerWon(this.currentPlayer.playerNumber);
       this.clientBoard2.playerWon(this.currentPlayer.playerNumber);
