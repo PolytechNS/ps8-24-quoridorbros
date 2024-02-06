@@ -3,7 +3,9 @@ const http = require("http");
 // Let's import our logic.
 const fileQuery = require("./queryManagers/front.js");
 const apiQuery = require("./queryManagers/api.js");
+const { connect } = require("./mongoDB/mongoManager.js");
 
+connect().catch(console.error);
 /* The http module contains a createServer function, which takes one argument, which is the function that
  ** will be called whenever a new request arrives to the server.
  */

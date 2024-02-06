@@ -1,17 +1,32 @@
+const querystring = require("querystring");
+const { getDb } = require("../mongoDB/mongoManager.js"); // Assurez-vous que le chemin est correct
 // Main method, exported at the end of the file. It's the one that will be called when a REST request is received.
 function manageRequest(request, response) {
-  let filePath = request.url.split("/").filter(function (elem) {
-    return elem !== "..";
-  });
-  try {
-    if (filePath[2] == "signin") {
-      console.log(request);
-    } else if (filePath[2] == "login") {
-    }
-  } catch (error) {
-    console.log(`error while processing ${request.url}: ${error}`);
-    response.statusCode = 400;
-    response.end(`Something in your request (${request.url}) is strange...`);
+  if (request.method === "POST" && request.url === "/api/signin") {
+    let body = "";
+    request.on("data", (chunk) => {
+      body += chunk.toString(); // get elements from form
+    });
+    request.on("end", async () => {
+      const parsedData = querystring.parse(body);
+      console.log(parsedData); // display elements
+
+      try {
+        const db = getDb();
+        const collection = db.collection("utilisateurs");
+        await collection.insertOne(parsedData);
+        response.setHeader("Content-Type", "text/html");
+        response.end(
+          `<script>window.location.href = "/connexion.html"; alert("Inscription effectuée");</script>`
+        );
+      } catch (error) {
+        console.error("Erreur lors de l’insertion des données", error);
+        response.statusCode = 500;
+        response.end(`Erreur serveur`);
+      }
+    });
+  } else {
+    response.end(`Thanks for calling ${request.url}`);
   }
 }
 
