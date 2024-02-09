@@ -18,5 +18,18 @@
     
         <input type="submit" value="Submit">
     </form>
+
+    <p id="loggedInText" style="display: none;">You are connected</p>
+
+    <h1>Log in</h1>
+    <form id="loginForm" action="/api/login" method="post">
+        <label for="login">Username or mail:</label><br>
+        <input type="text" id="login" name="login"><br>
+    
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password"><br>
+    
+        <input type="submit" value="Submit">
+    </form>
 </body>
 </html>
