@@ -1,20 +1,45 @@
 const querystring = require("querystring");
-const { getDb } = require("../mongoDB/mongoManager.js"); // Assurez-vous que le chemin est correct
-// Main method, exported at the end of the file. It's the one that will be called when a REST request is received.
+const jwt = require("jsonwebtoken");
+const { getDb } = require("../mongoDB/mongoManager.js");
+
 function manageRequest(request, response) {
   if (request.method === "POST" && request.url === "/api/signin") {
     let body = "";
     request.on("data", (chunk) => {
-      body += chunk.toString(); // get elements from form
+      body += chunk.toString();
     });
     request.on("end", async () => {
       const parsedData = querystring.parse(body);
-      console.log(parsedData); // display elements
 
       try {
         const db = getDb();
-        const collection = db.collection("utilisateurs");
-        await collection.insertOne(parsedData);
+        const collection = db.collection("users");
+
+        const tokenPayload = {
+          email: parsedData.mail,
+          password: parsedData.password,
+        };
+        const token = jwt.sign(tokenPayload, parsedData.username);
+
+        const existingUser = await collection.findOne({
+          $or: [{ mail: parsedData.mail }, { username: parsedData.username }],
+        });
+
+        if (existingUser) {
+          response.setHeader("Content-Type", "text/html");
+          response.end(
+            `<script>alert("Mail or username already used"); window.location.href = "/connexion.html";</script>`
+          );
+          return;
+        }
+
+        const encodedData = {
+          username: parsedData.username,
+          mail: parsedData.mail,
+          token: token,
+        };
+
+        await collection.insertOne(encodedData);
         response.setHeader("Content-Type", "text/html");
         response.end(
           `<script>window.location.href = "/connexion.html"; alert("Inscription effectuée");</script>`
@@ -29,7 +54,6 @@ function manageRequest(request, response) {
     response.end(`Thanks for calling ${request.url}`);
   }
 }
-
 /* This method is a helper in case you stumble upon CORS problems. It shouldn't be used as-is:
  ** Access-Control-Allow-Methods should only contain the authorized method for the url that has been targeted
  ** (for instance, some of your api urls may accept GET and POST request whereas some others will only accept PUT).
