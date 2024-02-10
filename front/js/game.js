@@ -1,4 +1,6 @@
-const { BoardUtils } = require("./utils.js");
+if (typeof exports === "object" && exports) {
+  global.BoardUtils = require("./utils.js").BoardUtils;
+}
 
 /**
  * Cette classe est plateau de jeu du backend

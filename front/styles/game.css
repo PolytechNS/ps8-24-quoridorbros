@@ -1,14 +1,3 @@
-#boardsContainer {
-    display: flex;
-    justify-content: space-around;
-}
-
-#gameBoard {
-    display: grid;
-    grid-template-columns: repeat(17, auto);
-    gap: 2px;
-    justify-content: center;
-}
 
 .cell, .wall {
     display: flex;
@@ -68,4 +57,11 @@
 
 #joueur-2 {
     background-image: url("../ressources/luigi.png");
+}
+
+.gameBoard {
+    display: grid;
+    grid-template-columns: repeat(17, auto);
+    gap: 2px;
+    justify-content: center;
 }

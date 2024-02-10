@@ -5,11 +5,18 @@ paramètres :
 
 */
 class ClientBoard {
-  constructor(size, onCellClick, onWallClick, board, playerNumber) {
+  constructor(
+    size,
+    onCellClick,
+    onWallClick,
+    board,
+    playerNumber,
+    elementId = "gameBoard"
+  ) {
     this.size = size;
     this.onCellClick = onCellClick;
     this.onWallClick = onWallClick;
-    this.element = document.getElementById("gameBoard");
+    this.element = document.getElementById(elementId);
     this.board = board;
     this.divBoard = [];
     this.isItMyTurn = playerNumber == 1;
