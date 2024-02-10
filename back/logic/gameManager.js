@@ -1,5 +1,5 @@
 const { BoardUtils } = require("../../front/js/utils.js");
-const { Game } = require("../logic/game.js");
+const { Game } = require("../../front/js/game.js");
 const { Ai } = require("./ai.js");
 
 class GameManager {

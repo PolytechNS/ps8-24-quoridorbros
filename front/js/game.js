@@ -1,4 +1,4 @@
-const { BoardUtils } = require("../../front/js/utils.js");
+const { BoardUtils } = require("./utils.js");
 
 /**
  * Cette classe est plateau de jeu du backend
