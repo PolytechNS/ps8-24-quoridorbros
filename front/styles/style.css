@@ -3,7 +3,7 @@
     justify-content: space-around;
 }
 
-#gameBoard-1, #gameBoard-2 {
+#gameBoard {
     display: grid;
     grid-template-columns: repeat(17, auto);
     gap: 2px;
