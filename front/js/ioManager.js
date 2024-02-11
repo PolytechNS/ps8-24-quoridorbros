@@ -2,17 +2,12 @@ let socket = io();
 let clientBoard;
 startGame();
 
-socket.on("initBoard", (msg) => {
-  clientBoard = new ClientBoard(
-    onCellClick,
-    onWallClick,
-    msg.board,
-    msg.playerNumber
-  );
+socket.on("initBoard", (gameState) => {
+  clientBoard = new ClientBoard(onCellClick, onWallClick, gameState);
 });
 
-socket.on("updatedBoard", (msg) => {
-  clientBoard.updateBoard(msg);
+socket.on("updatedBoard", (gameState) => {
+  clientBoard.updateBoard(gameState);
 });
 
 function onCellClick(x, y) {

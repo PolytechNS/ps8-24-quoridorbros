@@ -139,15 +139,21 @@ class Game {
       { x: 8, y: 0, playerNumber: 2, nbWalls: 10 },
     ];
     this.currentPlayer = this.players[0];
+    this.turnOf = this.currentPlayer.playerNumber;
     this.placePlayers();
+
     let gameStatePlayer1 = {
+      turnOf: this.turnOf,
       board: this.generateClientBoardTab(this.players[0]),
       playerNumber: 1,
     };
+
     let gameStatePlayer2 = {
+      turnOf: this.turnOf,
       board: this.generateClientBoardTab(this.players[1]),
       playerNumber: 2,
     };
+
     this.gameManager.initBoardPlayer1(gameStatePlayer1);
     this.gameManager.initBoardPlayer2(gameStatePlayer2);
   }
@@ -221,15 +227,18 @@ class Game {
       console.log(`\nLE JOUEUR ${this.currentPlayer.playerNumber} A GAGNE`);
     } else {
       this.currentPlayer = this.getOtherPlayer(this.currentPlayer);
+      this.turnOf = this.currentPlayer.playerNumber;
       console.log(`\nTOUR DU JOUEUR ${this.currentPlayer.playerNumber}`);
     }
 
     let gameStatePlayer1 = {
+      turnOf: this.turnOf,
       player: this.players[0],
       otherPlayerNbWalls: this.players[1].nbWalls,
       board: this.generateClientBoardTab(this.players[0]),
     };
     let gameStatePlayer2 = {
+      turnOf: this.turnOf,
       player: this.players[1],
       otherPlayerNbWalls: this.players[0].nbWalls,
       board: this.generateClientBoardTab(this.players[1]),

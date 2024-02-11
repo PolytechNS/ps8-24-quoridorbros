@@ -8,8 +8,7 @@ class LocalGameManager {
     this.clientBoard1 = new ClientBoard(
       this.onCellClick.bind(this),
       this.onWallClick.bind(this),
-      gameState.board,
-      gameState.playerNumber,
+      gameState,
       "gameBoard1"
     );
   }
@@ -17,8 +16,7 @@ class LocalGameManager {
     this.clientBoard2 = new ClientBoard(
       this.onCellClick.bind(this),
       this.onWallClick.bind(this),
-      gameState.board,
-      gameState.playerNumber,
+      gameState,
       "gameBoard2"
     );
     this.setBoardsVisibility();
