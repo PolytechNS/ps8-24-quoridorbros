@@ -3,11 +3,13 @@ const jwt = require("jsonwebtoken");
 const { getDb } = require("../mongoDB/mongoManager.js");
 
 function setCookie(name, value, daysToLive, response) {
+  const stringValue = typeof value === "object" ? JSON.stringify(value) : value;
+
   const expires = new Date(
     Date.now() + daysToLive * 24 * 60 * 60 * 1000
   ).toUTCString();
   const cookie = `${encodeURIComponent(name)}=${encodeURIComponent(
-    value
+    stringValue
   )}; expires=${expires}; path=/`;
   response.setHeader("Set-Cookie", cookie);
 }
@@ -55,7 +57,7 @@ async function handleSignIn(request, response) {
       if (existingUser) {
         response.setHeader("Content-Type", "text/html");
         response.end(
-          `<script>window.location.href = "/pages/connexion.html";alert("Invalid username or password");</script>`
+          `<script>window.location.href = "/pages/signin.html";alert("Invalid username or password");</script>`
         );
         return;
       }
@@ -70,7 +72,7 @@ async function handleSignIn(request, response) {
       await collection.insertOne(encodedData);
       response.setHeader("Content-Type", "text/html");
       response.end(
-        `<script>window.location.href = "/pages/connexion.html";alert("Sign in successful");</script>`
+        `<script>window.location.href = "/index.html";alert("Sign in successful");</script>`
       );
     } catch (error) {
       console.error("Erreur lors de l’insertion des données", error);
@@ -92,6 +94,14 @@ async function handleLogin(request, response) {
       const db = getDb();
       const collection = db.collection("users");
 
+      if (!collection) {
+        response.setHeader("Content-Type", "text/html");
+        response.end(
+          `<script>window.location.href = "/pages/login.html";alert("Wrong username");</script>`
+        );
+        return;
+      }
+
       const existingUser = await collection.findOne({
         $or: [{ mail: parsedData.login }, { username: parsedData.login }],
       });
@@ -99,7 +109,7 @@ async function handleLogin(request, response) {
       if (!existingUser) {
         response.setHeader("Content-Type", "text/html");
         response.end(
-          `<script>window.location.href = "/connexion.html";alert("Wrong username");</script>`
+          `<script>window.location.href = "/pages/login.html";alert("Wrong username");</script>`
         );
         return;
       }
@@ -112,14 +122,19 @@ async function handleLogin(request, response) {
       if (parsedData.password != decodedToken.password) {
         response.setHeader("Content-Type", "text/html");
         response.end(
-          `<script>window.location.href = "/connexion.html";alert("Wrong username or password");</script>`
+          `<script>window.location.href = "/pages/login.html";alert("Wrong username or password");</script>`
         );
         return;
       }
-      setCookie("connected", existingUser.token, 1, response);
+      setCookie(
+        "connected",
+        { user: existingUser.username, token: existingUser.token },
+        1,
+        response
+      );
       response.setHeader("Content-Type", "text/html");
       response.end(
-        `<script>window.location.href = "/connexion.html";alert("Connexion success");</script>`
+        `<script>window.location.href = "/index.html";alert("Connexion success");</script>`
       );
     } catch (error) {
       console.error("Erreur lors de la recherche de l'utilisateur", error);
@@ -134,7 +149,7 @@ function handleLogout(request, response) {
     setCookie("connected", "", -1, response);
     response.setHeader("Content-Type", "text/html");
     response.end(
-      `<script>window.location.href = "/pages/connexion.html";alert("You have been logged out successfully.");</script>`
+      `<script>window.location.href = "/index.html";alert("You have been logged out successfully.");</script>`
     );
   } catch (error) {
     console.error("Erreur lors de la déconnexion", error);
