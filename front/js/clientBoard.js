@@ -11,7 +11,8 @@ class ClientBoard {
     this.element = document.getElementById(elementId);
     this.board = gameState.board;
     this.divBoard = [];
-    this.isItMyTurn = gameState.playerNumber == 1;
+    this.turnOf = gameState.turnOf;
+    this.playerNumber = gameState.playerNumber;
     this.initBoard();
   }
 
@@ -59,16 +60,15 @@ class ClientBoard {
         this.element.appendChild(div);
       }
     }
-    if (!this.isItMyTurn) {
+    if (this.turnOf !== this.playerNumber) {
       this.element.style.pointerEvents = "none";
     }
   }
 
   updateBoard(gameState) {
-    this.isItMyTurn = !this.isItMyTurn;
-
     //Empêche le joueur de cliquer si ce n'est pas son tour
-    if (!this.isItMyTurn) {
+    this.turnOf = gameState.turnOf;
+    if (this.turnOf !== this.playerNumber) {
       this.element.style.pointerEvents = "none";
     } else {
       this.element.style.pointerEvents = "auto";

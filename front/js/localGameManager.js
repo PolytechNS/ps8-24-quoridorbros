@@ -47,15 +47,15 @@ class LocalGameManager {
   }
 
   setBoardsVisibility() {
-    if (this.clientBoard1.isItMyTurn) {
+    if (this.clientBoard1.turnOf === 1) {
       this.clientBoard2.element.style.display = "none";
       setTimeout(() => {
         this.clientBoard1.element.style.display = "grid";
-      }, 1000);
+      }, 0);
     } else {
       setTimeout(() => {
         this.clientBoard2.element.style.display = "grid";
-      }, 1000);
+      }, 0);
       this.clientBoard1.element.style.display = "none";
     }
   }

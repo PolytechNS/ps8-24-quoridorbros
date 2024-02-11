@@ -327,94 +327,13 @@ class Game {
   }
 
   isValidJumpMove(player, otherPlayer, x, y) {
-    //Si les deux joueurs sont adjacents
-    if (
-      BoardUtils.isAdjacentCells(
-        player.x,
-        player.y,
-        otherPlayer.x,
-        otherPlayer.y
-      )
-    ) {
-      if (
-        BoardUtils.isThereWallBetweenAdjacentsCells(
-          player.x,
-          player.y,
-          otherPlayer.x,
-          otherPlayer.y,
-          this.gameBoard.board
-        )
-      ) {
-        return false;
-      }
+    const jumpableCells = BoardUtils.getJumpableCells(
+      player,
+      otherPlayer,
+      this.gameBoard.board
+    );
 
-      const xDelta = otherPlayer.x - player.x;
-      const yDelta = otherPlayer.y - player.y;
-
-      const potentialWallDevantX = player.x + (3 * xDelta) / 2;
-      const potentialWallDevantY = player.y + (3 * yDelta) / 2;
-
-      const cellDevantX = player.x + 2 * xDelta;
-      const cellDevantY = player.y + 2 * yDelta;
-
-      let potentialWallDroiteX = otherPlayer.x;
-      let potentialWallDroiteY = otherPlayer.y;
-
-      let cellDroiteX = otherPlayer.x;
-      let cellDroiteY = otherPlayer.y;
-
-      let potentialWallGaucheX = otherPlayer.x;
-      let potentialWallGaucheY = otherPlayer.y;
-
-      let cellGaucheX = otherPlayer.x;
-      let cellGaucheY = otherPlayer.y;
-
-      if (yDelta == 0) {
-        cellDroiteY += 2;
-        cellGaucheY -= 2;
-        potentialWallDroiteY += 1;
-        potentialWallGaucheY -= 1;
-      } else if (xDelta == 0) {
-        cellDroiteX += 2;
-        cellGaucheX -= 2;
-        potentialWallDroiteX += 1;
-        potentialWallGaucheX -= 1;
-      }
-
-      if (x === cellDevantX && y === cellDevantY) {
-        return !BoardUtils.isDemiWallAlreadyPlaced(
-          potentialWallDevantX,
-          potentialWallDevantY,
-          this.gameBoard.board
-        );
-      } else if (x === cellDroiteX && y === cellDroiteY) {
-        return (
-          BoardUtils.isDemiWallAlreadyPlaced(
-            potentialWallDevantX,
-            potentialWallDevantY,
-            this.gameBoard.board
-          ) &&
-          !BoardUtils.isDemiWallAlreadyPlaced(
-            potentialWallDroiteX,
-            potentialWallDroiteY,
-            this.gameBoard.board
-          )
-        );
-      } else if (x === cellGaucheX && y === cellGaucheY) {
-        return (
-          BoardUtils.isDemiWallAlreadyPlaced(
-            potentialWallDevantX,
-            potentialWallDevantY,
-            this.gameBoard.board
-          ) &&
-          !BoardUtils.isDemiWallAlreadyPlaced(
-            potentialWallGaucheX,
-            potentialWallGaucheY,
-            this.gameBoard.board
-          )
-        );
-      }
-    }
+    return jumpableCells.some((cell) => cell.x === x && cell.y === y);
   }
 }
 
