@@ -18,12 +18,10 @@ socket.on("updatedBoard", (msg) => {
 
 function onCellClick(x, y) {
   socket.emit("newMove", { x: x, y: y });
-  //io.emit("move", `${x}-${y}`);
 }
 
 function onWallClick(x, y) {
   socket.emit("newMove", { x: x, y: y });
-  //io.emit("move", `W${x}-${y}`);
 }
 
 function startGame() {
