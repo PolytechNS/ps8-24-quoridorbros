@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  nodejs:
+    build: .
+    ports:
+      - 8000:8000
+  mongodb:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-data:/data/db
+volumes:
+  mongo-data:
+    driver: local
