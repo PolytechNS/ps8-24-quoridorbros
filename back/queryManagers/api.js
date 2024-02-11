@@ -55,7 +55,7 @@ async function handleSignIn(request, response) {
       if (existingUser) {
         response.setHeader("Content-Type", "text/html");
         response.end(
-          `<script>window.location.href = "/connexion.html";alert("Invalid username or password");</script>`
+          `<script>window.location.href = "/pages/connexion.html";alert("Invalid username or password");</script>`
         );
         return;
       }
@@ -70,7 +70,7 @@ async function handleSignIn(request, response) {
       await collection.insertOne(encodedData);
       response.setHeader("Content-Type", "text/html");
       response.end(
-        `<script>window.location.href = "/connexion.html";alert("Sign in successful");</script>`
+        `<script>window.location.href = "/pages/connexion.html";alert("Sign in successful");</script>`
       );
     } catch (error) {
       console.error("Erreur lors de l’insertion des données", error);
@@ -134,7 +134,7 @@ function handleLogout(request, response) {
     setCookie("connected", "", -1, response);
     response.setHeader("Content-Type", "text/html");
     response.end(
-      `<script>window.location.href = "/connexion.html";alert("You have been logged out successfully.");</script>`
+      `<script>window.location.href = "/pages/connexion.html";alert("You have been logged out successfully.");</script>`
     );
   } catch (error) {
     console.error("Erreur lors de la déconnexion", error);
