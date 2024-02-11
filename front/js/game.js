@@ -12,16 +12,15 @@ if (typeof exports === "object" && exports) {
  *      Posé par joueur 2 : 2
  */
 class GameBoard {
-  constructor(size) {
-    this.size = size;
+  constructor() {
     this.board = [];
-    this.initBoard(size);
+    this.initBoard();
   }
 
   initBoard() {
-    for (let y = 0; y < this.size * 2 - 1; y++) {
+    for (let y = 0; y < BoardUtils.BOARD_SIZE * 2 - 1; y++) {
       this.board[y] = []; // initialise le sous tableau
-      for (let x = 0; x < this.size * 2 - 1; x++) {
+      for (let x = 0; x < BoardUtils.BOARD_SIZE * 2 - 1; x++) {
         if (BoardUtils.isCell(x, y)) {
           const initialValue = this.getInitialVisibilityValue(y);
           this.board[y][x] = initialValue;
@@ -35,9 +34,9 @@ class GameBoard {
   //Retoure la visibilité de cette cellule au début de la partie
   getInitialVisibilityValue(y) {
     let initialValue = 0;
-    if (y < this.size - 1) {
+    if (y < BoardUtils.BOARD_SIZE - 1) {
       initialValue = -1;
-    } else if (y > this.size - 1) {
+    } else if (y > BoardUtils.BOARD_SIZE - 1) {
       initialValue = 1;
     }
     return initialValue;
@@ -132,22 +131,20 @@ class GameBoard {
  * C'est la classe qui gère le jeu.
  */
 class Game {
-  constructor(size, gameManager) {
+  constructor(gameManager) {
     this.gameManager = gameManager;
-    this.gameBoard = new GameBoard(size);
+    this.gameBoard = new GameBoard();
     this.players = [
-      { x: 8, y: size * 2 - 2, playerNumber: 1, nbWalls: 10 },
+      { x: 8, y: BoardUtils.BOARD_SIZE * 2 - 2, playerNumber: 1, nbWalls: 10 },
       { x: 8, y: 0, playerNumber: 2, nbWalls: 10 },
     ];
     this.currentPlayer = this.players[0];
     this.placePlayers();
     let gameStatePlayer1 = {
-      size: size,
       board: this.generateClientBoardTab(this.players[0]),
       playerNumber: 1,
     };
     let gameStatePlayer2 = {
-      size: size,
       board: this.generateClientBoardTab(this.players[1]),
       playerNumber: 2,
     };
@@ -262,7 +259,10 @@ class Game {
 
   isValidWallPut(player, x, y) {
     // Vérifie que le joueur n'a pas cliqué sur un des murs des extrémités
-    if (x == this.gameBoard.size * 2 - 2 || y == this.gameBoard.size * 2 - 2) {
+    if (
+      x == BoardUtils.BOARD_SIZE * 2 - 2 ||
+      y == BoardUtils.BOARD_SIZE * 2 - 2
+    ) {
       return false;
     }
 
@@ -281,9 +281,9 @@ class Game {
   generateClientBoardTab(player) {
     let resultTab = [];
 
-    for (let y = 0; y < this.gameBoard.size * 2 - 1; y++) {
+    for (let y = 0; y < BoardUtils.BOARD_SIZE * 2 - 1; y++) {
       resultTab[y] = [];
-      for (let x = 0; x < this.gameBoard.size * 2 - 1; x++) {
+      for (let x = 0; x < BoardUtils.BOARD_SIZE * 2 - 1; x++) {
         if (BoardUtils.isWall(x, y)) {
           resultTab[y][x] = this.gameBoard.board[y][x];
         } else if (this.gameBoard.isVisible(x, y, player)) {

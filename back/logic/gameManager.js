@@ -5,7 +5,7 @@ const { Ai } = require("./ai.js");
 class GameManager {
   constructor(socketManager) {
     this.socketManager = socketManager;
-    this.game = new Game(9, this);
+    this.game = new Game(this);
     this.ai = new Ai();
     this.isGameFinished = false;
   }

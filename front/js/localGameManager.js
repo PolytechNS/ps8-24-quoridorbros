@@ -1,12 +1,11 @@
 class LocalGameManager {
   constructor() {
-    this.game = new Game(9, this);
+    this.game = new Game(this);
     this.isGameFinished = false;
   }
 
   initBoardPlayer1(gameState) {
     this.clientBoard1 = new ClientBoard(
-      gameState.size,
       this.onCellClick.bind(this),
       this.onWallClick.bind(this),
       gameState.board,
@@ -16,7 +15,6 @@ class LocalGameManager {
   }
   initBoardPlayer2(gameState) {
     this.clientBoard2 = new ClientBoard(
-      gameState.size,
       this.onCellClick.bind(this),
       this.onWallClick.bind(this),
       gameState.board,

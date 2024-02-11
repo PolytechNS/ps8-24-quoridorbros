@@ -4,7 +4,6 @@ startGame();
 
 socket.on("initBoard", (msg) => {
   clientBoard = new ClientBoard(
-    msg.size,
     onCellClick,
     onWallClick,
     msg.board,

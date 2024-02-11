@@ -6,14 +6,12 @@ paramètres :
 */
 class ClientBoard {
   constructor(
-    size,
     onCellClick,
     onWallClick,
     board,
     playerNumber,
     elementId = "gameBoard"
   ) {
-    this.size = size;
     this.onCellClick = onCellClick;
     this.onWallClick = onWallClick;
     this.element = document.getElementById(elementId);
@@ -24,9 +22,9 @@ class ClientBoard {
   }
 
   initBoard() {
-    for (let y = 0; y < this.size * 2 - 1; y++) {
+    for (let y = 0; y < BoardUtils.BOARD_SIZE * 2 - 1; y++) {
       this.divBoard[y] = [];
-      for (let x = 0; x < this.size * 2 - 1; x++) {
+      for (let x = 0; x < BoardUtils.BOARD_SIZE * 2 - 1; x++) {
         const div = document.createElement("div");
         this.divBoard[y][x] = div;
 
@@ -82,8 +80,8 @@ class ClientBoard {
       this.element.style.pointerEvents = "auto";
     }
 
-    for (let y = 0; y < this.size * 2 - 1; y++) {
-      for (let x = 0; x < this.size * 2 - 1; x++) {
+    for (let y = 0; y < BoardUtils.BOARD_SIZE * 2 - 1; y++) {
+      for (let x = 0; x < BoardUtils.BOARD_SIZE * 2 - 1; x++) {
         let div = this.divBoard[y][x];
 
         if (BoardUtils.isCell(x, y)) {

@@ -1,4 +1,5 @@
 class BoardUtils {
+  static BOARD_SIZE = 9;
   static PLAYER_ONE = 1;
   static PLAYER_TWO = 2;
   static WALL_PLAYER_ONE = -1;
