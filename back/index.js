@@ -1,3 +1,5 @@
+const { SocketManager } = require("./socket/socketManager.js");
+
 // The http module contains methods to handle http queries.
 const http = require("http");
 // Let's import our logic.
@@ -9,7 +11,8 @@ connect().catch(console.error);
 /* The http module contains a createServer function, which takes one argument, which is the function that
  ** will be called whenever a new request arrives to the server.
  */
-http
+
+const server = http
   .createServer(function (request, response) {
     // First, let's check the URL to see if it's a REST request or a file request.
     // We will remove all cases of "../" in the url for security purposes.
@@ -33,3 +36,8 @@ http
     // For the server to be listening to request, it needs a port, which is set thanks to the listen function.
   })
   .listen(8000);
+
+const { Server } = require("socket.io");
+const io = new Server(server);
+
+let socketManager = new SocketManager(io);
