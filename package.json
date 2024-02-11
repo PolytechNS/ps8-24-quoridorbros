@@ -5,7 +5,7 @@
   "main": "back/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./back/index.js"
+    "start": "node --trace-warnings ./back/index.js"
   },
   "repository": {
     "type": "git",
@@ -18,6 +18,9 @@
   },
   "homepage": "https://github.com/benjaminvella/ps8#readme",
   "dependencies": {
+    "jsonwebtoken": "^9.0.2",
+    "jwt-encode": "^1.0.1",
+    "mongodb": "^6.3.0",
     "socket.io": "^4.7.4"
   }
 }
