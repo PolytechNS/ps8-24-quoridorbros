@@ -41,6 +41,7 @@ class GameManager {
     if (this.isGameFinished) return;
     const move = this.ai.computeMove();
     if (BoardUtils.isWall(move.x, move.y)) {
+      console.log("x: ", move.x, "y: ", move.y);
       this.game.onWallClick(move.x, move.y);
     } else {
       this.game.onCellClick(move.x, move.y);

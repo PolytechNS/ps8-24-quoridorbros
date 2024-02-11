@@ -12,10 +12,9 @@ class Ai {
   }
 
   computeMove() {
-    const player = this.gameState.player;
     let possibleMoves = BoardUtils.getReachableCells(
-      player.x,
-      player.y,
+      this.gameState.player,
+      this.gameState.otherPlayer,
       this.gameState.board
     );
 

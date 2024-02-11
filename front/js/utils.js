@@ -71,12 +71,12 @@ class BoardUtils {
     return this.isDemiWallAlreadyPlaced(positionMurX, positionMurY, board);
   }
 
-  static getReachableCells(x, y, board) {
+  static getReachableCells(player, otherPlayer, board) {
     let possibleMoves = [];
-    possibleMoves.push({ x: x, y: y + 2 }); // bas
-    possibleMoves.push({ x: x, y: y - 2 }); // haut
-    possibleMoves.push({ x: x - 2, y: y }); // gauche
-    possibleMoves.push({ x: x + 2, y: y }); // droite
+    possibleMoves.push({ x: player.x, y: player.y + 2 }); // bas
+    possibleMoves.push({ x: player.x, y: player.y - 2 }); // haut
+    possibleMoves.push({ x: player.x - 2, y: player.y }); // gauche
+    possibleMoves.push({ x: player.x + 2, y: player.y }); // droite
 
     possibleMoves = possibleMoves.filter(
       (move) => this.isInBoardLimits(move.x) && this.isInBoardLimits(move.y)
@@ -91,9 +91,21 @@ class BoardUtils {
 
     possibleMoves = possibleMoves.filter(
       (move) =>
-        !this.isThereWallBetweenAdjacentsCells(move.x, move.y, x, y, board)
+        !this.isThereWallBetweenAdjacentsCells(
+          move.x,
+          move.y,
+          player.x,
+          player.y,
+          board
+        )
     );
 
+    //si l'autre joueur est visible
+    if (otherPlayer.x !== null) {
+      possibleMoves = possibleMoves.concat(
+        this.getJumpableCells(player, otherPlayer, board)
+      );
+    }
     return possibleMoves;
   }
 
