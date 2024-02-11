@@ -9,7 +9,6 @@ class Ai {
 
   updateGameState(gameState) {
     this.gameState = gameState;
-    this.isItMyTurn = !this.isItMyTurn;
   }
 
   computeMove() {

@@ -231,18 +231,8 @@ class Game {
       console.log(`\nTOUR DU JOUEUR ${this.currentPlayer.playerNumber}`);
     }
 
-    let gameStatePlayer1 = {
-      turnOf: this.turnOf,
-      player: this.players[0],
-      otherPlayerNbWalls: this.players[1].nbWalls,
-      board: this.generateClientBoardTab(this.players[0]),
-    };
-    let gameStatePlayer2 = {
-      turnOf: this.turnOf,
-      player: this.players[1],
-      otherPlayerNbWalls: this.players[0].nbWalls,
-      board: this.generateClientBoardTab(this.players[1]),
-    };
+    let gameStatePlayer1 = this.generateGameState(this.players[0]);
+    let gameStatePlayer2 = this.generateGameState(this.players[1]);
 
     this.gameManager.updateGameStatePlayer1(gameStatePlayer1);
     this.gameManager.updateGameStatePlayer2(gameStatePlayer2);
@@ -334,6 +324,23 @@ class Game {
     );
 
     return jumpableCells.some((cell) => cell.x === x && cell.y === y);
+  }
+
+  generateGameState(player) {
+    let otherPlayer = Object.assign({}, this.getOtherPlayer(player));
+    let clientBoardTab = this.generateClientBoardTab(player);
+    if (
+      clientBoardTab[otherPlayer.y][otherPlayer.x] !== otherPlayer.playerNumber
+    ) {
+      otherPlayer.x = null;
+      otherPlayer.y = null;
+    }
+    return {
+      turnOf: this.turnOf,
+      player: player,
+      otherPlayer: otherPlayer,
+      board: clientBoardTab,
+    };
   }
 }
 

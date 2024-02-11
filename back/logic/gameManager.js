@@ -20,7 +20,7 @@ class GameManager {
   }
   updateGameStatePlayer2(gameState) {
     this.ai.updateGameState(gameState);
-    if (this.ai.isItMyTurn) {
+    if (gameState.turnOf === 2) {
       this.movePlayer2();
     }
   }
