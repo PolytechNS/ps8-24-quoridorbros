@@ -2,6 +2,16 @@ const querystring = require("querystring");
 const jwt = require("jsonwebtoken");
 const { getDb } = require("../mongoDB/mongoManager.js");
 
+function setCookie(name, value, daysToLive, response) {
+  const expires = new Date(
+    Date.now() + daysToLive * 24 * 60 * 60 * 1000
+  ).toUTCString();
+  const cookie = `${encodeURIComponent(name)}=${encodeURIComponent(
+    value
+  )}; expires=${expires}; path=/`;
+  response.setHeader("Set-Cookie", cookie);
+}
+
 function manageRequest(request, response) {
   if (request.method === "POST" && request.url === "/api/signin") {
     let body = "";
@@ -91,7 +101,7 @@ function manageRequest(request, response) {
           );
           return;
         }
-        //TODO coockie
+        setCookie("connected", existingUser.token, 1, response);
         response.setHeader("Content-Type", "text/html");
         response.end(
           `<script>window.location.href = "/connexion.html";alert("Connexion success");</script>`
@@ -102,6 +112,18 @@ function manageRequest(request, response) {
         response.end(`Erreur serveur`);
       }
     });
+  } else if (request.method === "POST" && request.url === "/api/logout") {
+    try {
+      setCookie("connected", "", -1, response);
+      response.setHeader("Content-Type", "text/html");
+      response.end(
+        `<script>window.location.href = "/connexion.html";alert("You have been logged out successfully.");</script>`
+      );
+    } catch (error) {
+      console.error("Erreur lors de la déconnexion", error);
+      response.statusCode = 500;
+      response.end("Erreur serveur lors de la déconnexion");
+    }
   } else {
     response.end(`Merci d'avoir appelé ${request.url}`);
   }
