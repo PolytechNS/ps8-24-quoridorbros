@@ -12,6 +12,10 @@ class Ai {
   }
 
   computeMove() {
+    if (this.gameState.player.x === null) {
+      let randomX = Math.floor(Math.random() * (BoardUtils.BOARD_SIZE - 1)) * 2;
+      return { x: randomX, y: 0 };
+    }
     let possibleMoves = BoardUtils.getReachableCells(
       this.gameState.player,
       this.gameState.otherPlayer,
