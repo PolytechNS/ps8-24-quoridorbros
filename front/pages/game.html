@@ -8,14 +8,20 @@
 <body>
     <button id="saveButton">Save game & Quit</button>
     <div id="gameBoard" class="gameBoard"></div>
+
     <script type="text/javascript" src="../js/socket.io.js"></script>
     <script type="text/javascript" src="../js/utils.js"></script>
     <script type="text/javascript" src="../js/clientBoard.js"></script>
     <script type="text/javascript" src="../js/ioManager.js"></script>
+    <script type="text/javascript" src="../js/cookieManager.js"></script>
 
     <script>
         document.getElementById('saveButton').addEventListener('click', function() {
-            console.log("hello");
+            let connectedCookieValue = getCookie('connected');
+            if (connectedCookieValue !== undefined) {
+                let connected = JSON.parse(connectedCookieValue);
+                console.log(connected.user);
+            }
         });
     </script>
 </body>
