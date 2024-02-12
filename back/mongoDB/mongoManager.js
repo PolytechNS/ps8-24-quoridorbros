@@ -38,15 +38,15 @@ async function loadGameState(userToken) {
   try {
     const db = getDb();
     const collection = db.collection("gameStates");
-    const gameState = await collection.findOne({
+    const save = await collection.findOne({
       token: userToken,
     });
-
-    if (!gameState) {
+    if (!save) {
       console.log("No game state found for this user token");
       return null;
     }
-    return gameState;
+    console.log(save.game);
+    return save.game;
   } catch (error) {
     console.error("Error loading game state", error);
     return null;

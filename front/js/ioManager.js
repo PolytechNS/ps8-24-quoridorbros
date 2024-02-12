@@ -1,6 +1,5 @@
 let socket = io();
 let clientBoard;
-startGame();
 
 socket.on("initBoard", (gameState) => {
   clientBoard = new ClientBoard(onCellClick, onWallClick, gameState);
@@ -18,14 +17,14 @@ function onWallClick(x, y) {
   socket.emit("newMove", { x: x, y: y });
 }
 
-function startGame() {
+function createGame() {
   socket.emit("create game", {});
 }
 
-function saveGameState() {
-  socket.emit("save-game", {});
+function saveGame(token) {
+  socket.emit("save-game", token);
 }
 
-function loadGameState() {
-  socket.emit("load-game", {});
+function loadGame(token) {
+  socket.emit("load-game", token);
 }

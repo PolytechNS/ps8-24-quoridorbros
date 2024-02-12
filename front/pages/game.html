@@ -7,6 +7,8 @@
 </head>
 <body>
     <button id="saveButton">Save game & Quit</button>
+    <button id="loadGame" >Load game</button>
+    <button id="newGame" onclick="createGame()">New game</button>
     <div id="gameBoard" class="gameBoard"></div>
 
     <script type="text/javascript" src="../js/socket.io.js"></script>
@@ -20,7 +22,15 @@
             let connectedCookieValue = getCookie('connected');
             if (connectedCookieValue !== undefined) {
                 let connected = JSON.parse(connectedCookieValue);
-                console.log(connected.user);
+                saveGame(connected.token);
+            }
+        });
+
+        document.getElementById('loadGame').addEventListener('click', function() {
+            let connectedCookieValue = getCookie('connected');
+            if (connectedCookieValue !== undefined) {
+                let connected = JSON.parse(connectedCookieValue);
+                loadGame(connected.token);
             }
         });
     </script>
