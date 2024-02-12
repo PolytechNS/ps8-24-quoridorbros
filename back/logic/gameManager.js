@@ -1,13 +1,24 @@
 const { BoardUtils } = require("../../front/js/utils.js");
 const { Game } = require("../../front/js/game.js");
 const { Ai } = require("./ai.js");
+const { saveGameState, loadGameState } = require("../mongoDB/mongoManager.js");
 
 class GameManager {
-  constructor(socketManager) {
+  constructor(socketManager, userToken) {
     this.socketManager = socketManager;
-    this.game = new Game(9, this);
     this.ai = new Ai();
     this.isGameFinished = false;
+    const initializeGame = async () => {
+      if (userToken) {
+        let gameState = await loadGameState(userToken);
+        this.game = new Game(this, gameState);
+      } else {
+        this.game = new Game(this);
+      }
+    };
+
+    // Call the async function
+    initializeGame();
   }
 
   initBoardPlayer1(gameState) {
@@ -20,7 +31,7 @@ class GameManager {
   }
   updateGameStatePlayer2(gameState) {
     this.ai.updateGameState(gameState);
-    if (this.ai.isItMyTurn) {
+    if (gameState.turnOf === 2) {
       this.movePlayer2();
     }
   }
@@ -41,10 +52,16 @@ class GameManager {
     if (this.isGameFinished) return;
     const move = this.ai.computeMove();
     if (BoardUtils.isWall(move.x, move.y)) {
+      console.log("x: ", move.x, "y: ", move.y);
       this.game.onWallClick(move.x, move.y);
     } else {
       this.game.onCellClick(move.x, move.y);
     }
+  }
+
+  async saveGame(userToken) {
+    const gameState = this.game.generateGameState();
+    saveGameState(userToken, gameState);
   }
 }
 

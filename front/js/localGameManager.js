@@ -1,26 +1,22 @@
 class LocalGameManager {
   constructor() {
-    this.game = new Game(9, this);
+    this.game = new Game(this);
     this.isGameFinished = false;
   }
 
   initBoardPlayer1(gameState) {
     this.clientBoard1 = new ClientBoard(
-      gameState.size,
       this.onCellClick.bind(this),
       this.onWallClick.bind(this),
-      gameState.board,
-      gameState.playerNumber,
+      gameState,
       "gameBoard1"
     );
   }
   initBoardPlayer2(gameState) {
     this.clientBoard2 = new ClientBoard(
-      gameState.size,
       this.onCellClick.bind(this),
       this.onWallClick.bind(this),
-      gameState.board,
-      gameState.playerNumber,
+      gameState,
       "gameBoard2"
     );
     this.setBoardsVisibility();
@@ -50,16 +46,37 @@ class LocalGameManager {
     this.game.onWallClick(x, y);
   }
 
+  antiCheat(message, callback) {
+    const overlay = document.createElement("div");
+    overlay.style.position = "fixed";
+    overlay.style.top = "0";
+    overlay.style.left = "0";
+    overlay.style.width = "100%";
+    overlay.style.height = "100%";
+    overlay.style.backgroundColor = "black";
+    overlay.style.color = "white";
+    overlay.style.display = "flex";
+    overlay.style.alignItems = "center";
+    overlay.style.justifyContent = "center";
+    overlay.style.zIndex = "999";
+    overlay.innerHTML = `<div>${message}</div>`;
+    overlay.addEventListener("click", function () {
+      overlay.parentNode.removeChild(overlay);
+      callback();
+    });
+    document.body.appendChild(overlay);
+  }
+
   setBoardsVisibility() {
-    if (this.clientBoard1.isItMyTurn) {
+    if (this.clientBoard1.turnOf === 1) {
       this.clientBoard2.element.style.display = "none";
-      setTimeout(() => {
+      this.antiCheat("Player 1 turn : Click anywhere", () => {
         this.clientBoard1.element.style.display = "grid";
-      }, 1000);
+      });
     } else {
-      setTimeout(() => {
+      this.antiCheat("Player 2 turn : Click anywhere", () => {
         this.clientBoard2.element.style.display = "grid";
-      }, 1000);
+      });
       this.clientBoard1.element.style.display = "none";
     }
   }

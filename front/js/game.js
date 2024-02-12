@@ -1,5 +1,6 @@
 if (typeof exports === "object" && exports) {
   global.BoardUtils = require("./utils.js").BoardUtils;
+  global.PathFinding = require("./pathfinding.js").PathFinding;
 }
 
 /**
@@ -12,16 +13,19 @@ if (typeof exports === "object" && exports) {
  *      Posé par joueur 2 : 2
  */
 class GameBoard {
-  constructor(size) {
-    this.size = size;
-    this.board = [];
-    this.initBoard(size);
+  constructor(savedBoard) {
+    if (savedBoard) {
+      this.board = savedBoard;
+    } else {
+      this.board = [];
+      this.initBoard();
+    }
   }
 
   initBoard() {
-    for (let y = 0; y < this.size * 2 - 1; y++) {
+    for (let y = 0; y < BoardUtils.BOARD_SIZE * 2 - 1; y++) {
       this.board[y] = []; // initialise le sous tableau
-      for (let x = 0; x < this.size * 2 - 1; x++) {
+      for (let x = 0; x < BoardUtils.BOARD_SIZE * 2 - 1; x++) {
         if (BoardUtils.isCell(x, y)) {
           const initialValue = this.getInitialVisibilityValue(y);
           this.board[y][x] = initialValue;
@@ -35,9 +39,9 @@ class GameBoard {
   //Retoure la visibilité de cette cellule au début de la partie
   getInitialVisibilityValue(y) {
     let initialValue = 0;
-    if (y < this.size - 1) {
+    if (y < BoardUtils.BOARD_SIZE - 1) {
       initialValue = -1;
-    } else if (y > this.size - 1) {
+    } else if (y > BoardUtils.BOARD_SIZE - 1) {
       initialValue = 1;
     }
     return initialValue;
@@ -132,44 +136,82 @@ class GameBoard {
  * C'est la classe qui gère le jeu.
  */
 class Game {
-  constructor(size, gameManager) {
+  constructor(gameManager, savedGame) {
     this.gameManager = gameManager;
-    this.gameBoard = new GameBoard(size);
-    this.players = [
-      { x: 8, y: size * 2 - 2, playerNumber: 1, nbWalls: 10 },
-      { x: 8, y: 0, playerNumber: 2, nbWalls: 10 },
-    ];
-    this.currentPlayer = this.players[0];
-    this.placePlayers();
+    if (savedGame) {
+      console.log("game: ", savedGame);
+      this.gameBoard = new GameBoard(savedGame.board);
+      this.players = savedGame.players;
+      this.turnOf = savedGame.turnOf;
+      this.currentPlayer = this.players[this.turnOf - 1];
+    } else {
+      this.gameBoard = new GameBoard();
+      /*this.players = [
+        {
+          x: 8,
+          y: BoardUtils.BOARD_SIZE * 2 - 2,
+          playerNumber: 1,
+          nbWalls: 10,
+        },
+        { x: 8, y: 0, playerNumber: 2, nbWalls: 10 },
+      ];*/
+      this.players = [
+        {
+          x: null,
+          y: null,
+          playerNumber: 1,
+          nbWalls: 10,
+        },
+        { x: null, y: null, playerNumber: 2, nbWalls: 10 },
+      ];
+      this.currentPlayer = this.players[0];
+      this.turnOf = this.currentPlayer.playerNumber;
+    }
+
     let gameStatePlayer1 = {
-      size: size,
+      turnOf: this.turnOf,
       board: this.generateClientBoardTab(this.players[0]),
       playerNumber: 1,
     };
+
     let gameStatePlayer2 = {
-      size: size,
+      turnOf: this.turnOf,
       board: this.generateClientBoardTab(this.players[1]),
       playerNumber: 2,
     };
+
     this.gameManager.initBoardPlayer1(gameStatePlayer1);
     this.gameManager.initBoardPlayer2(gameStatePlayer2);
   }
 
-  placePlayers() {
-    this.players.forEach((player) => {
-      this.gameBoard.placePlayer(player);
-    });
-  }
-
   onCellClick(x, y) {
-    if (!this.isValidMove(this.currentPlayer, x, y)) {
+    if (this.currentPlayer.x === null) {
+      if (!this.isValidFirstMove(this.currentPlayer, x, y)) {
+        console.log("Mouvement invalide");
+        return;
+      } else {
+        this.currentPlayer.x = x;
+        this.currentPlayer.y = y;
+        this.gameBoard.placePlayer(this.currentPlayer);
+      }
+    } else if (!this.isValidMove(this.currentPlayer, x, y)) {
       console.log("Mouvement invalide");
       return;
+    } else {
+      this.movePlayer(x, y);
     }
-    this.movePlayer(x, y);
+
     this.nextTurn();
   }
-
+  isValidFirstMove(player, x, y) {
+    if (player.playerNumber === 1) {
+      return (
+        y === BoardUtils.BOARD_SIZE * 2 - 2 && BoardUtils.isInBoardLimits(x)
+      );
+    } else {
+      return y === 0 && BoardUtils.isInBoardLimits(x);
+    }
+  }
   isValidMove(player, x, y) {
     let otherPlayer = this.getOtherPlayer(this.currentPlayer);
     //Si le mouvement est un saut valide
@@ -224,22 +266,36 @@ class Game {
       console.log(`\nLE JOUEUR ${this.currentPlayer.playerNumber} A GAGNE`);
     } else {
       this.currentPlayer = this.getOtherPlayer(this.currentPlayer);
+      this.turnOf = this.currentPlayer.playerNumber;
       console.log(`\nTOUR DU JOUEUR ${this.currentPlayer.playerNumber}`);
     }
 
-    let gameStatePlayer1 = {
-      player: this.players[0],
-      otherPlayerNbWalls: this.players[1].nbWalls,
-      board: this.generateClientBoardTab(this.players[0]),
-    };
-    let gameStatePlayer2 = {
-      player: this.players[1],
-      otherPlayerNbWalls: this.players[0].nbWalls,
-      board: this.generateClientBoardTab(this.players[1]),
-    };
+    let gameStatePlayer1 = this.generateClientGameState(this.players[0]);
+    let gameStatePlayer2 = this.generateClientGameState(this.players[1]);
 
-    this.gameManager.updateGameStatePlayer1(gameStatePlayer1);
-    this.gameManager.updateGameStatePlayer2(gameStatePlayer2);
+    let gameStateCurrentPlayer =
+      this.currentPlayer.playerNumber === 1
+        ? gameStatePlayer1
+        : gameStatePlayer2;
+
+    if (this.currentPlayer.x !== null) {
+      this.reachableCells = BoardUtils.getReachableCells(
+        gameStateCurrentPlayer.player,
+        gameStateCurrentPlayer.otherPlayer,
+        gameStateCurrentPlayer.board
+      );
+
+      //Si le joueur ne peut rien faire -> passer son tour
+      if (this.reachableCells.length === 0) {
+        this.nextTurn();
+      } else {
+        this.gameManager.updateGameStatePlayer1(gameStatePlayer1);
+        this.gameManager.updateGameStatePlayer2(gameStatePlayer2);
+      }
+    } else {
+      this.gameManager.updateGameStatePlayer1(gameStatePlayer1);
+      this.gameManager.updateGameStatePlayer2(gameStatePlayer2);
+    }
   }
 
   isGameFinished() {
@@ -248,6 +304,9 @@ class Game {
   }
 
   onWallClick(x, y) {
+    if (this.currentPlayer.x === null) {
+      return;
+    }
     if (!this.isValidWallPut(this.currentPlayer, x, y)) {
       console.log("Mouvement invalide");
       return;
@@ -262,7 +321,10 @@ class Game {
 
   isValidWallPut(player, x, y) {
     // Vérifie que le joueur n'a pas cliqué sur un des murs des extrémités
-    if (x == this.gameBoard.size * 2 - 2 || y == this.gameBoard.size * 2 - 2) {
+    if (
+      x == BoardUtils.BOARD_SIZE * 2 - 2 ||
+      y == BoardUtils.BOARD_SIZE * 2 - 2
+    ) {
       return false;
     }
 
@@ -274,16 +336,27 @@ class Game {
     if (this.currentPlayer.nbWalls <= 0) {
       return false;
     }
-
+    this.gameBoard.board[y][x] = -1 * player.playerNumber;
+    let nextWall = BoardUtils.getNextWall(x, y);
+    this.gameBoard.board[nextWall.y][nextWall.x] = -1 * player.playerNumber;
+    if (!PathFinding.checkPathPlayers(this.gameBoard.board, this.players)) {
+      this.gameBoard.board[y][x] = null;
+      nextWall = BoardUtils.getNextWall(x, y);
+      this.gameBoard.board[nextWall.y][nextWall.x] = null;
+      return false;
+    }
+    this.gameBoard.board[y][x] = null;
+    nextWall = BoardUtils.getNextWall(x, y);
+    this.gameBoard.board[nextWall.y][nextWall.x] = null;
     return true;
   }
 
   generateClientBoardTab(player) {
     let resultTab = [];
 
-    for (let y = 0; y < this.gameBoard.size * 2 - 1; y++) {
+    for (let y = 0; y < BoardUtils.BOARD_SIZE * 2 - 1; y++) {
       resultTab[y] = [];
-      for (let x = 0; x < this.gameBoard.size * 2 - 1; x++) {
+      for (let x = 0; x < BoardUtils.BOARD_SIZE * 2 - 1; x++) {
         if (BoardUtils.isWall(x, y)) {
           resultTab[y][x] = this.gameBoard.board[y][x];
         } else if (this.gameBoard.isVisible(x, y, player)) {
@@ -296,20 +369,22 @@ class Game {
 
     //Afficher le joueur adverse si il est visible ou si il est adjacent à nous
     let otherPlayer = this.getOtherPlayer(player);
-    if (
-      resultTab[otherPlayer.y][otherPlayer.x] != BoardUtils.FOG ||
-      BoardUtils.isAdjacentCells(
-        player.x,
-        player.y,
-        otherPlayer.x,
-        otherPlayer.y
-      )
-    ) {
-      resultTab[otherPlayer.y][otherPlayer.x] = otherPlayer.playerNumber;
-    }
+    if (player.x !== null && otherPlayer.x !== null) {
+      if (
+        resultTab[otherPlayer.y][otherPlayer.x] != BoardUtils.FOG ||
+        BoardUtils.isAdjacentCells(
+          player.x,
+          player.y,
+          otherPlayer.x,
+          otherPlayer.y
+        )
+      ) {
+        resultTab[otherPlayer.y][otherPlayer.x] = otherPlayer.playerNumber;
+      }
 
-    //Afficher notre joueur
-    resultTab[player.y][player.x] = player.playerNumber;
+      //Afficher notre joueur
+      resultTab[player.y][player.x] = player.playerNumber;
+    }
     return resultTab;
   }
 
@@ -318,95 +393,45 @@ class Game {
   }
 
   isValidJumpMove(player, otherPlayer, x, y) {
-    //Si les deux joueurs sont adjacents
-    if (
-      BoardUtils.isAdjacentCells(
-        player.x,
-        player.y,
-        otherPlayer.x,
-        otherPlayer.y
-      )
-    ) {
+    const jumpableCells = BoardUtils.getJumpableCells(
+      player,
+      otherPlayer,
+      this.gameBoard.board
+    );
+
+    return jumpableCells.some((cell) => cell.x === x && cell.y === y);
+  }
+
+  generateClientGameState(player) {
+    let otherPlayer = Object.assign({}, this.getOtherPlayer(player));
+    let clientBoardTab = this.generateClientBoardTab(player);
+    if (player.x !== null && otherPlayer.x !== null) {
       if (
-        BoardUtils.isThereWallBetweenAdjacentsCells(
-          player.x,
-          player.y,
-          otherPlayer.x,
-          otherPlayer.y,
-          this.gameBoard.board
-        )
+        clientBoardTab[otherPlayer.y][otherPlayer.x] !==
+        otherPlayer.playerNumber
       ) {
-        return false;
-      }
-
-      const xDelta = otherPlayer.x - player.x;
-      const yDelta = otherPlayer.y - player.y;
-
-      const potentialWallDevantX = player.x + (3 * xDelta) / 2;
-      const potentialWallDevantY = player.y + (3 * yDelta) / 2;
-
-      const cellDevantX = player.x + 2 * xDelta;
-      const cellDevantY = player.y + 2 * yDelta;
-
-      let potentialWallDroiteX = otherPlayer.x;
-      let potentialWallDroiteY = otherPlayer.y;
-
-      let cellDroiteX = otherPlayer.x;
-      let cellDroiteY = otherPlayer.y;
-
-      let potentialWallGaucheX = otherPlayer.x;
-      let potentialWallGaucheY = otherPlayer.y;
-
-      let cellGaucheX = otherPlayer.x;
-      let cellGaucheY = otherPlayer.y;
-
-      if (yDelta == 0) {
-        cellDroiteY += 2;
-        cellGaucheY -= 2;
-        potentialWallDroiteY += 1;
-        potentialWallGaucheY -= 1;
-      } else if (xDelta == 0) {
-        cellDroiteX += 2;
-        cellGaucheX -= 2;
-        potentialWallDroiteX += 1;
-        potentialWallGaucheX -= 1;
-      }
-
-      if (x === cellDevantX && y === cellDevantY) {
-        return !BoardUtils.isDemiWallAlreadyPlaced(
-          potentialWallDevantX,
-          potentialWallDevantY,
-          this.gameBoard.board
-        );
-      } else if (x === cellDroiteX && y === cellDroiteY) {
-        return (
-          BoardUtils.isDemiWallAlreadyPlaced(
-            potentialWallDevantX,
-            potentialWallDevantY,
-            this.gameBoard.board
-          ) &&
-          !BoardUtils.isDemiWallAlreadyPlaced(
-            potentialWallDroiteX,
-            potentialWallDroiteY,
-            this.gameBoard.board
-          )
-        );
-      } else if (x === cellGaucheX && y === cellGaucheY) {
-        return (
-          BoardUtils.isDemiWallAlreadyPlaced(
-            potentialWallDevantX,
-            potentialWallDevantY,
-            this.gameBoard.board
-          ) &&
-          !BoardUtils.isDemiWallAlreadyPlaced(
-            potentialWallGaucheX,
-            potentialWallGaucheY,
-            this.gameBoard.board
-          )
-        );
+        otherPlayer.x = null;
+        otherPlayer.y = null;
       }
     }
+
+    return {
+      turnOf: this.turnOf,
+      player: player,
+      otherPlayer: otherPlayer,
+      board: clientBoardTab,
+    };
   }
+
+  generateGameState() {
+    return {
+      turnOf: this.turnOf,
+      players: this.players,
+      board: this.gameBoard.board,
+    };
+  }
+
+  loadSavedGame() {}
 }
 
 if (typeof exports === "object" && exports) {

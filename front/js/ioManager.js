@@ -1,31 +1,30 @@
 let socket = io();
 let clientBoard;
-startGame();
 
-socket.on("initBoard", (msg) => {
-  clientBoard = new ClientBoard(
-    msg.size,
-    onCellClick,
-    onWallClick,
-    msg.board,
-    msg.playerNumber
-  );
+socket.on("initBoard", (gameState) => {
+  clientBoard = new ClientBoard(onCellClick, onWallClick, gameState);
 });
 
-socket.on("updatedBoard", (msg) => {
-  clientBoard.updateBoard(msg);
+socket.on("updatedBoard", (gameState) => {
+  clientBoard.updateBoard(gameState);
 });
 
 function onCellClick(x, y) {
   socket.emit("newMove", { x: x, y: y });
-  //io.emit("move", `${x}-${y}`);
 }
 
 function onWallClick(x, y) {
   socket.emit("newMove", { x: x, y: y });
-  //io.emit("move", `W${x}-${y}`);
 }
 
-function startGame() {
+function createGame() {
   socket.emit("create game", {});
+}
+
+function saveGame(token) {
+  socket.emit("save-game", token);
+}
+
+function loadGame(token) {
+  socket.emit("load-game", token);
 }

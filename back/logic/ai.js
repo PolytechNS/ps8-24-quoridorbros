@@ -9,14 +9,16 @@ class Ai {
 
   updateGameState(gameState) {
     this.gameState = gameState;
-    this.isItMyTurn = !this.isItMyTurn;
   }
 
   computeMove() {
-    const player = this.gameState.player;
+    if (this.gameState.player.x === null) {
+      let randomX = Math.floor(Math.random() * (BoardUtils.BOARD_SIZE - 1)) * 2;
+      return { x: randomX, y: 0 };
+    }
     let possibleMoves = BoardUtils.getReachableCells(
-      player.x,
-      player.y,
+      this.gameState.player,
+      this.gameState.otherPlayer,
       this.gameState.board
     );
 

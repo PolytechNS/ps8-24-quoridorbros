@@ -6,10 +6,58 @@
     <link rel="stylesheet" type="text/css" href="../styles/game.css">
 </head>
 <body>
+    <button id="saveButton" style="display: none;">Save game & Quit</button>
+    <button id="loadGame" >Load game</button>
+    <button id="newGame" >New game</button>
     <div id="gameBoard" class="gameBoard"></div>
+
     <script type="text/javascript" src="../js/socket.io.js"></script>
     <script type="text/javascript" src="../js/utils.js"></script>
-    <script type="text/javascript" src="../js/script.js"></script>
+    <script type="text/javascript" src="../js/clientBoard.js"></script>
     <script type="text/javascript" src="../js/ioManager.js"></script>
+    <script type="text/javascript" src="../js/cookieManager.js"></script>
+
+    <script>
+        
+        let loadGameButton = document.getElementById('loadGame');
+        let newGameButton = document.getElementById('newGame');
+        let saveButton = document.getElementById('saveButton');
+
+        saveButton.addEventListener('click', function() {
+            let connectedCookieValue = getCookie('connected');
+            if (connectedCookieValue !== undefined) {
+                let connected = JSON.parse(connectedCookieValue);
+                saveGame(connected.token);
+                window.location.href = "../index.html";
+            }
+
+        });
+
+
+        loadGameButton.addEventListener('click', function() {
+            let connectedCookieValue = getCookie('connected');
+            if (connectedCookieValue !== undefined) {
+                let connected = JSON.parse(connectedCookieValue);
+                loadGame(connected.token);
+                loadGameButton.style.display = "none";
+                newGameButton.style.display = "none";
+                saveButton.style.display = "inline";
+                
+            }
+        });
+
+        
+        newGameButton.addEventListener('click', function() {
+            createGame();
+            loadGameButton.style.display = "none";
+            newGameButton.style.display = "none";
+            saveButton.style.display = "inline";
+        });
+
+        document.getElementById('newGame').addEventListener('click', function() {
+            
+            }
+        );
+    </script>
 </body>
 </html>
