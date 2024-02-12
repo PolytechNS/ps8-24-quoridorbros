@@ -1,5 +1,6 @@
 if (typeof exports === "object" && exports) {
   global.BoardUtils = require("./utils.js").BoardUtils;
+  global.PathFinding = require("./pathfinding.js").PathFinding;
 }
 
 /**
@@ -290,6 +291,9 @@ class Game {
       return false;
     }
 
+    if (!PathFinding.checkPathPlayers(this.gameBoard.board, this.players)) {
+      return false;
+    }
     return true;
   }
 
