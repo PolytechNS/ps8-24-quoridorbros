@@ -1,4 +1,5 @@
 class BoardUtils {
+  static BOARD_SIZE = 9;
   static PLAYER_ONE = 1;
   static PLAYER_TWO = 2;
   static WALL_PLAYER_ONE = -1;
@@ -47,7 +48,7 @@ class BoardUtils {
   }
 
   static isInBoardLimits(x) {
-    return x >= 0 && x <= 17;
+    return x >= 0 && x < 17;
   }
 
   static isWallAlreadyPlaced(x, y, board) {
@@ -70,12 +71,12 @@ class BoardUtils {
     return this.isDemiWallAlreadyPlaced(positionMurX, positionMurY, board);
   }
 
-  static getReachableCells(x, y, board) {
+  static getReachableCells(player, otherPlayer, board) {
     let possibleMoves = [];
-    possibleMoves.push({ x: x, y: y + 2 }); // bas
-    possibleMoves.push({ x: x, y: y - 2 }); // haut
-    possibleMoves.push({ x: x - 2, y: y }); // gauche
-    possibleMoves.push({ x: x + 2, y: y }); // droite
+    possibleMoves.push({ x: player.x, y: player.y + 2 }); // bas
+    possibleMoves.push({ x: player.x, y: player.y - 2 }); // haut
+    possibleMoves.push({ x: player.x - 2, y: player.y }); // gauche
+    possibleMoves.push({ x: player.x + 2, y: player.y }); // droite
 
     possibleMoves = possibleMoves.filter(
       (move) => this.isInBoardLimits(move.x) && this.isInBoardLimits(move.y)
@@ -90,10 +91,115 @@ class BoardUtils {
 
     possibleMoves = possibleMoves.filter(
       (move) =>
-        !this.isThereWallBetweenAdjacentsCells(move.x, move.y, x, y, board)
+        !this.isThereWallBetweenAdjacentsCells(
+          move.x,
+          move.y,
+          player.x,
+          player.y,
+          board
+        )
     );
 
+    //si l'autre joueur est visible
+    if (otherPlayer.x !== null) {
+      possibleMoves = possibleMoves.concat(
+        this.getJumpableCells(player, otherPlayer, board)
+      );
+    }
     return possibleMoves;
+  }
+
+  static getJumpableCells(player, otherPlayer, board) {
+    let jumpableCells = [];
+    //Si les deux joueurs ne sont pas adjacents
+    if (
+      !this.isAdjacentCells(player.x, player.y, otherPlayer.x, otherPlayer.y)
+    ) {
+      return jumpableCells;
+    }
+
+    //Si il y a un mur entre les deux joueurs
+    if (
+      this.isThereWallBetweenAdjacentsCells(
+        player.x,
+        player.y,
+        otherPlayer.x,
+        otherPlayer.y,
+        board
+      )
+    ) {
+      return jumpableCells;
+    }
+
+    const xDelta = otherPlayer.x - player.x;
+    const yDelta = otherPlayer.y - player.y;
+
+    const potentialWallDevantX = player.x + (3 * xDelta) / 2;
+    const potentialWallDevantY = player.y + (3 * yDelta) / 2;
+
+    const cellDevantX = player.x + 2 * xDelta;
+    const cellDevantY = player.y + 2 * yDelta;
+    /*
+    let potentialWallDroiteX = otherPlayer.x;
+    let potentialWallDroiteY = otherPlayer.y;
+
+    let cellDroiteX = otherPlayer.x;
+    let cellDroiteY = otherPlayer.y;
+
+    let potentialWallGaucheX = otherPlayer.x;
+    let potentialWallGaucheY = otherPlayer.y;
+
+    let cellGaucheX = otherPlayer.x;
+    let cellGaucheY = otherPlayer.y;
+
+    if (yDelta == 0) {
+      cellDroiteY += 2;
+      cellGaucheY -= 2;
+      potentialWallDroiteY += 1;
+      potentialWallGaucheY -= 1;
+    } else if (xDelta == 0) {
+      cellDroiteX += 2;
+      cellGaucheX -= 2;
+      potentialWallDroiteX += 1;
+      potentialWallGaucheX -= 1;
+    }
+    */
+
+    if (
+      this.isInBoardLimits(potentialWallDevantX) &&
+      this.isInBoardLimits(potentialWallDevantY) &&
+      !this.isDemiWallAlreadyPlaced(
+        potentialWallDevantX,
+        potentialWallDevantY,
+        board
+      )
+    ) {
+      jumpableCells.push({ x: cellDevantX, y: cellDevantY });
+    }
+
+    /*
+    else {
+      if (
+        !this.isDemiWallAlreadyPlaced(
+          potentialWallDroiteX,
+          potentialWallDroiteY,
+          board
+        )
+      ) {
+        jumpableCells.push({ x: cellDroiteX, y: cellDroiteY });
+      }
+      if (
+        !this.isDemiWallAlreadyPlaced(
+          potentialWallGaucheX,
+          potentialWallGaucheY,
+          board
+        )
+      ) {
+        jumpableCells.push({ x: cellGaucheX, y: cellGaucheY });
+      }
+    }
+    */
+    return jumpableCells;
   }
 }
 

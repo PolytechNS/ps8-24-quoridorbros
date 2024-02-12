@@ -6,7 +6,7 @@ const { saveGameState, loadGameState } = require("../mongoDB/mongoManager.js");
 class GameManager {
   constructor(socketManager) {
     this.socketManager = socketManager;
-    this.game = new Game(9, this);
+    this.game = new Game(this);
     this.ai = new Ai();
     this.isGameFinished = false;
   }
@@ -21,7 +21,7 @@ class GameManager {
   }
   updateGameStatePlayer2(gameState) {
     this.ai.updateGameState(gameState);
-    if (this.ai.isItMyTurn) {
+    if (gameState.turnOf === 2) {
       this.movePlayer2();
     }
   }
@@ -42,6 +42,7 @@ class GameManager {
     if (this.isGameFinished) return;
     const move = this.ai.computeMove();
     if (BoardUtils.isWall(move.x, move.y)) {
+      console.log("x: ", move.x, "y: ", move.y);
       this.game.onWallClick(move.x, move.y);
     } else {
       this.game.onCellClick(move.x, move.y);
