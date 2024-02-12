@@ -16,6 +16,11 @@ class SocketManager {
         this.attachGameManager(new GameManager(this));
       });
 
+      socket.on("load game", (msg) => {
+        console.log(`Load game: ${socket.id}`);
+        this.attachGameManager(new GameManager(this, true));
+      });
+
       socket.on("newMove", (move) => {
         this.gameManager.movePlayer1(move);
       });
