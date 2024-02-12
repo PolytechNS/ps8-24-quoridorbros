@@ -29,3 +29,11 @@ function onWallClick(x, y) {
 function startGame() {
   socket.emit("create game", {});
 }
+
+function saveGameState() {
+  socket.emit("save-game", {});
+}
+
+function loadGameState() {
+  socket.emit("load-game", {});
+}

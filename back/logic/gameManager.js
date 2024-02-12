@@ -1,6 +1,7 @@
 const { BoardUtils } = require("../../front/js/utils.js");
 const { Game } = require("../../front/js/game.js");
 const { Ai } = require("./ai.js");
+const { saveGameState, loadGameState } = require("../mongoDB/mongoManager.js");
 
 class GameManager {
   constructor(socketManager) {
@@ -45,6 +46,15 @@ class GameManager {
     } else {
       this.game.onCellClick(move.x, move.y);
     }
+  }
+
+  async saveGame(userToken) {
+    //const gameState = this.game.generateGameState();
+    //saveGameState(userToken, gameState);
+  }
+
+  async loadGame(userToken) {
+    const gameState = loadGameState(userToken);
   }
 }
 
