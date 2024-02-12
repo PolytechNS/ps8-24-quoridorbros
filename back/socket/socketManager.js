@@ -19,16 +19,16 @@ class SocketManager {
       socket.on("newMove", (move) => {
         this.gameManager.movePlayer1(move);
       });
-    });
 
-    socket.on("load-game", (msg) => {
-      console.log(`load-game: ${socket.id}`);
-      //this.gameManager.loadGameState();
-    });
+      socket.on("load-game", (msg) => {
+        console.log(`load-game: ${socket.id}`);
+        //this.gameManager.loadGameState();
+      });
 
-    socket.on("save-game", (msg) => {
-      console.log(`save-game: ${socket.id}`);
-      //this.gameManager.saveGameState();
+      socket.on("save-game", (msg) => {
+        console.log(`save-game: ${socket.id}`);
+        //this.gameManager.saveGameState();
+      });
     });
   }
 
