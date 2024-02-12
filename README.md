@@ -5,7 +5,7 @@
 ### Jeu
 
 - **Partie 1v1 locale** : Affrontez un joueur sur le même appareil.
-- **Partie contre IA** : Affrontez un joueur sur le même appareil
+- **Partie contre IA** : Affrontez une IA en communiquant avec le serveur via une socket.
 - **Mouvements possibles** :
   - Déplacement d'un pion sur des cases adjacentes
   - Saut par dessus un pion adverse
@@ -31,9 +31,10 @@
 Pour lancer le projet, assurez-vous d'avoir Docker et Docker Compose installés sur votre machine. Suivez ensuite ces étapes :
 
 1. Clonez le dépôt du projet.
-2. Lancez le service avec `docker-compose up`.
-3. Accédez au jeu via votre navigateur web ou client local.
+2. `docker-compose build`.
+3. Lancez le service avec `docker-compose up`.
+4. Accédez au jeu via votre navigateur web au localhost:8000.
 
 ## Contribution
 
-Dorian Bouchar, Julien Soto, Evan Tranvouez
+Dorian Bouchard, Julien Soto, Evan Tranvouez
