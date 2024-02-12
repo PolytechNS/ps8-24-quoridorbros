@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Quoridor</title>
+    <title>Quoribros</title>
 </head>
 <body>
     <button id="playAIButton" onclick="window.location.href='./pages/game.html'">Play with AI</button>
@@ -12,19 +12,9 @@
 
     <p id="loggedInText" style="display: none;">You are connected</p>
     <button id="logoutButton" style="display: none;">Logout</button>
+    <script type="text/javascript" src="../js/cookieManager.js"></script>
 
     <script>
-        function getCookie(name) {
-            let value = `; ${document.cookie}`;
-            const cookies = value.split(';');
-            
-            for (let i = 0; i < cookies.length; i++) {
-                const [cookieName, cookieValue] = cookies[i].trim().split('=');
-                if (cookieName === name) {
-                    return decodeURIComponent(cookieValue);
-    }
-  }
-        }
         window.onload = function() {
             let connectedCookieValue = getCookie('connected');
             if (connectedCookieValue !== undefined) {
