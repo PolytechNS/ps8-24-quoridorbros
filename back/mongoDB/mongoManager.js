@@ -24,8 +24,11 @@ async function saveGameState(userToken, gameState) {
   try {
     const db = getDb();
     const collection = db.collection("gameStates");
-    await collection.insertOne(save);
-    console.log("Game state saved successfully");
+    await collection.updateOne(
+      { token: userToken },
+      { $set: save },
+      { upsert: true }
+    );
   } catch (error) {
     console.error("Error saving game state", error);
   }
@@ -35,13 +38,18 @@ async function loadGameState(userToken) {
   try {
     const db = getDb();
     const collection = db.collection("gameStates");
-    const gameState = await collection.findOne({
-      userToken: userToken,
+    const save = await collection.findOne({
+      token: userToken,
     });
-
-    return gameState;
+    if (!save) {
+      console.log("No game state found for this user token");
+      return null;
+    }
+    console.log(save.game);
+    return save.game;
   } catch (error) {
     console.error("Error loading game state", error);
+    return null;
   }
 }
 module.exports = { connect, getDb, saveGameState, loadGameState };

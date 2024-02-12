@@ -2,56 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Quoridor</title>
+    <title>Quoribros</title>
 </head>
 <body>
-    <button id="playAIButton" onclick="window.location.href='./pages/game.html'">Play with AI</button>
-    <button id="playLocalButton" onclick="window.location.href='./pages/localGame.html'">Play localy</button>
+    <button id="playAIButton" onclick="window.location.href='./pages/game.html'" style="display: none;">Play with AI</button>
+    <button id="playLocalButton" onclick="window.location.href='./pages/localGame.html'" style="display: none;">Play localy</button>
     <button id="loginButton" onclick="window.location.href='./pages/login.html'">Log in</button>
     <button id="signinButton" onclick="window.location.href='./pages/signin.html'">Sign in</button>
 
     <p id="loggedInText" style="display: none;">You are connected</p>
     <button id="logoutButton" style="display: none;">Logout</button>
-
-    <script>
-        function getCookie(name) {
-            let value = `; ${document.cookie}`;
-            const cookies = value.split(';');
-            
-            for (let i = 0; i < cookies.length; i++) {
-                const [cookieName, cookieValue] = cookies[i].trim().split('=');
-                if (cookieName === name) {
-                    return decodeURIComponent(cookieValue);
-    }
-  }
-        }
-        window.onload = function() {
-            let connectedCookieValue = getCookie('connected');
-            if (connectedCookieValue !== undefined) {
-                document.getElementById('loggedInText').style.display = 'block';
-                let connected = JSON.parse(connectedCookieValue);
-                document.getElementById('loggedInText').innerText = `You are logged as ${connected.user}`;
-                document.getElementById('logoutButton').style.display = 'block';
-                document.getElementById('loginButton').style.display = 'none';
-                document.getElementById('signinButton').style.display = 'none';
-            }
-        };
-
-        document.getElementById('logoutButton').addEventListener('click', function() {
-            fetch('/api/logout', {
-                method: 'POST',
-            })
-            .then(response => {
-                if (response.ok) {
-                    document.getElementById('loggedInText').style.display = 'none';
-                    document.getElementById('logoutButton').style.display = 'none';
-                    document.getElementById('loginButton').style.display = 'inline';
-                    document.getElementById('signinButton').style.display = 'inline';
-                    alert('Deconnexion Successful');
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        });
-    </script>
+    
+    <script type="text/javascript" src="./js/cookieManager.js"></script>
+    <script type="text/javascript" src="./js/index.js"></script>
 </body>
 </html>

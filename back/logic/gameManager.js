@@ -4,11 +4,21 @@ const { Ai } = require("./ai.js");
 const { saveGameState, loadGameState } = require("../mongoDB/mongoManager.js");
 
 class GameManager {
-  constructor(socketManager) {
+  constructor(socketManager, userToken) {
     this.socketManager = socketManager;
-    this.game = new Game(this);
     this.ai = new Ai();
     this.isGameFinished = false;
+    const initializeGame = async () => {
+      if (userToken) {
+        let gameState = await loadGameState(userToken);
+        this.game = new Game(this, gameState);
+      } else {
+        this.game = new Game(this);
+      }
+    };
+
+    // Call the async function
+    initializeGame();
   }
 
   initBoardPlayer1(gameState) {
@@ -50,12 +60,8 @@ class GameManager {
   }
 
   async saveGame(userToken) {
-    //const gameState = this.game.generateGameState();
-    //saveGameState(userToken, gameState);
-  }
-
-  async loadGame(userToken) {
-    const gameState = loadGameState(userToken);
+    const gameState = this.game.generateGameState();
+    saveGameState(userToken, gameState);
   }
 }
 

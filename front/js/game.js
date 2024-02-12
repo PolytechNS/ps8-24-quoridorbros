@@ -12,9 +12,13 @@ if (typeof exports === "object" && exports) {
  *      Posé par joueur 2 : 2
  */
 class GameBoard {
-  constructor() {
-    this.board = [];
-    this.initBoard();
+  constructor(savedBoard) {
+    if (savedBoard) {
+      this.board = savedBoard;
+    } else {
+      this.board = [];
+      this.initBoard();
+    }
   }
 
   initBoard() {
@@ -131,16 +135,29 @@ class GameBoard {
  * C'est la classe qui gère le jeu.
  */
 class Game {
-  constructor(gameManager) {
+  constructor(gameManager, savedGame) {
     this.gameManager = gameManager;
-    this.gameBoard = new GameBoard();
-    this.players = [
-      { x: 8, y: BoardUtils.BOARD_SIZE * 2 - 2, playerNumber: 1, nbWalls: 10 },
-      { x: 8, y: 0, playerNumber: 2, nbWalls: 10 },
-    ];
-    this.currentPlayer = this.players[0];
-    this.turnOf = this.currentPlayer.playerNumber;
-    this.placePlayers();
+    if (savedGame) {
+      console.log("game: ", savedGame);
+      this.gameBoard = new GameBoard(savedGame.board);
+      this.players = savedGame.players;
+      this.turnOf = savedGame.turnOf;
+      this.currentPlayer = this.players[this.turnOf - 1];
+    } else {
+      this.gameBoard = new GameBoard();
+      this.players = [
+        {
+          x: 8,
+          y: BoardUtils.BOARD_SIZE * 2 - 2,
+          playerNumber: 1,
+          nbWalls: 10,
+        },
+        { x: 8, y: 0, playerNumber: 2, nbWalls: 10 },
+      ];
+      this.currentPlayer = this.players[0];
+      this.turnOf = this.currentPlayer.playerNumber;
+      this.placePlayers();
+    }
 
     let gameStatePlayer1 = {
       turnOf: this.turnOf,
@@ -231,8 +248,8 @@ class Game {
       console.log(`\nTOUR DU JOUEUR ${this.currentPlayer.playerNumber}`);
     }
 
-    let gameStatePlayer1 = this.generateGameState(this.players[0]);
-    let gameStatePlayer2 = this.generateGameState(this.players[1]);
+    let gameStatePlayer1 = this.generateClientGameState(this.players[0]);
+    let gameStatePlayer2 = this.generateClientGameState(this.players[1]);
 
     let gameStateCurrentPlayer =
       this.currentPlayer.playerNumber === 1
@@ -342,7 +359,7 @@ class Game {
     return jumpableCells.some((cell) => cell.x === x && cell.y === y);
   }
 
-  generateGameState(player) {
+  generateClientGameState(player) {
     let otherPlayer = Object.assign({}, this.getOtherPlayer(player));
     let clientBoardTab = this.generateClientBoardTab(player);
     if (
@@ -358,6 +375,16 @@ class Game {
       board: clientBoardTab,
     };
   }
+
+  generateGameState() {
+    return {
+      turnOf: this.turnOf,
+      players: this.players,
+      board: this.gameBoard.board,
+    };
+  }
+
+  loadSavedGame() {}
 }
 
 if (typeof exports === "object" && exports) {

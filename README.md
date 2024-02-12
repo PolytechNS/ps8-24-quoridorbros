@@ -1,30 +1,40 @@
 # PS8
 
-The code of this repo is split in 2 folders:
-* api/ manages the server. It contains a server which differentiate REST requests from HTTP file requests, and so
-return either files or REST responses accordingly.
-* front/ contains static files that should be returned by the HTTP server mentioned earlier.
+## Fonctionnalités implémentées pour Tag docker
 
-Both folders contain a README with more details.
+### Jeu
 
----
+- **Partie 1v1 locale** : Affrontez un joueur sur le même appareil.
+- **Partie contre IA** : Affrontez une IA en communiquant avec le serveur via une socket.
+- **Mouvements possibles** :
+  - Déplacement d'un pion sur des cases adjacentes
+  - Saut par dessus un pion adverse
+  - Placer un mur
 
-## Requirements to run the project
+### Connexion et Inscription
 
-* [Node.js](https://nodejs.org/) should be installed.
-* The repo should have been cloned.
+- **Inscription** : Créez un compte utilisateur.
+- **Connexion** : Connectez-vous pour accéder à vos parties sauvegardées et reprendre la dernière partie que vous avez enregistrée.
 
----
+## Technologies et Outils
 
-## First launch
+### MongoDB
 
-Not much in there, just launch `npm install` to install the dependencies for the server.
+- **Stockage de Données** : Toutes les données des utilisateurs sont stockées dans MongoDB sur le port 27017.
 
-Note that this command should be run again every time you install / delete a package.
+### Docker
 
----
+- **Docker Compose** : Notre projet utilise Docker Compose pour orchestrer les conteneurs NodeJS et MongoDB, simplifiant le déploiement et la gestion des services.
 
-## All runs
+## Mise en Route
 
-Run `npm start`. That's it, unless you need other scripts to run before or while the server is launched,
-but then you (probably?) know what you are doing.
+Pour lancer le projet, assurez-vous d'avoir Docker et Docker Compose installés sur votre machine. Suivez ensuite ces étapes :
+
+1. Clonez le dépôt du projet.
+2. `docker-compose build`.
+3. Lancez le service avec `docker-compose up`.
+4. Accédez au jeu via votre navigateur web au localhost:8000.
+
+## Contribution
+
+Dorian Bouchard, Julien Soto, Evan Tranvouez

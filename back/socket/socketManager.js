@@ -16,18 +16,18 @@ class SocketManager {
         this.attachGameManager(new GameManager(this));
       });
 
+      socket.on("load-game", (token) => {
+        console.log(`load-game: ${socket.id}`);
+        this.attachGameManager(new GameManager(this, token));
+      });
+
       socket.on("newMove", (move) => {
         this.gameManager.movePlayer1(move);
       });
 
-      socket.on("load-game", (msg) => {
-        console.log(`load-game: ${socket.id}`);
-        //this.gameManager.loadGameState();
-      });
-
-      socket.on("save-game", (msg) => {
+      socket.on("save-game", (token) => {
         console.log(`save-game: ${socket.id}`);
-        //this.gameManager.saveGameState();
+        this.gameManager.saveGame(token);
       });
     });
   }
