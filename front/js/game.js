@@ -290,10 +290,18 @@ class Game {
     if (this.currentPlayer.nbWalls <= 0) {
       return false;
     }
-
+    this.gameBoard.board[y][x] = -1 * player.playerNumber;
+    let nextWall = BoardUtils.getNextWall(x, y);
+    this.gameBoard.board[nextWall.y][nextWall.x] = -1 * player.playerNumber;
     if (!PathFinding.checkPathPlayers(this.gameBoard.board, this.players)) {
+      this.gameBoard.board[y][x] = null;
+      nextWall = BoardUtils.getNextWall(x, y);
+      this.gameBoard.board[nextWall.y][nextWall.x] = null;
       return false;
     }
+    this.gameBoard.board[y][x] = null;
+    nextWall = BoardUtils.getNextWall(x, y);
+    this.gameBoard.board[nextWall.y][nextWall.x] = null;
     return true;
   }
 

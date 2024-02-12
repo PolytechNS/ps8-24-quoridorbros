@@ -30,8 +30,8 @@ class PathFinding {
       var x = current[1];
       var y = current[0];
       if (
-        (y === 0 && player.playerNumber === 2) ||
-        (y === 16 && player.playerNumber === 1)
+        (y === 0 && player.playerNumber === 1) ||
+        (y === 16 && player.playerNumber === 2)
       ) {
         return true;
       }
@@ -85,8 +85,8 @@ class PathFinding {
         }
       }
     }
-    var player1 = { x: 8, y: 0, playerNumber: 1 };
-    var player2 = { x: 8, y: 16, playerNumber: 2 };
+    var player1 = { x: 8, y: 16, playerNumber: 1 };
+    var player2 = { x: 8, y: 0, playerNumber: 2 };
 
     console.log(this.checkPathPlayers(gameBoard, [player1, player2]));
     for (let i = 0; i < 17; i++) {
