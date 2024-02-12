@@ -138,6 +138,7 @@ class Game {
   constructor(gameManager, savedGame) {
     this.gameManager = gameManager;
     if (savedGame) {
+      console.log("game: ", savedGame);
       this.gameBoard = new GameBoard(savedGame.board);
       this.players = savedGame.players;
       this.turnOf = savedGame.turnOf;
@@ -378,7 +379,7 @@ class Game {
   generateGameState() {
     return {
       turnOf: this.turnOf,
-      players: players,
+      players: this.players,
       board: this.gameBoard.board,
     };
   }
