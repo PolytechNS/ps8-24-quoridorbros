@@ -139,7 +139,7 @@ class BoardUtils {
 
     const cellDevantX = player.x + 2 * xDelta;
     const cellDevantY = player.y + 2 * yDelta;
-
+    /*
     let potentialWallDroiteX = otherPlayer.x;
     let potentialWallDroiteY = otherPlayer.y;
 
@@ -163,6 +163,7 @@ class BoardUtils {
       potentialWallDroiteX += 1;
       potentialWallGaucheX -= 1;
     }
+    */
 
     if (
       this.isInBoardLimits(potentialWallDevantX) &&
@@ -174,7 +175,10 @@ class BoardUtils {
       )
     ) {
       jumpableCells.push({ x: cellDevantX, y: cellDevantY });
-    } else {
+    }
+
+    /*
+    else {
       if (
         !this.isDemiWallAlreadyPlaced(
           potentialWallDroiteX,
@@ -194,6 +198,7 @@ class BoardUtils {
         jumpableCells.push({ x: cellGaucheX, y: cellGaucheY });
       }
     }
+    */
     return jumpableCells;
   }
 }

@@ -234,8 +234,24 @@ class Game {
     let gameStatePlayer1 = this.generateGameState(this.players[0]);
     let gameStatePlayer2 = this.generateGameState(this.players[1]);
 
-    this.gameManager.updateGameStatePlayer1(gameStatePlayer1);
-    this.gameManager.updateGameStatePlayer2(gameStatePlayer2);
+    let gameStateCurrentPlayer =
+      this.currentPlayer.playerNumber === 1
+        ? gameStatePlayer1
+        : gameStatePlayer2;
+
+    this.reachableCells = BoardUtils.getReachableCells(
+      gameStateCurrentPlayer.player,
+      gameStateCurrentPlayer.otherPlayer,
+      gameStateCurrentPlayer.board
+    );
+
+    //Si le joueur ne peut rien faire -> passer son tour
+    if (this.reachableCells.length === 0) {
+      this.nextTurn();
+    } else {
+      this.gameManager.updateGameStatePlayer1(gameStatePlayer1);
+      this.gameManager.updateGameStatePlayer2(gameStatePlayer2);
+    }
   }
 
   isGameFinished() {
