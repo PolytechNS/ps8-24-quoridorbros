@@ -120,11 +120,7 @@ function MapReverse(gameGameState) {
     return iaGameState;
 }
 
-/*
 
-Transforme une position de mur moteur de jeu en position de mur IA en 
-
-*/
 function initializeIaBoard() {
     let board = [];
     for (let i = 0; i < 9; i++) {
@@ -134,6 +130,11 @@ function initializeIaBoard() {
     return board;
 }
 
+/*
+
+Transforme une position de mur moteur de jeu en position de mur IA en 
+
+*/
 function getWallInfo(x, y, board) {
     let playerNumber = null;
     let orientation = isHorizontalWall(x, y) ? 0 : 1;
