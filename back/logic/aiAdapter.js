@@ -1,5 +1,5 @@
 const { BoardUtils } = require("../../front/js/utils");
-const {GameBoard} = require("../../front/js/game.js");
+const { GameBoard } = require("../../front/js/game");
 /*
 
 Transforme le gameState de l'ia en gameState du moteur de jeu
@@ -23,7 +23,7 @@ function Map(iaGameState){
         board: null
     };
 
-    let gameBoard = new GameBoard(null);
+    let gameBoard = new GameBoard();
 
     iaGameState.ownWalls.forEach(wall => {
         let position = parseWallPosition(wall[0]);
@@ -44,6 +44,12 @@ function Map(iaGameState){
             } else if (cellValue === 2) { // opponent
                 gameGameState.otherPlayer.x = j;
                 gameGameState.otherPlayer.y = i;
+            }
+            else if (cellValue === -1){
+                gameBoard.board[i][j] = BoardUtils.FOG;
+            }
+            else if (cellValue === 0){
+                gameBoard.board[i][j] = BoardUtils.EMPTY;
             }
         }
     }
@@ -135,7 +141,7 @@ Transforme une position de mur moteur de jeu en position de mur IA en
 function getWallInfo(x, y, board) {
     let playerNumber = null;
     let orientation = BoardUtils.isHorizontalWall(x, y) ? 0 : 1;
-    let wallPosition = [Math.floor(x / 2), Math.floor(y / 2)];
+    let wallPosition = [Math.floor(x / 2)+1, Math.floor(y / 2)+1];
 
     if (board[y][x] === BoardUtils.WALL_PLAYER_ONE) {
         playerNumber = BoardUtils.PLAYER_ONE;

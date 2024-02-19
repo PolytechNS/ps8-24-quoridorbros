@@ -436,4 +436,5 @@ class Game {
 
 if (typeof exports === "object" && exports) {
   exports.Game = Game;
+  exports.GameBoard = GameBoard;
 }

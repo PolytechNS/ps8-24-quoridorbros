@@ -11,7 +11,14 @@ class Ai {
 
   updateGameState(gameState) {
     this.gameState = gameState;
-    console.log(MapReverse(this.gameState));
+    let iaGameState = MapReverse(this.gameState);
+    let newgameState = Map(iaGameState);
+    console.log("Map: " +iaGameState);
+    console.log(iaGameState);
+    console.log("MapReverse: ");
+    console.log(newgameState);
+    console.log("this.gamesate: " +this.gameState);
+    console.log(this.gameState);
   }
 
   computeMove() {
