@@ -94,9 +94,10 @@ class GameBoard {
     this.board[y][x] = -1 * playerNumber;
     let nextWall = BoardUtils.getNextWall(x, y);
     this.board[nextWall.y][nextWall.x] = -1 * playerNumber;
+    let wallJunction = BoardUtils.getWallJunction(x, y);
+    this.board[wallJunction.y][wallJunction.x] = -1 * playerNumber;
 
     const valueToAdd = playerNumber === 1 ? 1 : -1;
-    let wallJunction = BoardUtils.getWallJunction(x, y);
     this.addVisibilityArroundJunction(
       wallJunction.x,
       wallJunction.y,
@@ -336,6 +337,10 @@ class Game {
     if (this.currentPlayer.nbWalls <= 0) {
       return false;
     }
+    let junction = BoardUtils.getWallJunction(x, y);
+    console.log(this.gameBoard.board[junction.y][junction.x]);
+    if (this.gameBoard.board[junction.y][junction.x]!=null)
+      return false;
     this.gameBoard.board[y][x] = -1 * player.playerNumber;
     let nextWall = BoardUtils.getNextWall(x, y);
     this.gameBoard.board[nextWall.y][nextWall.x] = -1 * player.playerNumber;
