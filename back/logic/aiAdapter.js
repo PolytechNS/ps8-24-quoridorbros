@@ -1,8 +1,5 @@
-if (typeof exports === "object" && exports) {
-    global.BoardUtils = require("./utils.js").BoardUtils;
-    global.GameBoard = require("../../front/js/game.js");
-}
-
+const { BoardUtils } = require("../../front/js/utils");
+const {GameBoard} = require("../../front/js/game.js");
 /*
 
 Transforme le gameState de l'ia en gameState du moteur de jeu
@@ -11,13 +8,13 @@ Transforme le gameState de l'ia en gameState du moteur de jeu
 function Map(iaGameState){
     let gameGameState = {
         turnOf: null,
-        player: {   //own
+        player: {   //player1
             x: null,
             y: null,
             playerNumber: 1,
             walls: iaGameState.ownWalls.length
         },
-        otherPlayer: {  //opponent
+        otherPlayer: {  //player2
             x: null,
             y: null,
             playerNumber: 2,
@@ -137,7 +134,7 @@ Transforme une position de mur moteur de jeu en position de mur IA en
 */
 function getWallInfo(x, y, board) {
     let playerNumber = null;
-    let orientation = isHorizontalWall(x, y) ? 0 : 1;
+    let orientation = BoardUtils.isHorizontalWall(x, y) ? 0 : 1;
     let wallPosition = [Math.floor(x / 2), Math.floor(y / 2)];
 
     if (board[y][x] === BoardUtils.WALL_PLAYER_ONE) {
@@ -155,3 +152,11 @@ function getWallInfo(x, y, board) {
 
     return null;
 }
+
+module.exports = {
+    Map,
+    parseWallPosition,
+    MapReverse,
+    initializeIaBoard,
+    getWallInfo
+};

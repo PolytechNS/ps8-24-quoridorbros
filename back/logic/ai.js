@@ -1,4 +1,6 @@
 const { BoardUtils } = require("../../front/js/utils");
+const { Map, parseWallPosition, MapReverse, initializeIaBoard, getWallInfo } = require('./aiAdapter.js');
+
 
 // This function doesn't handle walls.
 class Ai {
@@ -9,6 +11,7 @@ class Ai {
 
   updateGameState(gameState) {
     this.gameState = gameState;
+    console.log(MapReverse(this.gameState));
   }
 
   computeMove() {
