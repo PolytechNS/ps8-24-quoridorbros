@@ -46,9 +46,11 @@ function Map(iaGameState){
                 gameGameState.otherPlayer.y = i;
             }
             else if (cellValue === -1){
+                if (i%2==0 && j%2==0)
                 gameBoard.board[i][j] = BoardUtils.FOG;
             }
             else if (cellValue === 0){
+                if (i%2==0 && j%2==0)
                 gameBoard.board[i][j] = BoardUtils.EMPTY;
             }
         }
@@ -68,8 +70,8 @@ Transforme une position de mur IA en position de mur moteur de jeu
 
 function parseWallPosition(positionString) {
     let [xStr, yStr] = positionString.split(',');
-    let x = parseInt(xStr) * 2;
-    let y = parseInt(yStr) * 2;
+    let x = parseInt(xStr) * 2+1;
+    let y = parseInt(yStr) * 2+1;
     return { x, y };
 }
 
