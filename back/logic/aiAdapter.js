@@ -27,31 +27,35 @@ function Map(iaGameState){
 
     iaGameState.ownWalls.forEach(wall => {
         let position = parseWallPosition(wall[0]);
+        console.log("Position wall");
+        console.log(position);
         gameBoard.placeWall(position.x, position.y, 1);
     });
 
     iaGameState.opponentWalls.forEach(wall => {
         let position = parseWallPosition(wall[0]);
+        console.log("Position wall");
+        console.log(position);
         gameBoard.placeWall(position.x, position.y, 2);
     });
 
     for (let i = 0; i < iaGameState.board.length; i++) {
         for (let j = 0; j < iaGameState.board[i].length; j++) {
             let cellValue = iaGameState.board[i][j];
-            if (cellValue === 1) { // own
-                gameGameState.player.x = j;
-                gameGameState.player.y = i;
-            } else if (cellValue === 2) { // opponent
-                gameGameState.otherPlayer.x = j;
-                gameGameState.otherPlayer.y = i;
+            if (cellValue === 1) {
+                gameGameState.player.x = j * 2;
+                gameGameState.player.y = i * 2;
+                gameBoard.board[i*2][j*2]=BoardUtils.PLAYER_ONE;
+            } else if (cellValue === 2) {
+                gameGameState.otherPlayer.x = j * 2;
+                gameGameState.otherPlayer.y = i * 2;
+                gameBoard.board[i*2][j*2]=BoardUtils.PLAYER_TWO;
             }
-            else if (cellValue === -1){
-                if (i%2==0 && j%2==0)
-                gameBoard.board[i][j] = BoardUtils.FOG;
+            else if (cellValue === -1) {
+                gameBoard.board[i*2][j*2]=BoardUtils.FOG;
             }
-            else if (cellValue === 0){
-                if (i%2==0 && j%2==0)
-                gameBoard.board[i][j] = BoardUtils.EMPTY;
+            else if (cellValue === 0) {
+                gameBoard.board[i*2][j*2]=BoardUtils.EMPTY;
             }
         }
     }
@@ -59,7 +63,6 @@ function Map(iaGameState){
     gameGameState.board = gameBoard.board;
 
     return gameGameState;
-
 }
 
 /*
@@ -70,8 +73,8 @@ Transforme une position de mur IA en position de mur moteur de jeu
 
 function parseWallPosition(positionString) {
     let [xStr, yStr] = positionString.split(',');
-    let x = parseInt(xStr) * 2+1;
-    let y = parseInt(yStr) * 2+1;
+    let x = parseInt(xStr) * 2-1;
+    let y = parseInt(yStr) * 2-1;
     return { x, y };
 }
 
@@ -143,7 +146,7 @@ Transforme une position de mur moteur de jeu en position de mur IA en
 function getWallInfo(x, y, board) {
     let playerNumber = null;
     let orientation = BoardUtils.isHorizontalWall(x, y) ? 0 : 1;
-    let wallPosition = [Math.floor(x / 2)+1, Math.floor(y / 2)+1];
+    let wallPosition = [Math.floor(x / 2), Math.floor(y / 2)];
 
     if (board[y][x] === BoardUtils.WALL_PLAYER_ONE) {
         playerNumber = BoardUtils.PLAYER_ONE;

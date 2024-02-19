@@ -11,8 +11,8 @@ class Ai {
 
   updateGameState(gameState) {
     this.gameState = gameState;
-    /*let iaGameState = MapReverse(this.gameState);
-    let newgameState = Map(iaGameState);
+    let iaGameState = MapReverse(this.gameState);
+    let newgameState = Map(iaGameState);/*
     console.log("Map: " +iaGameState);
     console.log(iaGameState);
     console.log("MapReverse: ");
