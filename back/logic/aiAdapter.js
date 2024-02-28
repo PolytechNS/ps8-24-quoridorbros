@@ -2,10 +2,10 @@ const { BoardUtils } = require("../../front/js/utils");
 const { GameBoard } = require("../../front/js/game");
 /*
 
-Transforme le gameState de l'ia en gameState du moteur de jeu
+Transforme le gameState de Vella en gameState du moteur de jeu
 
 */
-function Map(iaGameState){
+function fromVellaToOurGameState(iaGameState){
     let gameGameState = {
         turnOf: null,
         player: {   //player1
@@ -67,7 +67,7 @@ function Map(iaGameState){
 
 /*
 
-Transforme une position de mur IA en position de mur moteur de jeu
+Transforme une position de mur Vella en position de mur moteur de jeu
 
 */
 
@@ -80,10 +80,10 @@ function parseWallPosition(positionString) {
 
 /*
 
-Transforme le gameState du moteur de jeu en gameState de l'ia 
+Transforme le gameState du moteur de jeu en gameState de Vella 
 
 */
-function MapReverse(gameGameState) {
+function fromOurToVellaGameState(gameGameState) {
     let iaGameState = {
         opponentWalls: [],
         ownWalls: [],
@@ -140,7 +140,7 @@ function initializeIaBoard() {
 
 /*
 
-Transforme une position de mur moteur de jeu en position de mur IA en 
+Transforme une position de mur moteur de jeu en position de mur Vella 
 
 */
 function getWallInfo(x, y, board) {
@@ -165,9 +165,9 @@ function getWallInfo(x, y, board) {
 }
 
 module.exports = {
-    Map,
+    fromVellaToOurGameState,
     parseWallPosition,
-    MapReverse,
+    fromOurToVellaGameState,
     initializeIaBoard,
     getWallInfo
 };
