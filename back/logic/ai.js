@@ -1,6 +1,11 @@
 const { BoardUtils } = require("../../front/js/utils");
-const { Map, parseWallPosition, MapReverse, initializeIaBoard, getWallInfo } = require('./aiAdapter.js');
-
+const {
+  fromVellaToOurGameState,
+  parseWallPosition,
+  fromOurToVellaGameState,
+  initializeIaBoard,
+  getWallInfo,
+} = require("./aiAdapter.js");
 
 // This function doesn't handle walls.
 class Ai {
@@ -11,14 +16,6 @@ class Ai {
 
   updateGameState(gameState) {
     this.gameState = gameState;
-    let iaGameState = MapReverse(this.gameState);
-    let newgameState = Map(iaGameState);/*
-    console.log("Map: " +iaGameState);
-    console.log(iaGameState);
-    console.log("MapReverse: ");
-    console.log(newgameState);
-    console.log("this.gamesate: " +this.gameState);
-    console.log(this.gameState);*/
   }
 
   arrayContainsArray(superset, subset) {
@@ -32,11 +29,11 @@ class Ai {
   enqueueIfValid(queue, gameBoard, position, distance) {
     const [y, x] = position;
     if (
-        y >= 0 &&
-        y < gameBoard.length &&
-        x >= 0 &&
-        x < gameBoard[0].length &&
-        gameBoard[y][x] === null
+      y >= 0 &&
+      y < gameBoard.length &&
+      x >= 0 &&
+      x < gameBoard[0].length &&
+      gameBoard[y][x] === null
     ) {
       queue.push([y, x, distance]);
     }
@@ -53,14 +50,14 @@ class Ai {
       const y = current[0];
       const distance = current[2];
       if (
-          (y === 0 && player.playerNumber === 1) ||
-          (y === gameBoard.length - 1 && player.playerNumber === 2)
+        (y === 0 && player.playerNumber === 1) ||
+        (y === gameBoard.length - 1 && player.playerNumber === 2)
       ) {
         return distance;
       }
       if (
-          this.arrayContainsArray(visited, [y, x]) ||
-          queue.some(([queueY, queueX]) => queueY === y && queueX === x)
+        this.arrayContainsArray(visited, [y, x]) ||
+        queue.some(([queueY, queueX]) => queueY === y && queueX === x)
       ) {
         continue;
       }
@@ -78,8 +75,15 @@ class Ai {
     let shortestPath = Infinity;
 
     for (const move of possibleMoves) {
-      const simulatedPlayer = { x: move.x, y: move.y, playerNumber: this.gameState.player.playerNumber };
-      let distance = this.computeDistanceOfShortestPath(this.gameState.board, simulatedPlayer);
+      const simulatedPlayer = {
+        x: move.x,
+        y: move.y,
+        playerNumber: this.gameState.player.playerNumber,
+      };
+      let distance = this.computeDistanceOfShortestPath(
+        this.gameState.board,
+        simulatedPlayer
+      );
       if (distance < shortestPath) {
         shortestPath = distance;
         bestMove = move;
@@ -94,9 +98,9 @@ class Ai {
       return { x: randomX, y: 0 };
     }
     let possibleMoves = BoardUtils.getReachableCells(
-        this.gameState.player,
-        this.gameState.otherPlayer,
-        this.gameState.board
+      this.gameState.player,
+      this.gameState.otherPlayer,
+      this.gameState.board
     );
 
     let bestMove = this.findShortestPathMove(possibleMoves);

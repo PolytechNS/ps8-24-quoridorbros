@@ -5,64 +5,61 @@ const { GameBoard } = require("../../front/js/game");
 Transforme le gameState de Vella en gameState du moteur de jeu
 
 */
-function fromVellaToOurGameState(iaGameState){
-    let gameGameState = {
-        turnOf: null,
-        player: {   //player1
-            x: null,
-            y: null,
-            playerNumber: 1,
-            walls: iaGameState.ownWalls.length
-        },
-        otherPlayer: {  //player2
-            x: null,
-            y: null,
-            playerNumber: 2,
-            walls: iaGameState.opponentWalls.length
-        },
-        board: null
-    };
+function fromVellaToOurGameState(iaGameState, playerNumber) {
+  let otherPlayerNumber = BoardUtils.getOtherPlayerNumber(playerNumber);
+  let ourGameState = {
+    turnOf: playerNumber,
+    player: {
+      //player1
+      x: null,
+      y: null,
+      playerNumber: playerNumber,
+      nbWalls: 10 - iaGameState.ownWalls.length,
+    },
+    otherPlayer: {
+      //player2
+      x: null,
+      y: null,
+      playerNumber: otherPlayerNumber,
+      nbWalls: 10 - iaGameState.opponentWalls.length,
+    },
+    board: null,
+  };
 
-    let gameBoard = new GameBoard();
+  let gameBoard = new GameBoard();
 
-    iaGameState.ownWalls.forEach(wall => {
-        let position = parseWallPosition(wall[0]);
-        console.log("Position wall");
-        console.log(position);
-        gameBoard.placeWall(position.x, position.y, 1);
-    });
+  iaGameState.ownWalls.forEach((wall) => {
+    let position = parseWallPosition(wall);
+    gameBoard.placeWall(position.x, position.y, playerNumber);
+  });
 
-    iaGameState.opponentWalls.forEach(wall => {
-        let position = parseWallPosition(wall[0]);
-        console.log("Position wall");
-        console.log(position);
-        gameBoard.placeWall(position.x, position.y, 2);
-    });
+  iaGameState.opponentWalls.forEach((wall) => {
+    let position = parseWallPosition(wall);
+    gameBoard.placeWall(position.x, position.y, otherPlayerNumber);
+  });
 
-    for (let i = 0; i < iaGameState.board.length; i++) {
-        for (let j = 0; j < iaGameState.board[i].length; j++) {
-            let cellValue = iaGameState.board[i][j];
-            if (cellValue === 1) {
-                gameGameState.player.x = j * 2;
-                gameGameState.player.y = i * 2;
-                gameBoard.board[i*2][j*2]=BoardUtils.PLAYER_ONE;
-            } else if (cellValue === 2) {
-                gameGameState.otherPlayer.x = j * 2;
-                gameGameState.otherPlayer.y = i * 2;
-                gameBoard.board[i*2][j*2]=BoardUtils.PLAYER_TWO;
-            }
-            else if (cellValue === -1) {
-                gameBoard.board[i*2][j*2]=BoardUtils.FOG;
-            }
-            else if (cellValue === 0) {
-                gameBoard.board[i*2][j*2]=BoardUtils.EMPTY;
-            }
-        }
+  for (let i = 0; i < iaGameState.board.length; i++) {
+    for (let j = 0; j < iaGameState.board[i].length; j++) {
+      let cellValue = iaGameState.board[i][j];
+      if (cellValue === playerNumber) {
+        ourGameState.player.x = j * 2;
+        ourGameState.player.y = i * 2;
+        gameBoard.board[i * 2][j * 2] = playerNumber;
+      } else if (cellValue === otherPlayerNumber) {
+        ourGameState.otherPlayer.x = j * 2;
+        ourGameState.otherPlayer.y = i * 2;
+        gameBoard.board[i * 2][j * 2] = otherPlayerNumber;
+      } else if (cellValue === -1) {
+        gameBoard.board[i * 2][j * 2] = BoardUtils.FOG;
+      } else if (cellValue === 0) {
+        gameBoard.board[i * 2][j * 2] = BoardUtils.EMPTY;
+      }
     }
+  }
 
-    gameGameState.board = gameBoard.board;
+  ourGameState.board = gameBoard.board;
 
-    return gameGameState;
+  return ourGameState;
 }
 
 /*
@@ -71,11 +68,18 @@ Transforme une position de mur Vella en position de mur moteur de jeu
 
 */
 
-function parseWallPosition(positionString) {
-    let [xStr, yStr] = positionString.split(',');
-    let x = parseInt(xStr) * 2-1;
-    let y = parseInt(yStr) * 2-1;
-    return { x, y };
+function parseWallPosition(wall) {
+  let [xStr, yStr] = wall[0].split(",");
+  let x = parseInt(xStr) * 2 + 1;
+  let y = parseInt(yStr) * 2 + 1;
+
+  //si le mur est horizontal
+  if (wall[1] === 0) {
+    x--;
+  } else {
+    y--;
+  }
+  return { x, y };
 }
 
 /*
@@ -83,59 +87,68 @@ function parseWallPosition(positionString) {
 Transforme le gameState du moteur de jeu en gameState de Vella 
 
 */
-function fromOurToVellaGameState(gameGameState) {
-    let iaGameState = {
-        opponentWalls: [],
-        ownWalls: [],
-        board: initializeIaBoard()
-    };
+function fromOurToVellaGameState(ourGameState, playerNumber) {
+  let otherPlayerNumber = BoardUtils.getOtherPlayerNumber(playerNumber);
+  let iaGameState = {
+    opponentWalls: [],
+    ownWalls: [],
+    board: initializeIaBoard(),
+  };
 
-    for (let y = 0; y < 17; y++) {
-        for (let x = 0; x < 17; x++) {
-            if (BoardUtils.isWall(x, y)) {
-                let wallInfo = getWallInfo(x, y, gameGameState.board);
-                if (wallInfo) {
-                    if (wallInfo.playerNumber === 1) {
-                        iaGameState.ownWalls.push(wallInfo.wallPosition);
-                    } else if (wallInfo.playerNumber === 2) {
-                        iaGameState.opponentWalls.push(wallInfo.wallPosition);
-                    }
-                }
-            }
+  let visited = [];
+
+  for (let y = 0; y < 17; y++) {
+    for (let x = 0; x < 17; x++) {
+      if (
+        (x % 2 === 1 || y % 2 === 1) &&
+        !(x % 2 === 1 && y % 2 === 1) &&
+        ourGameState.board[y][x] !== null
+      ) {
+        if (!visited.some((coord) => coord[0] === x && coord[1] === y)) {
+          let nextWall = BoardUtils.getNextWall(x, y);
+          visited.push([nextWall.x, nextWall.y]);
+          let wallInfo = getWallInfo(x, y, ourGameState.board[y][x]);
+
+          if (wallInfo.playerNumber === playerNumber) {
+            iaGameState.ownWalls.push(wallInfo.wallPosition);
+          } else if (wallInfo.playerNumber === otherPlayerNumber) {
+            iaGameState.opponentWalls.push(wallInfo.wallPosition);
+          }
         }
+      }
     }
+  }
 
-    for (let i = 0; i < 9; i++) {
-        for (let j = 0; j < 9; j++) {
-            let cellContent = gameGameState.board[i * 2][j * 2];
-            switch (cellContent) {
-                case BoardUtils.EMPTY:
-                    iaGameState.board[i][j] = 0;
-                    break;
-                case BoardUtils.PLAYER_ONE:
-                    iaGameState.board[i][j] = 1;
-                    break;
-                case BoardUtils.PLAYER_TWO:
-                    iaGameState.board[i][j] = 2;
-                    break;
-                default:
-                    iaGameState.board[i][j] = -1;
-                    break;
-            }
-        }
+  for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
+      let cellContent = ourGameState.board[i * 2][j * 2];
+      switch (cellContent) {
+        case BoardUtils.EMPTY:
+          iaGameState.board[i][j] = 0;
+          break;
+        case BoardUtils.PLAYER_ONE:
+          iaGameState.board[i][j] = 1;
+          break;
+        case BoardUtils.PLAYER_TWO:
+          iaGameState.board[i][j] = 2;
+          break;
+        default:
+          iaGameState.board[i][j] = -1;
+          break;
+      }
     }
+  }
 
-    return iaGameState;
+  return iaGameState;
 }
 
-
 function initializeIaBoard() {
-    let board = [];
-    for (let i = 0; i < 9; i++) {
-        let row = new Array(9).fill(-1);
-        board.push(row);
-    }
-    return board;
+  let board = [];
+  for (let i = 0; i < 9; i++) {
+    let row = new Array(9).fill(-1);
+    board.push(row);
+  }
+  return board;
 }
 
 /*
@@ -143,31 +156,29 @@ function initializeIaBoard() {
 Transforme une position de mur moteur de jeu en position de mur Vella 
 
 */
-function getWallInfo(x, y, board) {
-    let playerNumber = null;
-    let orientation = BoardUtils.isHorizontalWall(x, y) ? 0 : 1;
-    let wallPosition = [Math.floor(x / 2), Math.floor(y / 2)];
 
-    if (board[y][x] === BoardUtils.WALL_PLAYER_ONE) {
-        playerNumber = BoardUtils.PLAYER_ONE;
-    } else if (board[y][x] === BoardUtils.WALL_PLAYER_TWO) {
-        playerNumber = BoardUtils.PLAYER_TWO;
-    }
+function getWallInfo(x, y, wallValue) {
+  if (wallValue === null) {
+    throw new Error("WallValue ne peut pas être nulle");
+  }
+  let orientation = BoardUtils.isHorizontalWall(x, y) ? 0 : 1;
+  let wallPosition = [Math.floor(x / 2), Math.floor(y / 2)];
 
-    if (playerNumber !== null) {
-        return {
-            playerNumber: playerNumber,
-            wallPosition: [wallPosition.join(','), orientation]
-        };
-    }
+  let playerNumber =
+    wallValue === BoardUtils.WALL_PLAYER_ONE
+      ? BoardUtils.PLAYER_ONE
+      : BoardUtils.PLAYER_TWO;
 
-    return null;
+  return {
+    playerNumber: playerNumber,
+    wallPosition: [wallPosition.join(","), orientation],
+  };
 }
 
 module.exports = {
-    fromVellaToOurGameState,
-    parseWallPosition,
-    fromOurToVellaGameState,
-    initializeIaBoard,
-    getWallInfo
+  fromVellaToOurGameState,
+  parseWallPosition,
+  fromOurToVellaGameState,
+  initializeIaBoard,
+  getWallInfo,
 };

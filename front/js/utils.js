@@ -16,18 +16,18 @@ class BoardUtils {
   }
 
   static isHorizontalWall(x, y) {
-    return this.isWall(x, y) && x % 2 !== 0;
+    return this.isWall(x, y) && x % 2 === 0;
   }
 
   static isVerticalWall(x, y) {
-    return this.isWall(x, y) && y % 2 !== 0;
+    return this.isWall(x, y) && y % 2 === 0;
   }
 
   static getWallJunction(x, y) {
     if (this.isHorizontalWall(x, y)) {
-      return { x: x, y: y + 1 };
-    } else if (this.isVerticalWall(x, y)) {
       return { x: x + 1, y: y };
+    } else if (this.isVerticalWall(x, y)) {
+      return { x: x, y: y + 1 };
     } else {
       console.log("error: this wall is not horizontal nor vertical");
       return;
@@ -36,9 +36,9 @@ class BoardUtils {
 
   static getNextWall(x, y) {
     if (this.isHorizontalWall(x, y)) {
-      return { x: x, y: y + 2 };
+      return { x: x + 2, y: y };
     }
-    return { x: x + 2, y: y };
+    return { x: x, y: y + 2 };
   }
 
   static isAdjacentCells(x1, y1, x2, y2) {
@@ -200,6 +200,12 @@ class BoardUtils {
     }
     */
     return jumpableCells;
+  }
+
+  static getOtherPlayerNumber(playerNumber) {
+    return playerNumber === BoardUtils.PLAYER_ONE
+      ? BoardUtils.PLAYER_TWO
+      : BoardUtils.PLAYER_ONE;
   }
 }
 

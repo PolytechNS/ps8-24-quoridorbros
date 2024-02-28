@@ -11,6 +11,7 @@ if (typeof exports === "object" && exports) {
  *      Mur non posé : null
  *      Posé par joueur 1 : 1
  *      Posé par joueur 2 : 2
+ *
  */
 class GameBoard {
   constructor(savedBoard) {
@@ -339,8 +340,7 @@ class Game {
     }
     let junction = BoardUtils.getWallJunction(x, y);
     console.log(this.gameBoard.board[junction.y][junction.x]);
-    if (this.gameBoard.board[junction.y][junction.x]!=null)
-      return false;
+    if (this.gameBoard.board[junction.y][junction.x] != null) return false;
     this.gameBoard.board[y][x] = -1 * player.playerNumber;
     let nextWall = BoardUtils.getNextWall(x, y);
     this.gameBoard.board[nextWall.y][nextWall.x] = -1 * player.playerNumber;
@@ -372,24 +372,26 @@ class Game {
       }
     }
 
-    //Afficher le joueur adverse si il est visible ou si il est adjacent à nous
     let otherPlayer = this.getOtherPlayer(player);
-    if (player.x !== null && otherPlayer.x !== null) {
+    if (player.x !== null) {
+      //Afficher notre joueur
+      resultTab[player.y][player.x] = player.playerNumber;
+
+      //Afficher le joueur adverse si il est visible ou si il est adjacent à nous
       if (
-        resultTab[otherPlayer.y][otherPlayer.x] != BoardUtils.FOG ||
-        BoardUtils.isAdjacentCells(
-          player.x,
-          player.y,
-          otherPlayer.x,
-          otherPlayer.y
-        )
+        otherPlayer.x !== null &&
+        (resultTab[otherPlayer.y][otherPlayer.x] != BoardUtils.FOG ||
+          BoardUtils.isAdjacentCells(
+            player.x,
+            player.y,
+            otherPlayer.x,
+            otherPlayer.y
+          ))
       ) {
         resultTab[otherPlayer.y][otherPlayer.x] = otherPlayer.playerNumber;
       }
-
-      //Afficher notre joueur
-      resultTab[player.y][player.x] = player.playerNumber;
     }
+
     return resultTab;
   }
 
@@ -410,7 +412,7 @@ class Game {
   generateClientGameState(player) {
     let otherPlayer = Object.assign({}, this.getOtherPlayer(player));
     let clientBoardTab = this.generateClientBoardTab(player);
-    if (player.x !== null && otherPlayer.x !== null) {
+    if (otherPlayer.x !== null) {
       if (
         clientBoardTab[otherPlayer.y][otherPlayer.x] !==
         otherPlayer.playerNumber
