@@ -5,6 +5,8 @@ const { saveGameState, loadGameState } = require("../mongoDB/mongoManager.js");
 const {
   fromVellaToOurGameState,
   fromOurToVellaGameState,
+  fromOurToVellaMove,
+  fromVellaToOurMove,
 } = require("./aiAdapter.js");
 
 class GameManager {
@@ -50,6 +52,7 @@ class GameManager {
   }
 
   movePlayer1(move) {
+    this.transformMoves(move);
     if (this.isGameFinished) return;
     if (BoardUtils.isWall(move.x, move.y)) {
       this.game.onWallClick(move.x, move.y);
@@ -60,6 +63,7 @@ class GameManager {
   movePlayer2() {
     if (this.isGameFinished) return;
     const move = this.ai.computeMove();
+    this.transformMoves(move);
     if (BoardUtils.isWall(move.x, move.y)) {
       console.log("x: ", move.x, "y: ", move.y);
       this.game.onWallClick(move.x, move.y);
@@ -82,6 +86,22 @@ class GameManager {
     console.log(findDifferences(gameState, ourGameState), "\n");
 
     return ourGameState;
+  }
+
+  transformMoves(move) {
+    console.log("move :");
+    console.log(move, "\n");
+    let vellaMove = fromOurToVellaMove(move.x, move.y);
+    console.log("vellaMove: ");
+    console.log(vellaMove, "\n");
+
+    let ourMove = fromVellaToOurMove(vellaMove);
+    console.log("ourMove: ");
+    console.log(ourMove, "\n");
+    console.log("differences:");
+    console.log(findDifferences([move.x, move.y], ourMove), "\n");
+
+    return ourMove;
   }
 
   async saveGame(userToken) {

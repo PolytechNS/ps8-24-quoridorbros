@@ -29,13 +29,13 @@ function fromVellaToOurGameState(iaGameState, playerNumber) {
   let gameBoard = new GameBoard();
 
   iaGameState.ownWalls.forEach((wall) => {
-    let position = parseWallPosition(wall);
-    gameBoard.placeWall(position.x, position.y, playerNumber);
+    let position = fromVellaToOurWall(wall);
+    gameBoard.placeWall(position[0], position[1], playerNumber);
   });
 
   iaGameState.opponentWalls.forEach((wall) => {
-    let position = parseWallPosition(wall);
-    gameBoard.placeWall(position.x, position.y, otherPlayerNumber);
+    let position = fromVellaToOurWall(wall);
+    gameBoard.placeWall(position[0], position[1], otherPlayerNumber);
   });
 
   for (let i = 0; i < iaGameState.board.length; i++) {
@@ -60,26 +60,6 @@ function fromVellaToOurGameState(iaGameState, playerNumber) {
   ourGameState.board = gameBoard.board;
 
   return ourGameState;
-}
-
-/*
-
-Transforme une position de mur Vella en position de mur moteur de jeu
-
-*/
-
-function parseWallPosition(wall) {
-  let [xStr, yStr] = wall[0].split(",");
-  let x = parseInt(xStr) * 2 + 1;
-  let y = parseInt(yStr) * 2 + 1;
-
-  //si le mur est horizontal
-  if (wall[1] === 0) {
-    x--;
-  } else {
-    y--;
-  }
-  return { x, y };
 }
 
 /*
@@ -175,10 +155,67 @@ function getWallInfo(x, y, wallValue) {
   };
 }
 
+function fromOurToVellaMove(x, y) {
+  if (BoardUtils.isCell(x, y)) {
+    return { action: "move", value: fromOurToVellaCell(x, y) };
+  } else {
+    //the upper left position
+    const wallInfo = getWallInfo(x, y, -1);
+
+    return {
+      action: "wall",
+      value: [wallInfo.wallPosition[0], wallInfo.wallPosition[1]],
+    };
+  }
+}
+
+function fromVellaToOurMove(vellaMove) {
+  if (vellaMove.action === "move") {
+    return fromVellaToOurCell(vellaMove.value);
+  } else if (vellaMove.action === "wall") {
+    return fromVellaToOurWall(vellaMove.value);
+  } else throw new Error("Ce type de move n'existe pas");
+}
+
+function fromOurToVellaCell(x, y) {
+  return (x / 2).toString() + "," + (y / 2).toString();
+}
+
+function fromVellaToOurCell(cell) {
+  const parts = cell.split(",");
+
+  const x = parseInt(parts[0], 10) * 2;
+  const y = parseInt(parts[1], 10) * 2;
+
+  return [x, y];
+}
+
+/*
+
+Transforme une position de mur Vella en position de mur moteur de jeu
+
+*/
+
+function fromVellaToOurWall(wall) {
+  let [xStr, yStr] = wall[0].split(",");
+  let x = parseInt(xStr) * 2 + 1;
+  let y = parseInt(yStr) * 2 + 1;
+
+  //si le mur est horizontal
+  if (wall[1] === 0) {
+    x--;
+  } else {
+    y--;
+  }
+  return [x, y];
+}
+
 module.exports = {
   fromVellaToOurGameState,
-  parseWallPosition,
+  fromVellaToOurWall,
   fromOurToVellaGameState,
   initializeIaBoard,
   getWallInfo,
+  fromOurToVellaMove,
+  fromVellaToOurMove,
 };
