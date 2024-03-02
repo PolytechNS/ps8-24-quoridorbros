@@ -18,7 +18,7 @@ const {
   nextMove,
   correction,
   updateBoard,
-} = require("./quoridorbros-mcts.js");
+} = require("./quoridorbros.js");
 
 class GameManager {
   constructor(socketManager, userToken) {

@@ -212,6 +212,27 @@ function fromVellaToOurWall(wall) {
   return [x, y];
 }
 
+function cloneAndApplyMove(gameState, x, y) {
+  let gameStateCopy = JSON.parse(JSON.stringify(gameState));
+
+  if (BoardUtils.isCell(x, y)) {
+    gameStateCopy.board[gameStateCopy.player.y][gameStateCopy.player.x] =
+      BoardUtils.EMPTY;
+    gameStateCopy.board[y][x] = gameStateCopy.player.playerNumber;
+    gameStateCopy.player.x = x;
+    gameStateCopy.player.y = y;
+  } else {
+    const nextWall = BoardUtils.getNextWall(x, y);
+    const junction = BoardUtils.getWallJunction(x, y);
+    const wallValue = -1 * gameStateCopy.player.playerNumber;
+    gameStateCopy.board[y][x] = wallValue;
+    gameStateCopy.board[nextWall.y][nextWall.x] = wallValue;
+    gameStateCopy.board[junction.y][junction.x] = wallValue;
+    gameStateCopy.player.nbWalls--;
+  }
+  return gameStateCopy;
+}
+
 module.exports = {
   fromVellaToOurGameState,
   fromVellaToOurWall,
@@ -220,4 +241,5 @@ module.exports = {
   getWallInfo,
   fromOurToVellaMove,
   fromVellaToOurMove,
+  cloneAndApplyMove,
 };

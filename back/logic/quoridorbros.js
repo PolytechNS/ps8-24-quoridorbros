@@ -4,7 +4,15 @@ const {
   fromOurToVellaGameState,
   fromOurToVellaMove,
   fromVellaToOurMove,
+  cloneAndApplyMove,
 } = require("./aiAdapter.js");
+
+const {
+  deltaDistanceHeuristic,
+  deltaWallsHeuristic,
+} = require("./heuristics.js");
+
+const { BoardUtils } = require("../../front/js/utils.js");
 
 let numPlayer;
 let goal_line;
@@ -35,6 +43,47 @@ async function setup(AIplay) {
 async function nextMove(vellaGameState) {
   return new Promise((resolve) => {
     const gameState = fromVellaToOurGameState(vellaGameState, numPlayer);
+    if (gameState.otherPlayer.x !== null && gameState.player.nbWalls > 0) {
+      const deltaDistance = deltaDistanceHeuristic(gameState);
+      if (deltaDistance <= 0) {
+        const wallMoves = BoardUtils.getWallMoves(gameState);
+
+        let bestMove = null;
+        let maxHeuristicValue = -Infinity;
+
+        // Iterate through all wall moves
+        for (const wallMove of wallMoves) {
+          // Create a copy of the gameState with the current wall move applied
+          const newGameState = cloneAndApplyMove(
+            gameState,
+            wallMove[0],
+            wallMove[1]
+          );
+
+          // Calculate the delta distance heuristic for the new gameState
+          const heuristicValue = deltaDistanceHeuristic(newGameState);
+
+          // Update the best move if the current move has a higher heuristic value
+          if (heuristicValue > maxHeuristicValue) {
+            bestMove = wallMove;
+            maxHeuristicValue = heuristicValue;
+            console.log("newbestMove");
+            console.log(bestMove);
+            console.log("newheuristicValue");
+            console.log(maxHeuristicValue);
+          }
+        }
+
+        console.log("finalbestMove");
+        console.log(bestMove);
+
+        if (bestMove !== null && bestMove !== undefined) {
+          const vellaMove = fromOurToVellaMove(bestMove[0], bestMove[1]);
+          resolve(vellaMove);
+          return;
+        }
+      }
+    }
     const ourMove = calculateBestMove(gameState);
     const vellaMove = fromOurToVellaMove(ourMove.x, ourMove.y);
     resolve(vellaMove);
@@ -55,6 +104,8 @@ function calculateBestMove(gameState) {
 
   return bestMove[0];
 }
+
+function getWallMove(gameState) {}
 
 async function correction(rightMove) {
   return new Promise((resolve, reject) => {

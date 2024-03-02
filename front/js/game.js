@@ -315,9 +315,12 @@ class Game {
     }
     this.gameBoard.placeWall(x, y, this.currentPlayer.playerNumber);
     this.currentPlayer.nbWalls--;
+
+    console.log("Wall clicked:");
+    console.log("x:", x);
+    console.log("y:", y);
     this.nextTurn();
 
-    console.log("Wall clicked:", x, y);
     // Logique du jeu basée sur le clic sur une cellule
   }
 
@@ -338,11 +341,9 @@ class Game {
     if (this.currentPlayer.nbWalls <= 0) {
       return false;
     }
-    let junction = BoardUtils.getWallJunction(x, y);
-    console.log(this.gameBoard.board[junction.y][junction.x]);
-    if (this.gameBoard.board[junction.y][junction.x] != null) return false;
-    this.gameBoard.board[y][x] = -1 * player.playerNumber;
+
     let nextWall = BoardUtils.getNextWall(x, y);
+    this.gameBoard.board[y][x] = -1 * player.playerNumber;
     this.gameBoard.board[nextWall.y][nextWall.x] = -1 * player.playerNumber;
     if (!PathFinding.checkPathPlayers(this.gameBoard.board, this.players)) {
       this.gameBoard.board[y][x] = null;
