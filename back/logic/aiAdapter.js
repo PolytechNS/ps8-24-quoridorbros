@@ -171,9 +171,11 @@ function fromOurToVellaMove(x, y) {
 
 function fromVellaToOurMove(vellaMove) {
   if (vellaMove.action === "move") {
-    return fromVellaToOurCell(vellaMove.value);
+    const ourMove = fromVellaToOurCell(vellaMove.value);
+    return { x: ourMove[0], y: ourMove[1] };
   } else if (vellaMove.action === "wall") {
-    return fromVellaToOurWall(vellaMove.value);
+    const ourMove = fromVellaToOurWall(vellaMove.value);
+    return { x: ourMove[0], y: ourMove[1] };
   } else throw new Error("Ce type de move n'existe pas");
 }
 

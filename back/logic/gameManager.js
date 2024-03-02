@@ -1,6 +1,5 @@
 const { BoardUtils } = require("../../front/js/utils.js");
 const { Game } = require("../../front/js/game.js");
-const { Ai } = require("./ai.js");
 const { saveGameState, loadGameState } = require("../mongoDB/mongoManager.js");
 const {
   fromVellaToOurGameState,
@@ -9,10 +8,16 @@ const {
   fromVellaToOurMove,
 } = require("./aiAdapter.js");
 
+const {
+  setup,
+  nextMove,
+  correction,
+  updateBoard,
+} = require("./quoridorbros.js");
+
 class GameManager {
   constructor(socketManager, userToken) {
     this.socketManager = socketManager;
-    this.ai = new Ai();
     this.isGameFinished = false;
     const initializeGame = async () => {
       if (userToken) {
@@ -22,6 +27,7 @@ class GameManager {
         this.game = new Game(this);
       }
     };
+    this.isFirstTurn = true;
 
     // Call the async function
     initializeGame();
@@ -34,16 +40,14 @@ class GameManager {
 
   updateGameStatePlayer1(gameState) {
     if (gameState.turnOf === 1) {
-      let ourGameState = this.transformGameState(gameState, 1);
+      this.transformGameState(gameState, 1);
     }
 
     this.socketManager.updateClientBoard(gameState);
   }
   updateGameStatePlayer2(gameState) {
-    this.ai.updateGameState(gameState);
     if (gameState.turnOf === 2) {
-      let ourGameState = this.transformGameState(gameState, 2);
-      this.movePlayer2();
+      this.movePlayer2(gameState);
     }
   }
   playerWon(playerNumber) {
@@ -60,15 +64,27 @@ class GameManager {
       this.game.onCellClick(move.x, move.y);
     }
   }
-  movePlayer2() {
+  async movePlayer2(gameState) {
     if (this.isGameFinished) return;
-    const move = this.ai.computeMove();
-    this.transformMoves(move);
-    if (BoardUtils.isWall(move.x, move.y)) {
-      console.log("x: ", move.x, "y: ", move.y);
-      this.game.onWallClick(move.x, move.y);
+
+    this.transformGameState(gameState, 2);
+
+    const vellaGameState = fromOurToVellaGameState(gameState, 2);
+
+    if (this.isFirstTurn) {
+      this.isFirstTurn = false;
+      const vellaMove = await setup(2);
+      const ourMove = fromVellaToOurMove(vellaMove);
+      this.game.onCellClick(ourMove.x, ourMove.y);
     } else {
-      this.game.onCellClick(move.x, move.y);
+      const vellaMove = await nextMove(vellaGameState);
+      const ourMove = fromVellaToOurMove(vellaMove);
+
+      if (BoardUtils.isWall(ourMove.x, ourMove.y)) {
+        this.game.onWallClick(ourMove.x, ourMove.y);
+      } else {
+        this.game.onCellClick(ourMove.x, ourMove.y);
+      }
     }
   }
 
@@ -82,24 +98,24 @@ class GameManager {
     let ourGameState = fromVellaToOurGameState(vellaGameState, playerNumber);
     /*console.log("ourGameState: ");
     console.log(ourGameState, "\n");*/
-    console.log("differences:");
-    console.log(findDifferences(gameState, ourGameState), "\n");
+    /*console.log("differences:");
+    console.log(findDifferences(gameState, ourGameState), "\n");*/
 
     return ourGameState;
   }
 
   transformMoves(move) {
-    console.log("move :");
-    console.log(move, "\n");
+    /*console.log("move :");
+    console.log(move, "\n");*/
     let vellaMove = fromOurToVellaMove(move.x, move.y);
-    console.log("vellaMove: ");
-    console.log(vellaMove, "\n");
+    /*console.log("vellaMove: ");
+    console.log(vellaMove, "\n");*/
 
     let ourMove = fromVellaToOurMove(vellaMove);
-    console.log("ourMove: ");
+    /*console.log("ourMove: ");
     console.log(ourMove, "\n");
     console.log("differences:");
-    console.log(findDifferences([move.x, move.y], ourMove), "\n");
+    console.log(findDifferences([move.x, move.y], ourMove), "\n");*/
 
     return ourMove;
   }

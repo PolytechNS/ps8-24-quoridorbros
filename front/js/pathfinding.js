@@ -1,3 +1,77 @@
+function findShortestPathMove(possibleMoves, board, playerNumber) {
+  let bestMove = possibleMoves[0];
+  let shortestPath = Infinity;
+
+  for (const move of possibleMoves) {
+    const simulatedPlayer = {
+      x: move.x,
+      y: move.y,
+      playerNumber: playerNumber,
+    };
+    let distance = computeDistanceOfShortestPath(board, simulatedPlayer);
+    console.log(simulatedPlayer.x, simulatedPlayer.y, "distance: ", distance);
+    if (distance < shortestPath) {
+      shortestPath = distance;
+      bestMove = move;
+    }
+  }
+
+  return [bestMove, shortestPath];
+}
+
+function arrayContainsArray(superset, subset) {
+  for (var i = 0; i < superset.length; i++) {
+    if (superset[i][0] === subset[0] && superset[i][1] === subset[1]) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function computeDistanceOfShortestPath(gameBoard, player) {
+  var queue = [];
+  var visited = [];
+  var position = [player.y, player.x, 0];
+  queue.push(position);
+  while (queue.length > 0) {
+    let current = queue.shift();
+    let x = current[1];
+    let y = current[0];
+    let distance = current[2];
+    if (
+      (y === 0 && player.playerNumber === 1) ||
+      (y === 16 && player.playerNumber === 2)
+    ) {
+      return distance;
+    }
+    if (arrayContainsArray(visited, current) || queue.includes(current)) {
+      continue;
+    }
+    visited.push(current);
+    if (y + 2 <= 16 && gameBoard[y + 1][x] === null) {
+      if (!arrayContainsArray(visited, [y + 2, x])) {
+        queue.push([y + 2, x, distance + 1]);
+      }
+    }
+    if (y - 2 > -1 && gameBoard[y - 1][x] === null) {
+      if (!arrayContainsArray(visited, [y - 2, x])) {
+        queue.push([y - 2, x, distance + 1]);
+      }
+    }
+    if (x + 2 <= 16 && gameBoard[y][x + 1] === null) {
+      if (!arrayContainsArray(visited, [y, x + 2])) {
+        queue.push([y, x + 2, distance + 1]);
+      }
+    }
+    if (x - 2 > -1 && gameBoard[y][x - 1] === null) {
+      if (!arrayContainsArray(visited, [y, x - 2])) {
+        queue.push([y, x - 2, distance + 1]);
+      }
+    }
+  }
+  return 81;
+}
+
 class PathFinding {
   static checkPathPlayers(gameBoard, players) {
     let possible = false;
@@ -65,44 +139,9 @@ class PathFinding {
     }
     return false;
   }
-
-  static testPathfinding() {
-    let gameBoard = [];
-    let initialValue = 0;
-    for (let y = 0; y < 17; y++) {
-      gameBoard[y] = []; // initialise le sous tableau
-      for (let x = 0; x < 17; x++) {
-        if (x % 2 === 0 && y % 2 === 0) {
-          initialValue = 0;
-          if (y < 8) {
-            initialValue = -1;
-          } else if (y > 8) {
-            initialValue = 1;
-          }
-          gameBoard[y][x] = initialValue;
-        } else {
-          gameBoard[y][x] = null;
-        }
-      }
-    }
-    var player1 = { x: 8, y: 16, playerNumber: 1 };
-    var player2 = { x: 8, y: 0, playerNumber: 2 };
-
-    console.log(this.checkPathPlayers(gameBoard, [player1, player2]));
-    for (let i = 0; i < 17; i++) {
-      gameBoard[9][i] = 1;
-    }
-    console.log(this.checkPathPlayers(gameBoard, [player1, player2]));
-    gameBoard[9][12] = null;
-    for (let j = 9; j < 17; j++) {
-      gameBoard[j][11] = 1;
-      gameBoard[j][13] = 1;
-    }
-    console.log(this.checkPathPlayers(gameBoard, [player1, player2]));
-    //call this for testing
-  }
 }
 
 if (typeof exports === "object" && exports) {
   exports.PathFinding = PathFinding;
+  exports.findShortestPathMove = findShortestPathMove;
 }
