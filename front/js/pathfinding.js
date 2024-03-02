@@ -9,7 +9,7 @@ function findShortestPathMove(possibleMoves, board, playerNumber) {
       playerNumber: playerNumber,
     };
     let distance = computeDistanceOfShortestPath(board, simulatedPlayer);
-    console.log(simulatedPlayer.x, simulatedPlayer.y, "distance: ", distance);
+    //console.log(simulatedPlayer.x, simulatedPlayer.y, "distance: ", distance);
     if (distance < shortestPath) {
       shortestPath = distance;
       bestMove = move;
@@ -42,7 +42,7 @@ function computeDistanceOfShortestPath(gameBoard, player) {
       (y === 0 && player.playerNumber === 1) ||
       (y === 16 && player.playerNumber === 2)
     ) {
-      return distance;
+      return distance + 1;
     }
     if (arrayContainsArray(visited, current) || queue.includes(current)) {
       continue;

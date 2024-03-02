@@ -9,11 +9,16 @@ const {
 } = require("./aiAdapter.js");
 
 const {
+  deltaDistanceHeuristic,
+  deltaWallsHeuristic,
+} = require("./heuristics.js");
+
+const {
   setup,
   nextMove,
   correction,
   updateBoard,
-} = require("./quoridorbros.js");
+} = require("./quoridorbros-mcts.js");
 
 class GameManager {
   constructor(socketManager, userToken) {
@@ -41,6 +46,7 @@ class GameManager {
   updateGameStatePlayer1(gameState) {
     if (gameState.turnOf === 1) {
       this.transformGameState(gameState, 1);
+      //this.logHeuristicValues(gameState);
     }
 
     this.socketManager.updateClientBoard(gameState);
@@ -68,6 +74,7 @@ class GameManager {
     if (this.isGameFinished) return;
 
     this.transformGameState(gameState, 2);
+    //this.logHeuristicValues(gameState);
 
     const vellaGameState = fromOurToVellaGameState(gameState, 2);
 
@@ -85,6 +92,15 @@ class GameManager {
       } else {
         this.game.onCellClick(ourMove.x, ourMove.y);
       }
+    }
+  }
+
+  logHeuristicValues(gameState) {
+    if (gameState.otherPlayer.x !== null) {
+      console.log("delta distance :");
+      console.log(deltaDistanceHeuristic(gameState));
+      console.log("delta walls :");
+      console.log(deltaWallsHeuristic(gameState));
     }
   }
 
