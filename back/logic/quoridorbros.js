@@ -75,8 +75,16 @@ async function nextMove(vellaGameState) {
             gameState.board[y + 4][x] === wallOtherPlayer &&
             gameState.board[y + 8][x] === wallOtherPlayer
           ) {
-            colonneDetruite === true;
-            const vellaMove = fromOurToVellaMove(x - 1, y + 3);
+            colonneDetruite = true;
+            let vellaMove;
+            if (y === 0) {
+              vellaMove = fromOurToVellaMove(x - 1, 13);
+            } else if (y === 6) {
+              vellaMove = fromOurToVellaMove(x - 1, 3);
+            } else {
+              vellaMove = fromOurToVellaMove(x - 1, y + 3);
+            }
+
             resolve(vellaMove);
             return;
           }
