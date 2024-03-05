@@ -11,6 +11,7 @@ if (typeof exports === "object" && exports) {
  *      Mur non posé : null
  *      Posé par joueur 1 : 1
  *      Posé par joueur 2 : 2
+ *
  */
 class GameBoard {
   constructor(savedBoard) {
@@ -94,9 +95,10 @@ class GameBoard {
     this.board[y][x] = -1 * playerNumber;
     let nextWall = BoardUtils.getNextWall(x, y);
     this.board[nextWall.y][nextWall.x] = -1 * playerNumber;
+    let wallJunction = BoardUtils.getWallJunction(x, y);
+    this.board[wallJunction.y][wallJunction.x] = -1 * playerNumber;
 
     const valueToAdd = playerNumber === 1 ? 1 : -1;
-    let wallJunction = BoardUtils.getWallJunction(x, y);
     this.addVisibilityArroundJunction(
       wallJunction.x,
       wallJunction.y,
@@ -313,9 +315,12 @@ class Game {
     }
     this.gameBoard.placeWall(x, y, this.currentPlayer.playerNumber);
     this.currentPlayer.nbWalls--;
+
+    console.log(
+      `Joueur ${this.currentPlayer.playerNumber} pose un mur i ${x}, ${y}`
+    );
     this.nextTurn();
 
-    console.log("Wall clicked:", x, y);
     // Logique du jeu basée sur le clic sur une cellule
   }
 
@@ -336,8 +341,9 @@ class Game {
     if (this.currentPlayer.nbWalls <= 0) {
       return false;
     }
-    this.gameBoard.board[y][x] = -1 * player.playerNumber;
+
     let nextWall = BoardUtils.getNextWall(x, y);
+    this.gameBoard.board[y][x] = -1 * player.playerNumber;
     this.gameBoard.board[nextWall.y][nextWall.x] = -1 * player.playerNumber;
     if (!PathFinding.checkPathPlayers(this.gameBoard.board, this.players)) {
       this.gameBoard.board[y][x] = null;
@@ -367,24 +373,26 @@ class Game {
       }
     }
 
-    //Afficher le joueur adverse si il est visible ou si il est adjacent à nous
     let otherPlayer = this.getOtherPlayer(player);
-    if (player.x !== null && otherPlayer.x !== null) {
+    if (player.x !== null) {
+      //Afficher notre joueur
+      resultTab[player.y][player.x] = player.playerNumber;
+
+      //Afficher le joueur adverse si il est visible ou si il est adjacent à nous
       if (
-        resultTab[otherPlayer.y][otherPlayer.x] != BoardUtils.FOG ||
-        BoardUtils.isAdjacentCells(
-          player.x,
-          player.y,
-          otherPlayer.x,
-          otherPlayer.y
-        )
+        otherPlayer.x !== null &&
+        (resultTab[otherPlayer.y][otherPlayer.x] != BoardUtils.FOG ||
+          BoardUtils.isAdjacentCells(
+            player.x,
+            player.y,
+            otherPlayer.x,
+            otherPlayer.y
+          ))
       ) {
         resultTab[otherPlayer.y][otherPlayer.x] = otherPlayer.playerNumber;
       }
-
-      //Afficher notre joueur
-      resultTab[player.y][player.x] = player.playerNumber;
     }
+
     return resultTab;
   }
 
@@ -405,7 +413,7 @@ class Game {
   generateClientGameState(player) {
     let otherPlayer = Object.assign({}, this.getOtherPlayer(player));
     let clientBoardTab = this.generateClientBoardTab(player);
-    if (player.x !== null && otherPlayer.x !== null) {
+    if (otherPlayer.x !== null) {
       if (
         clientBoardTab[otherPlayer.y][otherPlayer.x] !==
         otherPlayer.playerNumber
@@ -436,4 +444,5 @@ class Game {
 
 if (typeof exports === "object" && exports) {
   exports.Game = Game;
+  exports.GameBoard = GameBoard;
 }

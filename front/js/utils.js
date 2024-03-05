@@ -16,18 +16,18 @@ class BoardUtils {
   }
 
   static isHorizontalWall(x, y) {
-    return this.isWall(x, y) && x % 2 !== 0;
+    return this.isWall(x, y) && x % 2 === 0;
   }
 
   static isVerticalWall(x, y) {
-    return this.isWall(x, y) && y % 2 !== 0;
+    return this.isWall(x, y) && y % 2 === 0;
   }
 
   static getWallJunction(x, y) {
     if (this.isHorizontalWall(x, y)) {
-      return { x: x, y: y + 1 };
-    } else if (this.isVerticalWall(x, y)) {
       return { x: x + 1, y: y };
+    } else if (this.isVerticalWall(x, y)) {
+      return { x: x, y: y + 1 };
     } else {
       console.log("error: this wall is not horizontal nor vertical");
       return;
@@ -36,9 +36,9 @@ class BoardUtils {
 
   static getNextWall(x, y) {
     if (this.isHorizontalWall(x, y)) {
-      return { x: x, y: y + 2 };
+      return { x: x + 2, y: y };
     }
-    return { x: x + 2, y: y };
+    return { x: x, y: y + 2 };
   }
 
   static isAdjacentCells(x1, y1, x2, y2) {
@@ -52,10 +52,12 @@ class BoardUtils {
   }
 
   static isWallAlreadyPlaced(x, y, board) {
-    let nextWall = this.getNextWall(x, y);
+    const nextWall = this.getNextWall(x, y);
+    const junction = BoardUtils.getWallJunction(x, y);
     return (
       this.isDemiWallAlreadyPlaced(x, y, board) ||
-      this.isDemiWallAlreadyPlaced(nextWall.x, nextWall.y, board)
+      this.isDemiWallAlreadyPlaced(nextWall.x, nextWall.y, board) ||
+      board[junction.y][junction.x] != null
     );
   }
 
@@ -201,6 +203,99 @@ class BoardUtils {
     */
     return jumpableCells;
   }
+
+  static getWallMoves(gameState) {
+    let wallMoves = [];
+    for (let y = 0; y < 16; y++) {
+      for (let x = 0; x < 16; x++) {
+        if (
+          (x % 2 === 1 || y % 2 === 1) &&
+          !(x % 2 === 1 && y % 2 === 1) &&
+          gameState.board[y][x] === null
+        ) {
+          wallMoves.push([x, y]);
+        }
+      }
+    }
+
+    const finalWallMoves = wallMoves.filter(([x, y]) =>
+      this.isValidWallMove(x, y, gameState)
+    );
+
+    return finalWallMoves;
+  }
+
+  static isValidWallMove(x, y, gameState) {
+    // Vérifie que le joueur n'a pas cliqué sur un des murs des extrémités
+    if (
+      x == BoardUtils.BOARD_SIZE * 2 - 2 ||
+      y == BoardUtils.BOARD_SIZE * 2 - 2
+    ) {
+      return false;
+    }
+
+    // Vérifie que le mur n'est pas déjà posé
+    if (BoardUtils.isWallAlreadyPlaced(x, y, gameState.board)) {
+      return false;
+    }
+
+    //Vérifie que le joueur a assez de murs
+    if (gameState.player.nbWalls <= 0) {
+      return false;
+    }
+    const junction = BoardUtils.getWallJunction(x, y);
+    const nextWall = BoardUtils.getNextWall(x, y);
+    const wallValue = -1 * gameState.player.playerNumber;
+    gameState.board[y][x] = wallValue;
+    gameState.board[junction.y][junction.x] = wallValue;
+    gameState.board[nextWall.y][nextWall.x] = wallValue;
+    if (
+      !PathFinding.checkPathPlayers(gameState.board, [
+        gameState.player,
+        gameState.otherPlayer,
+      ])
+    ) {
+      gameState.board[y][x] = null;
+      gameState.board[junction.y][junction.x] = null;
+      gameState.board[nextWall.y][nextWall.x] = null;
+      return false;
+    }
+    gameState.board[y][x] = null;
+    gameState.board[junction.y][junction.x] = null;
+    gameState.board[nextWall.y][nextWall.x] = null;
+    return true;
+  }
+
+  static getOtherPlayerNumber(playerNumber) {
+    return playerNumber === BoardUtils.PLAYER_ONE
+      ? BoardUtils.PLAYER_TWO
+      : BoardUtils.PLAYER_ONE;
+  }
+}
+
+function trouverDifférences(tableau1, tableau2) {
+  const différences = [];
+
+  // Vérifier les éléments dans le tableau1 qui ne sont pas présents dans le tableau2
+  tableau1.forEach((coordonnée) => {
+    if (!coordonnéePrésenteDansTableau(coordonnée, tableau2)) {
+      différences.push(coordonnée);
+    }
+  });
+
+  // Vérifier les éléments dans le tableau2 qui ne sont pas présents dans le tableau1
+  tableau2.forEach((coordonnée) => {
+    if (!coordonnéePrésenteDansTableau(coordonnée, tableau1)) {
+      différences.push(coordonnée);
+    }
+  });
+
+  return différences;
+}
+
+function coordonnéePrésenteDansTableau(coordonnée, tableau) {
+  // Vérifier si la coordonnée est présente dans le tableau
+  return tableau.some((c) => c[0] === coordonnée[0] && c[1] === coordonnée[1]);
 }
 
 if (typeof exports === "object" && exports) {
