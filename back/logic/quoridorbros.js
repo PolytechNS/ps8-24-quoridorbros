@@ -1,4 +1,5 @@
 const { findShortestPathMove } = require("../../front/js/pathfinding.js");
+
 const {
   fromVellaToOurGameState,
   fromOurToVellaGameState,
@@ -15,6 +16,10 @@ const {
 const { BoardUtils } = require("../../front/js/utils.js");
 
 let numPlayer;
+let numOtherPlayer;
+let wallOtherPlayer;
+let tour = 0;
+let colonneDetruite = false;
 let goal_line;
 let gameState = null;
 
@@ -32,6 +37,11 @@ let date = null;
 
 async function setup(AIplay) {
   numPlayer = AIplay;
+  numOtherPlayer = AIplay === 1 ? 2 : 1;
+  wallOtherPlayer = -1 * numOtherPlayer;
+  tour = 0;
+  colonneDetruite = false;
+
   // AIplay est playerNumber
   return new Promise((resolve, reject) => {
     // Promise is resolved into a position string, indicating its placement, in less than 1000ms.
@@ -41,8 +51,39 @@ async function setup(AIplay) {
 }
 
 async function nextMove(vellaGameState) {
+  const startTime = Date.now();
+  tour++;
   return new Promise((resolve) => {
     const gameState = fromVellaToOurGameState(vellaGameState, numPlayer);
+
+    //si l'opponent fais un colonne
+    if (!colonneDetruite && tour < 5) {
+      for (let y = 0; y <= 6; y++) {
+        for (let x = 1; x < 16; x += 2) {
+          if (gameState.board[y][x] === wallOtherPlayer) {
+            console.log("1 x y: ", x, y);
+            if (gameState.board[y + 4][x] === wallOtherPlayer) {
+              console.log("2 x y: ", x, y + 4);
+              if (gameState.board[y + 8][x] === wallOtherPlayer) {
+                console.log("3 x y: ", x, y + 4);
+                console.log("4 x y: ", x - 1, y + 3);
+              }
+            }
+          }
+          if (
+            gameState.board[y][x] === wallOtherPlayer &&
+            gameState.board[y + 4][x] === wallOtherPlayer &&
+            gameState.board[y + 8][x] === wallOtherPlayer
+          ) {
+            colonneDetruite === true;
+            const vellaMove = fromOurToVellaMove(x - 1, y + 3);
+            resolve(vellaMove);
+            return;
+          }
+        }
+      }
+    }
+
     if (gameState.otherPlayer.x !== null && gameState.player.nbWalls > 0) {
       const deltaDistance = deltaDistanceHeuristic(gameState);
       if (deltaDistance <= 0) {
@@ -51,31 +92,25 @@ async function nextMove(vellaGameState) {
         let bestMove = null;
         let maxHeuristicValue = -Infinity;
 
-        // Iterate through all wall moves
         for (const wallMove of wallMoves) {
-          // Create a copy of the gameState with the current wall move applied
           const newGameState = cloneAndApplyMove(
             gameState,
             wallMove[0],
             wallMove[1]
           );
 
-          // Calculate the delta distance heuristic for the new gameState
           const heuristicValue = deltaDistanceHeuristic(newGameState);
 
-          // Update the best move if the current move has a higher heuristic value
           if (heuristicValue > maxHeuristicValue) {
             bestMove = wallMove;
             maxHeuristicValue = heuristicValue;
-            console.log("newbestMove");
-            console.log(bestMove);
-            console.log("newheuristicValue");
-            console.log(maxHeuristicValue);
+          }
+          if (Date.now() - startTime >= 160) {
+            const vellaMove = fromOurToVellaMove(bestMove[0], bestMove[1]);
+            resolve(vellaMove);
+            return;
           }
         }
-
-        console.log("finalbestMove");
-        console.log(bestMove);
 
         if (bestMove !== null && bestMove !== undefined) {
           const vellaMove = fromOurToVellaMove(bestMove[0], bestMove[1]);

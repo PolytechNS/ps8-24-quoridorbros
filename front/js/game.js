@@ -316,9 +316,9 @@ class Game {
     this.gameBoard.placeWall(x, y, this.currentPlayer.playerNumber);
     this.currentPlayer.nbWalls--;
 
-    console.log("Wall clicked:");
-    console.log("x:", x);
-    console.log("y:", y);
+    console.log(
+      `Joueur ${this.currentPlayer.playerNumber} pose un mur i ${x}, ${y}`
+    );
     this.nextTurn();
 
     // Logique du jeu basée sur le clic sur une cellule

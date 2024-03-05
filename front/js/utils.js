@@ -222,9 +222,6 @@ class BoardUtils {
       this.isValidWallMove(x, y, gameState)
     );
 
-    console.log("differences");
-    console.log(trouverDifférences(wallMoves, finalWallMoves));
-
     return finalWallMoves;
   }
 

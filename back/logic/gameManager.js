@@ -80,11 +80,19 @@ class GameManager {
 
     if (this.isFirstTurn) {
       this.isFirstTurn = false;
+      const startTime = Date.now();
       const vellaMove = await setup(2);
+      const endTime = Date.now();
+      console.log("time ");
+      console.log(endTime - startTime);
       const ourMove = fromVellaToOurMove(vellaMove);
       this.game.onCellClick(ourMove.x, ourMove.y);
     } else {
+      const startTime = Date.now();
       const vellaMove = await nextMove(vellaGameState);
+      const endTime = Date.now();
+      console.log("time ");
+      console.log(endTime - startTime);
       const ourMove = fromVellaToOurMove(vellaMove);
 
       if (BoardUtils.isWall(ourMove.x, ourMove.y)) {
