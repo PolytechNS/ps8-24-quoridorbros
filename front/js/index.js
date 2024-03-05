@@ -10,6 +10,7 @@ window.onload = function () {
       "loggedInText"
     ).innerText = `You are logged as ${connected.user}`;
     document.getElementById("logoutButton").style.display = "block";
+    document.getElementById("playOnline").style.display = "block";
     document.getElementById("loginButton").style.display = "none";
     document.getElementById("signinButton").style.display = "none";
     playWithAIButton.style.display = "inline";

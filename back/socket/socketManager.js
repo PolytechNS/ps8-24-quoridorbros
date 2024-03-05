@@ -4,6 +4,7 @@ class SocketManager {
   constructor(io) {
     this.io = io;
     this.gameManager = null;
+    this.roomManager = new RoomManager();
     this.setupListeners();
   }
 
@@ -11,6 +12,7 @@ class SocketManager {
     this.io.on("connection", (socket) => {
       console.log(`New connection: ${socket.id}`);
 
+      //Local game
       socket.on("create game", (msg) => {
         console.log(`Create game: ${socket.id}`);
         this.attachGameManager(new GameManager(this));
@@ -29,6 +31,11 @@ class SocketManager {
         console.log(`save-game: ${socket.id}`);
         this.gameManager.saveGame(token);
       });
+
+      //Online game
+      socket.on("enter matchmaking", (token) => {
+        this.roomManager.matchmaking(token);
+      })
     });
   }
 
