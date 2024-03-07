@@ -7,6 +7,7 @@ Transforme le gameState de Vella en gameState du moteur de jeu
 */
 function fromVellaToOurGameState(iaGameState, playerNumber) {
   let otherPlayerNumber = BoardUtils.getOtherPlayerNumber(playerNumber);
+  iaGameState.board = rotate2DArray(iaGameState.board, 0);
   let ourGameState = {
     turnOf: playerNumber,
     player: {
@@ -119,6 +120,7 @@ function fromOurToVellaGameState(ourGameState, playerNumber) {
     }
   }
 
+  iaGameState.board = rotate2DArray(iaGameState.board, 1);
   return iaGameState;
 }
 
@@ -173,7 +175,10 @@ function fromOurToVellaMove(x, y) {
 }
 
 function fromVellaToOurMove(vellaMove) {
-  if (vellaMove.action === "move") {
+  if (vellaMove.action === null || vellaMove.action === undefined) {
+    const ourMove = fromVellaToOurCell(vellaMove);
+    return { x: ourMove[0], y: ourMove[1] };
+  } else if (vellaMove.action === "move") {
     const ourMove = fromVellaToOurCell(vellaMove.value);
     return { x: ourMove[0], y: ourMove[1] };
   } else if (vellaMove.action === "wall") {
@@ -247,6 +252,33 @@ function cloneAndApplyMove(gameState, x, y) {
     gameStateCopy.player.nbWalls--;
   }
   return gameStateCopy;
+}
+
+function rotate2DArray(matrix, direction) {
+  if (!matrix || !matrix.length || !matrix[0].length) {
+    return matrix;
+  }
+
+  const rows = matrix.length;
+  const cols = matrix[0].length;
+
+  const rotatedMatrix = [];
+
+  for (let i = 0; i < cols; i++) {
+    rotatedMatrix[i] = [];
+    for (let j = 0; j < rows; j++) {
+      //right
+      if (direction === 1) {
+        rotatedMatrix[i][j] = matrix[rows - 1 - j][i];
+      }
+      //left
+      else if (direction === 0) {
+        rotatedMatrix[i][j] = matrix[j][cols - 1 - i];
+      }
+    }
+  }
+
+  return rotatedMatrix;
 }
 
 module.exports = {

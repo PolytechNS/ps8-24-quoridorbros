@@ -83,6 +83,7 @@ class GameManager {
       const startTime = Date.now();
       const vellaMove = await setup(2);
       const endTime = Date.now();
+      console.log("setup vellamove: ", vellaMove);
       console.log("time ");
       console.log(endTime - startTime);
       const ourMove = fromVellaToOurMove(vellaMove);
@@ -91,6 +92,7 @@ class GameManager {
       const startTime = Date.now();
       const vellaMove = await nextMove(vellaGameState);
       const endTime = Date.now();
+      console.log("vellaMove: ", vellaMove);
       console.log("time ");
       console.log(endTime - startTime);
       const ourMove = fromVellaToOurMove(vellaMove);
@@ -139,7 +141,7 @@ class GameManager {
     console.log("ourMove: ");
     console.log(ourMove, "\n");
     console.log("differences:");
-    //console.log(findDifferences([move.x, move.y], ourMove), "\n");
+    console.log(findDifferences([move.x, move.y], ourMove), "\n");
 
     return ourMove;
   }

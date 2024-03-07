@@ -30,7 +30,7 @@ function getInitialMove() {
   } else {
     position = "59";
   }
-  return { action: "move", value: position };
+  return position;
 }
 
 let date = null;
