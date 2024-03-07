@@ -58,7 +58,6 @@ function fromVellaToOurGameState(iaGameState, playerNumber) {
   }
 
   ourGameState.board = gameBoard.board;
-
   return ourGameState;
 }
 
@@ -102,6 +101,7 @@ function fromOurToVellaGameState(ourGameState, playerNumber) {
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
       let cellContent = ourGameState.board[i * 2][j * 2];
+
       switch (cellContent) {
         case BoardUtils.EMPTY:
           iaGameState.board[i][j] = 0;
@@ -142,7 +142,10 @@ function getWallInfo(x, y, wallValue) {
     throw new Error("WallValue ne peut pas être nulle");
   }
   let orientation = BoardUtils.isHorizontalWall(x, y) ? 0 : 1;
-  let wallPosition = [Math.floor(x / 2), Math.floor(y / 2)];
+  let wallPosition = [
+    Math.floor(x / 2) + 1,
+    mirrorCoordinate(Math.floor(y / 2)) + 1,
+  ];
 
   let playerNumber =
     wallValue === BoardUtils.WALL_PLAYER_ONE
@@ -151,7 +154,7 @@ function getWallInfo(x, y, wallValue) {
 
   return {
     playerNumber: playerNumber,
-    wallPosition: [wallPosition.join(","), orientation],
+    wallPosition: [wallPosition.join(""), orientation],
   };
 }
 
@@ -180,16 +183,27 @@ function fromVellaToOurMove(vellaMove) {
 }
 
 function fromOurToVellaCell(x, y) {
-  return (x / 2).toString() + "," + (y / 2).toString();
+  return (x / 2 + 1).toString() + (mirrorCoordinate(y / 2) + 1).toString();
 }
 
 function fromVellaToOurCell(cell) {
-  const parts = cell.split(",");
+  const parts = cell.split("");
 
-  const x = parseInt(parts[0], 10) * 2;
-  const y = parseInt(parts[1], 10) * 2;
+  const vellaX = parseInt(parts[0], 10);
+  const vellaY = parseInt(parts[1], 10);
+  const coordinates = fromVellaToOurCoordinates(vellaX, vellaY);
+  return [coordinates[0], coordinates[1]];
+}
+
+function fromVellaToOurCoordinates(vellaX, vellaY) {
+  const x = (vellaX - 1) * 2;
+  const y = mirrorCoordinate(vellaY - 1) * 2;
 
   return [x, y];
+}
+
+function mirrorCoordinate(y) {
+  return 8 - y;
 }
 
 /*
@@ -199,9 +213,11 @@ Transforme une position de mur Vella en position de mur moteur de jeu
 */
 
 function fromVellaToOurWall(wall) {
-  let [xStr, yStr] = wall[0].split(",");
-  let x = parseInt(xStr) * 2 + 1;
-  let y = parseInt(yStr) * 2 + 1;
+  let [xStr, yStr] = wall[0].split("");
+  let x = parseInt(xStr) - 1;
+  let y = mirrorCoordinate(parseInt(yStr) - 1);
+  x = x * 2 + 1;
+  y = y * 2 + 1;
 
   //si le mur est horizontal
   if (wall[1] === 0) {

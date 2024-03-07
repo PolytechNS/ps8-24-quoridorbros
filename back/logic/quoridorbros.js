@@ -26,9 +26,9 @@ let gameState = null;
 function getInitialMove() {
   let position;
   if (numPlayer === 1) {
-    position = "4,8";
+    position = "51";
   } else {
-    position = "4,0";
+    position = "59";
   }
   return { action: "move", value: position };
 }
