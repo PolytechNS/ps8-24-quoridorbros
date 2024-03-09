@@ -42,11 +42,11 @@ function fromVellaToOurGameState(iaGameState, playerNumber) {
   for (let i = 0; i < iaGameState.board.length; i++) {
     for (let j = 0; j < iaGameState.board[i].length; j++) {
       let cellValue = iaGameState.board[i][j];
-      if (cellValue === playerNumber) {
+      if (cellValue === 1) {
         ourGameState.player.x = j * 2;
         ourGameState.player.y = i * 2;
         gameBoard.board[i * 2][j * 2] = playerNumber;
-      } else if (cellValue === otherPlayerNumber) {
+      } else if (cellValue === 2) {
         ourGameState.otherPlayer.x = j * 2;
         ourGameState.otherPlayer.y = i * 2;
         gameBoard.board[i * 2][j * 2] = otherPlayerNumber;
@@ -60,6 +60,90 @@ function fromVellaToOurGameState(iaGameState, playerNumber) {
 
   ourGameState.board = gameBoard.board;
   return ourGameState;
+}
+
+function findPlayer(gameState) {
+  let visibilityBoard = new GameBoard();
+  let visited = [];
+  for (let y = 0; y < 17; y++) {
+    for (let x = 0; x < 17; x++) {
+      if (
+        (x % 2 === 1 || y % 2 === 1) &&
+        !(x % 2 === 1 && y % 2 === 1) &&
+        gameState.board[y][x] !== null
+      ) {
+        if (!visited.some((coord) => coord[0] === x && coord[1] === y)) {
+          let nextWall = BoardUtils.getNextWall(x, y);
+          visited.push([nextWall.x, nextWall.y]);
+
+          if (gameState.board[y][x] * -1 === gameState.player.playerNumber) {
+            visibilityBoard.placeWall(x, y, gameState.player.playerNumber);
+          } else if (
+            gameState.board[y][x] * -1 ===
+            gameState.otherPlayer.playerNumber
+          ) {
+            visibilityBoard.placeWall(x, y, gameState.otherPlayer.playerNumber);
+          }
+        }
+      }
+    }
+  }
+
+  visibilityBoard.placePlayer(gameState.player);
+
+  for (let x = 0; x < 17; x += 2) {
+    for (let y = 0; y < 17; y += 2) {
+      //si la case devait être visible et elle ne l'est pas
+      if (
+        visibilityBoard.isVisible(x, y, gameState.player) &&
+        gameState.board[y][x] === BoardUtils.FOG
+      ) {
+        let possiblecells = [];
+        possiblecells.push({ x: x, y: y }); // lui même
+        possiblecells.push({ x: x, y: y + 2 }); // bas
+        possiblecells.push({ x: x, y: y - 2 }); // haut
+        possiblecells.push({ x: x - 2, y: y }); // gauche
+        possiblecells.push({ x: x + 2, y: y }); // droite
+
+        possiblecells = possiblecells.filter(
+          (position) =>
+            BoardUtils.isInBoardLimits(position.x) &&
+            BoardUtils.isInBoardLimits(position.y)
+        );
+
+        let selectedCell = possiblecells.find((position) =>
+          visibilityCorrespond(visibilityBoard, gameState, position)
+        );
+        return selectedCell;
+      }
+    }
+  }
+  return null;
+}
+
+function visibilityCorrespond(visibilityBoard, gameState, position) {
+  let visibilityBoardCopy = new GameBoard(visibilityBoard.board);
+  visibilityBoardCopy.placePlayer({
+    x: position.x,
+    y: position.y,
+    playerNumber: gameState.otherPlayer.playerNumber,
+    nbWalls: gameState.otherPlayer.nbWalls,
+  });
+
+  for (let x = 0; x < 17; x += 2) {
+    for (let y = 0; y < 17; y += 2) {
+      //si la case devait être visible et elle ne l'est pas et inversement
+      if (
+        (!visibilityBoardCopy.isVisible(x, y, gameState.player) &&
+          gameState.board[y][x] === BoardUtils.EMPTY) ||
+        (visibilityBoardCopy.isVisible(x, y, gameState.player) &&
+          gameState.board[y][x] === BoardUtils.FOG)
+      ) {
+        return false;
+      }
+    }
+  }
+  return true;
 }
 
 /*
@@ -107,10 +191,10 @@ function fromOurToVellaGameState(ourGameState, playerNumber) {
         case BoardUtils.EMPTY:
           iaGameState.board[i][j] = 0;
           break;
-        case BoardUtils.PLAYER_ONE:
+        case playerNumber:
           iaGameState.board[i][j] = 1;
           break;
-        case BoardUtils.PLAYER_TWO:
+        case otherPlayerNumber:
           iaGameState.board[i][j] = 2;
           break;
         default:
@@ -290,4 +374,5 @@ module.exports = {
   fromOurToVellaMove,
   fromVellaToOurMove,
   cloneAndApplyMove,
+  findPlayer,
 };

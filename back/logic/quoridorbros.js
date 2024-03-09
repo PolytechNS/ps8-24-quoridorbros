@@ -6,6 +6,7 @@ const {
   fromOurToVellaMove,
   fromVellaToOurMove,
   cloneAndApplyMove,
+  findPlayer,
 } = require("./aiAdapter.js");
 
 const {
@@ -57,19 +58,9 @@ async function nextMove(vellaGameState) {
     const gameState = fromVellaToOurGameState(vellaGameState, numPlayer);
 
     //si l'opponent fais un colonne
-    if (!colonneDetruite && tour < 5) {
+    if (!colonneDetruite && tour < 6) {
       for (let y = 0; y <= 6; y++) {
         for (let x = 1; x < 16; x += 2) {
-          if (gameState.board[y][x] === wallOtherPlayer) {
-            console.log("1 x y: ", x, y);
-            if (gameState.board[y + 4][x] === wallOtherPlayer) {
-              console.log("2 x y: ", x, y + 4);
-              if (gameState.board[y + 8][x] === wallOtherPlayer) {
-                console.log("3 x y: ", x, y + 4);
-                console.log("4 x y: ", x - 1, y + 3);
-              }
-            }
-          }
           if (
             gameState.board[y][x] === wallOtherPlayer &&
             gameState.board[y + 4][x] === wallOtherPlayer &&
@@ -90,6 +81,15 @@ async function nextMove(vellaGameState) {
           }
         }
       }
+    }
+
+    if (gameState.otherPlayer.x === null) {
+      let positionOtherPlayer = findPlayer(gameState);
+      if (positionOtherPlayer !== null) {
+        gameState.otherPlayer.x = positionOtherPlayer.x;
+        gameState.otherPlayer.y = positionOtherPlayer.y;
+      }
+      console.log("position otherplayer", positionOtherPlayer);
     }
 
     if (gameState.otherPlayer.x !== null && gameState.player.nbWalls > 0) {

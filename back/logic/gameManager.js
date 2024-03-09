@@ -83,7 +83,6 @@ class GameManager {
       const startTime = Date.now();
       const vellaMove = await setup(2);
       const endTime = Date.now();
-      console.log("setup vellamove: ", vellaMove);
       console.log("time ");
       console.log(endTime - startTime);
       const ourMove = fromVellaToOurMove(vellaMove);
@@ -92,7 +91,6 @@ class GameManager {
       const startTime = Date.now();
       const vellaMove = await nextMove(vellaGameState);
       const endTime = Date.now();
-      console.log("vellaMove: ", vellaMove);
       console.log("time ");
       console.log(endTime - startTime);
       const ourMove = fromVellaToOurMove(vellaMove);
@@ -115,15 +113,15 @@ class GameManager {
   }
 
   transformGameState(gameState, playerNumber) {
-    console.log("gamestate :");
-    console.log(gameState, "\n");
+    /*console.log("gamestate :");
+    console.log(gameState, "\n");*/
     let vellaGameState = fromOurToVellaGameState(gameState, playerNumber);
-    console.log("vellaGameState: ");
-    console.log(vellaGameState, "\n");
+    /*console.log("vellaGameState: ");
+    console.log(vellaGameState, "\n");*/
 
     let ourGameState = fromVellaToOurGameState(vellaGameState, playerNumber);
-    console.log("ourGameState: ");
-    console.log(ourGameState, "\n");
+    /*console.log("ourGameState: ");
+    console.log(ourGameState, "\n");*/
     console.log("differences:");
     console.log(findDifferences(gameState, ourGameState), "\n");
 
@@ -131,17 +129,17 @@ class GameManager {
   }
 
   transformMoves(move) {
-    console.log("move :");
-    console.log(move, "\n");
+    /*console.log("move :");
+    console.log(move, "\n");*/
     let vellaMove = fromOurToVellaMove(move.x, move.y);
-    console.log("vellaMove: ");
-    console.log(vellaMove, "\n");
+    /*console.log("vellaMove: ");
+    console.log(vellaMove, "\n");*/
 
     let ourMove = fromVellaToOurMove(vellaMove);
-    console.log("ourMove: ");
+    /*console.log("ourMove: ");
     console.log(ourMove, "\n");
     console.log("differences:");
-    console.log(findDifferences([move.x, move.y], ourMove), "\n");
+    console.log(findDifferences([move.x, move.y], ourMove), "\n");*/
 
     return ourMove;
   }
