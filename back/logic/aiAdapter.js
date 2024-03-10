@@ -62,7 +62,7 @@ function fromVellaToOurGameState(iaGameState, playerNumber) {
   return ourGameState;
 }
 
-function findPlayer(gameState) {
+function findPlayer(gameState, lastKnownPosition, movesSinceLastKnownPosition) {
   let visibilityBoard = new GameBoard();
   let visited = [];
   for (let y = 0; y < 17; y++) {
@@ -111,10 +111,30 @@ function findPlayer(gameState) {
             BoardUtils.isInBoardLimits(position.y)
         );
 
-        let selectedCell = possiblecells.find((position) =>
+        let selectedCells = possiblecells.filter((position) =>
           visibilityCorrespond(visibilityBoard, gameState, position)
         );
-        return selectedCell;
+
+        if (selectedCells.length === 1) {
+          return selectedCells[0];
+        }
+        if (lastKnownPosition.x === null || lastKnownPosition.x === undefined) {
+          return null;
+        }
+
+        selectedCells = selectedCells.filter((position) =>
+          distanceCorrespond(
+            position,
+            lastKnownPosition,
+            movesSinceLastKnownPosition
+          )
+        );
+
+        if (selectedCells.length === 1) {
+          return selectedCells[0];
+        }
+
+        return null;
       }
     }
   }
@@ -144,6 +164,18 @@ function visibilityCorrespond(visibilityBoard, gameState, position) {
     }
   }
   return true;
+}
+
+function distanceCorrespond(
+  position,
+  lastKnownPosition,
+  movesSinceLastKnownPosition
+) {
+  const distanceParCourue =
+    (Math.abs(position.x - lastKnownPosition.x) +
+      Math.abs(position.y - lastKnownPosition.y)) /
+    2;
+  return movesSinceLastKnownPosition >= distanceParCourue;
 }
 
 /*

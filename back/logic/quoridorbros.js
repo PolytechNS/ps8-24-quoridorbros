@@ -21,6 +21,11 @@ let numOtherPlayer;
 let wallOtherPlayer;
 let tour = 0;
 let colonneDetruite = false;
+let lastKnownPosition = { x: null, y: null };
+let movesSinceLastKnownPosition = null;
+let otherPlayerPreviousNbWalls = 10;
+const defaultMove = { action: "move", value: "58" };
+
 let goal_line;
 let gameState = null;
 
@@ -42,6 +47,9 @@ async function setup(AIplay) {
   wallOtherPlayer = -1 * numOtherPlayer;
   tour = 0;
   colonneDetruite = false;
+  lastKnownPosition = { x: null, y: null };
+  movesSinceLastKnownPosition = null;
+  otherPlayerPreviousNbWalls = 10;
 
   // AIplay est playerNumber
   return new Promise((resolve, reject) => {
@@ -56,6 +64,15 @@ async function nextMove(vellaGameState) {
   tour++;
   return new Promise((resolve) => {
     const gameState = fromVellaToOurGameState(vellaGameState, numPlayer);
+    if (gameState.otherPlayer.x === null && lastKnownPosition.x !== null) {
+      if (gameState.otherPlayer.nbWalls === otherPlayerPreviousNbWalls) {
+        movesSinceLastKnownPosition++;
+      } else if (movesSinceLastKnownPosition === 0) {
+        gameState.otherPlayer.x = lastKnownPosition.x;
+        gameState.otherPlayer.y = lastKnownPosition.y;
+      }
+    }
+    otherPlayerPreviousNbWalls = gameState.otherPlayer.nbWalls;
 
     //si l'opponent fais un colonne
     if (!colonneDetruite && tour < 6) {
@@ -84,15 +101,29 @@ async function nextMove(vellaGameState) {
     }
 
     if (gameState.otherPlayer.x === null) {
-      let positionOtherPlayer = findPlayer(gameState);
+      let positionOtherPlayer = findPlayer(
+        gameState,
+        lastKnownPosition,
+        movesSinceLastKnownPosition
+      );
       if (positionOtherPlayer !== null) {
         gameState.otherPlayer.x = positionOtherPlayer.x;
         gameState.otherPlayer.y = positionOtherPlayer.y;
+        movesSinceLastKnownPosition = 0;
       }
-      console.log("position otherplayer", positionOtherPlayer);
+    } else {
+      movesSinceLastKnownPosition = 0;
+    }
+
+    if (Date.now() - startTime >= 160) {
+      resolve(defaultMove);
+      return;
     }
 
     if (gameState.otherPlayer.x !== null && gameState.player.nbWalls > 0) {
+      lastKnownPosition.x = gameState.otherPlayer.x;
+      lastKnownPosition.y = gameState.otherPlayer.y;
+
       const deltaDistance = deltaDistanceHeuristic(gameState);
       if (deltaDistance <= 0) {
         const wallMoves = BoardUtils.getWallMoves(gameState);
@@ -127,7 +158,16 @@ async function nextMove(vellaGameState) {
         }
       }
     }
+
+    if (Date.now() - startTime >= 160) {
+      resolve(defaultMove);
+      return;
+    }
     const ourMove = calculateBestMove(gameState);
+    if (ourMove === null || ourMove === undefined) {
+      resolve(defaultMove);
+      return;
+    }
     const vellaMove = fromOurToVellaMove(ourMove.x, ourMove.y);
     resolve(vellaMove);
   });
