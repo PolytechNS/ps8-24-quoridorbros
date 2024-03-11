@@ -18,7 +18,7 @@ const {
   nextMove,
   correction,
   updateBoard,
-} = require("./quoridorbros.js");
+} = require("../bots/quoridorbros.js");
 
 class GameManager {
   constructor(socketManager, userToken) {
@@ -122,8 +122,8 @@ class GameManager {
     let ourGameState = fromVellaToOurGameState(vellaGameState, playerNumber);
     /*console.log("ourGameState: ");
     console.log(ourGameState, "\n");*/
-    /*console.log("differences:");
-    console.log(findDifferences(gameState, ourGameState), "\n");*/
+    console.log("differences:");
+    console.log(findDifferences(gameState, ourGameState), "\n");
 
     return ourGameState;
   }
