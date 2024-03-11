@@ -16,7 +16,7 @@ if (typeof exports === "object" && exports) {
 class GameBoard {
   constructor(savedBoard) {
     if (savedBoard) {
-      this.board = savedBoard;
+      this.board = JSON.parse(JSON.stringify(savedBoard));
     } else {
       this.board = [];
       this.initBoard();

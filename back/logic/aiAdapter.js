@@ -7,6 +7,7 @@ Transforme le gameState de Vella en gameState du moteur de jeu
 */
 function fromVellaToOurGameState(iaGameState, playerNumber) {
   let otherPlayerNumber = BoardUtils.getOtherPlayerNumber(playerNumber);
+  iaGameState.board = rotate2DArray(iaGameState.board, 0);
   let ourGameState = {
     turnOf: playerNumber,
     player: {
@@ -41,11 +42,11 @@ function fromVellaToOurGameState(iaGameState, playerNumber) {
   for (let i = 0; i < iaGameState.board.length; i++) {
     for (let j = 0; j < iaGameState.board[i].length; j++) {
       let cellValue = iaGameState.board[i][j];
-      if (cellValue === playerNumber) {
+      if (cellValue === 1) {
         ourGameState.player.x = j * 2;
         ourGameState.player.y = i * 2;
         gameBoard.board[i * 2][j * 2] = playerNumber;
-      } else if (cellValue === otherPlayerNumber) {
+      } else if (cellValue === 2) {
         ourGameState.otherPlayer.x = j * 2;
         ourGameState.otherPlayer.y = i * 2;
         gameBoard.board[i * 2][j * 2] = otherPlayerNumber;
@@ -58,8 +59,123 @@ function fromVellaToOurGameState(iaGameState, playerNumber) {
   }
 
   ourGameState.board = gameBoard.board;
-
   return ourGameState;
+}
+
+function findPlayer(gameState, lastKnownPosition, movesSinceLastKnownPosition) {
+  let visibilityBoard = new GameBoard();
+  let visited = [];
+  for (let y = 0; y < 17; y++) {
+    for (let x = 0; x < 17; x++) {
+      if (
+        (x % 2 === 1 || y % 2 === 1) &&
+        !(x % 2 === 1 && y % 2 === 1) &&
+        gameState.board[y][x] !== null
+      ) {
+        if (!visited.some((coord) => coord[0] === x && coord[1] === y)) {
+          let nextWall = BoardUtils.getNextWall(x, y);
+          visited.push([nextWall.x, nextWall.y]);
+
+          if (gameState.board[y][x] * -1 === gameState.player.playerNumber) {
+            visibilityBoard.placeWall(x, y, gameState.player.playerNumber);
+          } else if (
+            gameState.board[y][x] * -1 ===
+            gameState.otherPlayer.playerNumber
+          ) {
+            visibilityBoard.placeWall(x, y, gameState.otherPlayer.playerNumber);
+          }
+        }
+      }
+    }
+  }
+
+  visibilityBoard.placePlayer(gameState.player);
+
+  for (let x = 0; x < 17; x += 2) {
+    for (let y = 0; y < 17; y += 2) {
+      //si la case devait être visible et elle ne l'est pas
+      if (
+        visibilityBoard.isVisible(x, y, gameState.player) &&
+        gameState.board[y][x] === BoardUtils.FOG
+      ) {
+        let possiblecells = [];
+        possiblecells.push({ x: x, y: y }); // lui même
+        possiblecells.push({ x: x, y: y + 2 }); // bas
+        possiblecells.push({ x: x, y: y - 2 }); // haut
+        possiblecells.push({ x: x - 2, y: y }); // gauche
+        possiblecells.push({ x: x + 2, y: y }); // droite
+
+        possiblecells = possiblecells.filter(
+          (position) =>
+            BoardUtils.isInBoardLimits(position.x) &&
+            BoardUtils.isInBoardLimits(position.y)
+        );
+
+        let selectedCells = possiblecells.filter((position) =>
+          visibilityCorrespond(visibilityBoard, gameState, position)
+        );
+
+        if (selectedCells.length === 1) {
+          return selectedCells[0];
+        }
+        if (lastKnownPosition.x === null || lastKnownPosition.x === undefined) {
+          return selectedCells[0];
+        }
+
+        selectedCells = selectedCells.filter((position) =>
+          distanceCorrespond(
+            position,
+            lastKnownPosition,
+            movesSinceLastKnownPosition
+          )
+        );
+
+        if (selectedCells.length !== 0) {
+          return selectedCells[0];
+        }
+
+        return null;
+      }
+    }
+  }
+  return null;
+}
+
+function visibilityCorrespond(visibilityBoard, gameState, position) {
+  let visibilityBoardCopy = new GameBoard(visibilityBoard.board);
+  visibilityBoardCopy.placePlayer({
+    x: position.x,
+    y: position.y,
+    playerNumber: gameState.otherPlayer.playerNumber,
+    nbWalls: gameState.otherPlayer.nbWalls,
+  });
+
+  for (let x = 0; x < 17; x += 2) {
+    for (let y = 0; y < 17; y += 2) {
+      //si la case devait être visible et elle ne l'est pas et inversement
+      if (
+        (!visibilityBoardCopy.isVisible(x, y, gameState.player) &&
+          gameState.board[y][x] === BoardUtils.EMPTY) ||
+        (visibilityBoardCopy.isVisible(x, y, gameState.player) &&
+          gameState.board[y][x] === BoardUtils.FOG)
+      ) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+function distanceCorrespond(
+  position,
+  lastKnownPosition,
+  movesSinceLastKnownPosition
+) {
+  const distanceParCourue =
+    (Math.abs(position.x - lastKnownPosition.x) +
+      Math.abs(position.y - lastKnownPosition.y)) /
+    2;
+  return movesSinceLastKnownPosition >= distanceParCourue;
 }
 
 /*
@@ -102,14 +218,15 @@ function fromOurToVellaGameState(ourGameState, playerNumber) {
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
       let cellContent = ourGameState.board[i * 2][j * 2];
+
       switch (cellContent) {
         case BoardUtils.EMPTY:
           iaGameState.board[i][j] = 0;
           break;
-        case BoardUtils.PLAYER_ONE:
+        case playerNumber:
           iaGameState.board[i][j] = 1;
           break;
-        case BoardUtils.PLAYER_TWO:
+        case otherPlayerNumber:
           iaGameState.board[i][j] = 2;
           break;
         default:
@@ -119,6 +236,7 @@ function fromOurToVellaGameState(ourGameState, playerNumber) {
     }
   }
 
+  iaGameState.board = rotate2DArray(iaGameState.board, 1);
   return iaGameState;
 }
 
@@ -142,7 +260,10 @@ function getWallInfo(x, y, wallValue) {
     throw new Error("WallValue ne peut pas être nulle");
   }
   let orientation = BoardUtils.isHorizontalWall(x, y) ? 0 : 1;
-  let wallPosition = [Math.floor(x / 2), Math.floor(y / 2)];
+  let wallPosition = [
+    Math.floor(x / 2) + 1,
+    mirrorCoordinate(Math.floor(y / 2)) + 1,
+  ];
 
   let playerNumber =
     wallValue === BoardUtils.WALL_PLAYER_ONE
@@ -151,7 +272,7 @@ function getWallInfo(x, y, wallValue) {
 
   return {
     playerNumber: playerNumber,
-    wallPosition: [wallPosition.join(","), orientation],
+    wallPosition: [wallPosition.join(""), orientation],
   };
 }
 
@@ -170,7 +291,10 @@ function fromOurToVellaMove(x, y) {
 }
 
 function fromVellaToOurMove(vellaMove) {
-  if (vellaMove.action === "move") {
+  if (vellaMove.action === null || vellaMove.action === undefined) {
+    const ourMove = fromVellaToOurCell(vellaMove);
+    return { x: ourMove[0], y: ourMove[1] };
+  } else if (vellaMove.action === "move") {
     const ourMove = fromVellaToOurCell(vellaMove.value);
     return { x: ourMove[0], y: ourMove[1] };
   } else if (vellaMove.action === "wall") {
@@ -180,16 +304,27 @@ function fromVellaToOurMove(vellaMove) {
 }
 
 function fromOurToVellaCell(x, y) {
-  return (x / 2).toString() + "," + (y / 2).toString();
+  return (x / 2 + 1).toString() + (mirrorCoordinate(y / 2) + 1).toString();
 }
 
 function fromVellaToOurCell(cell) {
-  const parts = cell.split(",");
+  const parts = cell.split("");
 
-  const x = parseInt(parts[0], 10) * 2;
-  const y = parseInt(parts[1], 10) * 2;
+  const vellaX = parseInt(parts[0], 10);
+  const vellaY = parseInt(parts[1], 10);
+  const coordinates = fromVellaToOurCoordinates(vellaX, vellaY);
+  return [coordinates[0], coordinates[1]];
+}
+
+function fromVellaToOurCoordinates(vellaX, vellaY) {
+  const x = (vellaX - 1) * 2;
+  const y = mirrorCoordinate(vellaY - 1) * 2;
 
   return [x, y];
+}
+
+function mirrorCoordinate(y) {
+  return 8 - y;
 }
 
 /*
@@ -199,9 +334,11 @@ Transforme une position de mur Vella en position de mur moteur de jeu
 */
 
 function fromVellaToOurWall(wall) {
-  let [xStr, yStr] = wall[0].split(",");
-  let x = parseInt(xStr) * 2 + 1;
-  let y = parseInt(yStr) * 2 + 1;
+  let [xStr, yStr] = wall[0].split("");
+  let x = parseInt(xStr) - 1;
+  let y = mirrorCoordinate(parseInt(yStr) - 1);
+  x = x * 2 + 1;
+  y = y * 2 + 1;
 
   //si le mur est horizontal
   if (wall[1] === 0) {
@@ -233,6 +370,33 @@ function cloneAndApplyMove(gameState, x, y) {
   return gameStateCopy;
 }
 
+function rotate2DArray(matrix, direction) {
+  if (!matrix || !matrix.length || !matrix[0].length) {
+    return matrix;
+  }
+
+  const rows = matrix.length;
+  const cols = matrix[0].length;
+
+  const rotatedMatrix = [];
+
+  for (let i = 0; i < cols; i++) {
+    rotatedMatrix[i] = [];
+    for (let j = 0; j < rows; j++) {
+      //right
+      if (direction === 1) {
+        rotatedMatrix[i][j] = matrix[rows - 1 - j][i];
+      }
+      //left
+      else if (direction === 0) {
+        rotatedMatrix[i][j] = matrix[j][cols - 1 - i];
+      }
+    }
+  }
+
+  return rotatedMatrix;
+}
+
 module.exports = {
   fromVellaToOurGameState,
   fromVellaToOurWall,
@@ -242,4 +406,5 @@ module.exports = {
   fromOurToVellaMove,
   fromVellaToOurMove,
   cloneAndApplyMove,
+  findPlayer,
 };
