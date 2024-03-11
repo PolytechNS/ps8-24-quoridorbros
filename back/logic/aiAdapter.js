@@ -119,7 +119,7 @@ function findPlayer(gameState, lastKnownPosition, movesSinceLastKnownPosition) {
           return selectedCells[0];
         }
         if (lastKnownPosition.x === null || lastKnownPosition.x === undefined) {
-          return null;
+          return selectedCells[0];
         }
 
         selectedCells = selectedCells.filter((position) =>
@@ -130,7 +130,7 @@ function findPlayer(gameState, lastKnownPosition, movesSinceLastKnownPosition) {
           )
         );
 
-        if (selectedCells.length === 1) {
+        if (selectedCells.length !== 0) {
           return selectedCells[0];
         }
 
