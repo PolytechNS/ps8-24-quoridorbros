@@ -20,7 +20,7 @@ const {
   updateBoard,
 } = require("../bots/quoridorbros.js");
 
-class GameManager {
+class AiGameManager {
   constructor(socketManager, userToken) {
     this.socketManager = socketManager;
     this.isGameFinished = false;
@@ -176,4 +176,4 @@ function findDifferences(obj1, obj2) {
   return differences;
 }
 
-exports.GameManager = GameManager;
+exports.AiGameManager = AiGameManager;

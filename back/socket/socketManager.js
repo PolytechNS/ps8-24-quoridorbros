@@ -1,10 +1,11 @@
-const { GameManager } = require("../logic/gameManager.js");
+const { AiGameManager } = require("../logic/aiGameManager.js");
+const { RoomManager } = require("../online/roomManager.js");
 
 class SocketManager {
   constructor(io) {
     this.io = io;
-    this.gameManager = null;
-    this.roomManager = new RoomManager();
+    this.aiGameManager = null;
+    //this.roomManager = new RoomManager();
     this.setupListeners();
   }
 
@@ -15,32 +16,32 @@ class SocketManager {
       //Local game
       socket.on("create game", (msg) => {
         console.log(`Create game: ${socket.id}`);
-        this.attachGameManager(new GameManager(this));
+        this.attachAiGameManager(new AiGameManager(this));
       });
 
       socket.on("load-game", (token) => {
         console.log(`load-game: ${socket.id}`);
-        this.attachGameManager(new GameManager(this, token));
+        this.attachAiGameManager(new AiGameManager(this, token));
       });
 
       socket.on("newMove", (move) => {
-        this.gameManager.movePlayer1(move);
+        this.aiGameManager.movePlayer1(move);
       });
 
       socket.on("save-game", (token) => {
         console.log(`save-game: ${socket.id}`);
-        this.gameManager.saveGame(token);
+        this.aiGameManager.saveGame(token);
       });
 
       //Online game
       socket.on("enter matchmaking", (token) => {
         this.roomManager.matchmaking(token);
-      })
+      });
     });
   }
 
-  attachGameManager(gameManager) {
-    this.gameManager = gameManager;
+  attachAiGameManager(AiGameManager) {
+    this.aiGameManager = AiGameManager;
   }
 
   updateClientBoard(gameState) {
