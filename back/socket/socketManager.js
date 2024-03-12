@@ -5,7 +5,7 @@ class SocketManager {
   constructor(io) {
     this.io = io;
     this.aiGameManager = null;
-    //this.roomManager = new RoomManager();
+    this.roomManager = new RoomManager(io);
     this.setupListeners();
   }
 
@@ -34,8 +34,14 @@ class SocketManager {
       });
 
       //Online game
-      socket.on("enter matchmaking", (token) => {
-        this.roomManager.matchmaking(token);
+      socket.on("enter matchmaking", (playertoken) => {
+        console.log(`enter matchmaking: ${socket.id}`);
+        this.roomManager.matchmaking(socket,playertoken);
+      });
+
+      socket.on("create room", (playertoken) => {
+        console.log(`create room: ${socket.id}`);
+        this.roomManager.createRoomAndJoin(socket,playertoken);
       });
     });
   }

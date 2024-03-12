@@ -28,3 +28,7 @@ function saveGame(token) {
 function loadGame(token) {
   socket.emit("load-game", token);
 }
+
+function enterMatchMaking(token){
+  socket.emit("enter matchmaking",token);
+}
