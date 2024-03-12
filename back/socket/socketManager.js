@@ -1,4 +1,4 @@
-const { AiGameManager } = require("../logic/aiGameManager.js");
+const { AiGameManager } = require("../logic/gameManagers/aiGameManager.js");
 const { RoomManager } = require("../online/roomManager.js");
 
 class SocketManager {
