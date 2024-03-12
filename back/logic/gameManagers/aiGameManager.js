@@ -21,7 +21,7 @@ const {
   nextMove,
   correction,
   updateBoard,
-} = require("./quoridorbros.js");
+} = require("../quoridorbros.js");
 
 class AiGameManager {
   constructor(socketManager, userToken) {
