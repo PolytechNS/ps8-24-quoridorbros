@@ -1,5 +1,6 @@
 let playWithAIButton = document.getElementById("playAIButton");
 let playLocalButton = document.getElementById("playLocalButton");
+let logoutButton = document.getElementById("logoutButton");
 
 window.onload = function () {
   let connectedCookieValue = getCookie("connected");
@@ -35,3 +36,10 @@ document.getElementById("logoutButton").addEventListener("click", function () {
     })
     .catch((error) => console.error("Error:", error));
 });
+
+
+// Set dynamic height for the buttonList based on the number of buttons
+buttonList = document.getElementById("buttonList");
+let buttonCount = buttonList.childElementCount;
+buttonList.style.height = `${buttonCount * 40}px`; // Assuming each button is 40px high
+
