@@ -1,24 +1,27 @@
-const { BoardUtils } = require("../../front/js/utils.js");
-const { Game } = require("../../front/js/game.js");
-const { saveGameState, loadGameState } = require("../mongoDB/mongoManager.js");
+const { BoardUtils } = require("../../../front/js/utils.js");
+const { Game } = require("../../../front/js/game.js");
+const {
+  saveGameState,
+  loadGameState,
+} = require("../../mongoDB/mongoManager.js");
 const {
   fromVellaToOurGameState,
   fromOurToVellaGameState,
   fromOurToVellaMove,
   fromVellaToOurMove,
-} = require("./aiAdapter.js");
+} = require("../aiAdapter.js");
 
 const {
   deltaDistanceHeuristic,
   deltaWallsHeuristic,
-} = require("./heuristics.js");
+} = require("../heuristics.js");
 
 const {
   setup,
   nextMove,
   correction,
   updateBoard,
-} = require("../bots/quoridorbros.js");
+} = require("../../bots/quoridorbros.js");
 
 class AiGameManager {
   constructor(socketManager, userToken) {
