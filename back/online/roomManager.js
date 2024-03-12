@@ -6,11 +6,11 @@ class RoomManager {
 
   matchmaking(socketId, playerToken) {
     console.log("matchmaking");
-    const availableRoom = Array.from(this.rooms.values()).find(room => room.players.size < 2 && !room.players.has(playerToken));
+    const availableRoom = Array.from(this.rooms.values()).find(room => room.isAvaible() && !room.isOnGame(playerToken));
     console.log(this.rooms);
 
     if (availableRoom) {
-      availableRoom.players.add(playerToken);
+      availableRoom.add_player(socketId,playerToken);
       this.io.to(availableRoom.name).emit('roomUpdate', Array.from(availableRoom.players));
       this.io.to(socketId).emit('joinedRoom', availableRoom.name);
       console.log(availableRoom.name + "full with ");
@@ -22,26 +22,38 @@ class RoomManager {
 
   createRoomAndJoin(socketId, playerToken) {
     console.log("createRoomAndJoin");
-    const newRoomName = `Room-${Math.floor(Math.random() * 1000)}`;
-    const newRoom = { name: newRoomName, players: new Set([playerToken]) };
-    this.rooms.set(newRoomName, newRoom);
-    this.io.to(socketId).emit('joinedRoom', newRoomName);
+    let newRoom = new Room(playerToken);
+    newRoom.add_player(socketId,playerToken);
+    this.rooms.set(newRoom.name,newRoom);
+    this.io.to(socketId).emit('joinedRoom', newRoom.name);
   }
 }
 
 class Room {
   constructor(playerToken){
-    this.name=this.generate_name(),
+    this.name=this.generate_name(playerToken),
     this.players=[]
   }
 
-  generate_name(){
+  generate_name(playerToken){
     return "Room-"+Math.floor(Math.random() * 1000)+"-"+playerToken.token;
   }
 
-  add_player(playerToken){
+  add_player(socket,token){
     if (this.players.length<2)
-      this.players.push(playerToken);
+      this.players.push({playertoken:token,playersocket:socket});
+  }
+
+  isAvaible(){
+    return this.players.length<2;
+  }
+
+  isOnGame(playerToken){
+    this.players.forEach(player => {
+      if (player.playertoken===playerToken)
+        return true;
+    });
+    return false;
   }
 
 
