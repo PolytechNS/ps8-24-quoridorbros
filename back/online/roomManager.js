@@ -1,49 +1,50 @@
 class RoomManager {
   constructor(io) {
     this.io = io;
-    this.rooms = {};
+    this.rooms = new Map();
   }
 
-  matchmaking(playerToken) {
-    const roomId = this.findAvailableRoom() || this.createRoom();
+  matchmaking(socketId, playerToken) {
+    console.log("matchmaking");
+    const availableRoom = Array.from(this.rooms.values()).find(room => room.players.size < 2 && !room.players.has(playerToken));
+    console.log(this.rooms);
 
-    this.addPlayerToRoom(playerToken, roomId);
-    console.log(playerToken + ` join ` + roomId);
-
-    this.checkRoomReady(roomId);
-  }
-
-  findAvailableRoom() {
-    for (const [roomId, players] of Object.entries(this.rooms)) {
-      if (players.length < 2) {
-        return roomId;
-      }
-    }
-    return null;
-  }
-
-  createRoom() {
-    const roomId = `room_${Object.keys(this.rooms).length + 1}`;
-    console.log(`New room`);
-    this.rooms[roomId] = [];
-    return roomId;
-  }
-
-  addPlayerToRoom(playerToken, roomId) {
-    this.rooms[roomId].push(playerToken);
-    this.io.to(playerToken).join(roomId);
-  }
-
-  checkRoomReady(roomId) {
-    if (this.rooms[roomId].length === 2) {
-      this.startGame(roomId);
+    if (availableRoom) {
+      availableRoom.players.add(playerToken);
+      this.io.to(availableRoom.name).emit('roomUpdate', Array.from(availableRoom.players));
+      this.io.to(socketId).emit('joinedRoom', availableRoom.name);
+      console.log(availableRoom.name + "full with ");
+      console.log(availableRoom.players);
+    } else {
+      this.createRoomAndJoin(socketId, playerToken);
     }
   }
 
-  startGame(roomId) {
-    console.log(roomId + " start a game");
-    this.io.to(roomId).emit("startGame", { roomId });
+  createRoomAndJoin(socketId, playerToken) {
+    console.log("createRoomAndJoin");
+    const newRoomName = `Room-${Math.floor(Math.random() * 1000)}`;
+    const newRoom = { name: newRoomName, players: new Set([playerToken]) };
+    this.rooms.set(newRoomName, newRoom);
+    this.io.to(socketId).emit('joinedRoom', newRoomName);
   }
 }
 
-module.exports = RoomManager;
+class Room {
+  constructor(playerToken){
+    this.name=this.generate_name(),
+    this.players=[]
+  }
+
+  generate_name(){
+    return "Room-"+Math.floor(Math.random() * 1000)+"-"+playerToken.token;
+  }
+
+  add_player(playerToken){
+    if (this.players.length<2)
+      this.players.push(playerToken);
+  }
+
+
+}
+
+exports.RoomManager = RoomManager;
