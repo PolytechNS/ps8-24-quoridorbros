@@ -3,8 +3,15 @@ document.getElementById("join").addEventListener("click", function () {
     console.log("click on matchmaking");
 
     let connectedData = JSON.parse(connectedCookieValue);
-    console.log(connectedData);
-    console.log(connectedData.user);
-    console.log(connectedData.token);
     enterMatchMaking(connectedData);
   });
+
+  function updateRoomInfo(roomName, opponentName) {
+    document.getElementById("roomName").textContent = roomName;
+    document.getElementById("opponentName").textContent = opponentName;
+}
+
+socket.on('RoomFull', (data) => {
+    updateRoomInfo(data.roomName, data.opponentName);
+    console.log(data);
+});

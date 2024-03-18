@@ -8,7 +8,7 @@ let db = null;
 async function connect() {
   const client = new MongoClient(url);
   await client.connect();
-  console.log("Connected à MongoDB");
+  console.log("Connected to MongoDB");
   db = client.db(dbName);
 }
 
@@ -52,4 +52,23 @@ async function loadGameState(userToken) {
     return null;
   }
 }
-module.exports = { connect, getDb, saveGameState, loadGameState };
+
+async function getIdOfUser(username) {
+  try {
+    const db = getDb();
+    const collection = db.collection("users");
+    const userDocument = await collection.findOne({ username });
+    
+    if (!userDocument) {
+      console.log("No user found for the provided username:", username);
+      return null;
+    }
+
+    return userDocument._id;
+  } catch (error) {
+    console.error("An error occurred while loading user ID:", error);
+    return null;
+  }
+}
+
+module.exports = { connect, getDb, saveGameState, loadGameState, getIdOfUser };

@@ -36,13 +36,24 @@ class SocketManager {
       //Online game
       socket.on("enter matchmaking", (playertoken) => {
         console.log(`enter matchmaking: ${socket.id}`);
-        this.roomManager.matchmaking(socket,playertoken);
+        this.roomManager.enterMatchmaking(socket,playertoken);
+      });
+
+      socket.on("quit matchmaking", (playertoken) => {
+        console.log(`quit matchmaking: ${socket.id}`);
+        this.roomManager.quitMatchmaking(socket,playertoken);
       });
 
       socket.on("create room", (playertoken) => {
         console.log(`create room: ${socket.id}`);
         this.roomManager.createRoomAndJoin(socket,playertoken);
       });
+
+      socket.on('joinedRoom', (data) => {
+        console.log(`Joined room: ${data.roomName}`);
+        console.log(`Playing against: ${data.opponentName}`);
+    });
+    
     });
   }
 
