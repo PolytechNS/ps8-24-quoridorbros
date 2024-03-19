@@ -1,6 +1,6 @@
 const querystring = require("querystring");
 const jwt = require("jsonwebtoken");
-const { getDb } = require("../mongoDB/mongoManager.js");
+const { getDb, userExists} = require("../mongoDB/mongoManager.js");
 
 function setCookie(name, value, daysToLive, response) {
   const stringValue = typeof value === "object" ? JSON.stringify(value) : value;
@@ -26,6 +26,16 @@ function manageRequest(request, response) {
       case "/api/logout":
         handleLogout(request, response);
         break;
+      case "/api/friend":
+        handleFriendRequest(request, response);
+      default:
+        response.end(`Merci d'avoir appelé ${request.url}`);
+    }
+  }
+  else if (request.method === "GET") {
+    switch (request.url) {
+      case "/api/friends/:user":
+        getFriendRequests(request, response);
       default:
         response.end(`Merci d'avoir appelé ${request.url}`);
     }
@@ -157,6 +167,65 @@ function handleLogout(request, response) {
     response.end("Erreur serveur lors de la déconnexion");
   }
 }
+
+async function handleFriendRequest(request, response){
+  const { sender, receiver } = request.body;
+
+  try {
+    const receiverExists = await userExists(receiver);
+
+    if (!receiverExists) {
+      response.status(500).json({ error: 'Receiver not found' });
+    }
+
+    const db = getDb();
+    const collection = db.collection("notifications");
+
+    await collection.updateOne(
+      { user_id: receiver },
+      { 
+        $push: {
+          notifications: {
+            $each: [{ type: "friendrequest", sender: sender }],
+            $slice: -50
+          }
+        }
+      },
+      { upsert: true }
+    );
+
+    response.status(200).json({ message: 'Friend request handled successfully' });
+  } catch (error) {
+    console.error(error); // Log the error for debugging purposes
+    response.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+async function getFriendRequests(request, response) {
+  const { user } = request.params;
+  try {
+    const db = getDb();
+    const collection = db.collection("notifications");
+    const friendRequests = await collection.findOne(
+      { user_id: user },
+      { notifications: { $elemMatch: { type: "friendrequest" } } }
+    );
+
+    if (!friendRequests || !friendRequests.notifications) {
+      response.status(200).json([]);
+      return;
+    }
+
+    response.status(200).json(friendRequests.notifications);
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: 'Failed to retrieve friend requests' });
+  }
+}
+
+
+
+
 /* This method is a helper in case you stumble upon CORS problems. It shouldn't be used as-is:
  ** Access-Control-Allow-Methods should only contain the authorized method for the url that has been targeted
  ** (for instance, some of your api urls may accept GET and POST request whereas some others will only accept PUT).

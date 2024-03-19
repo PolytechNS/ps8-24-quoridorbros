@@ -52,4 +52,22 @@ async function loadGameState(userToken) {
     return null;
   }
 }
-module.exports = { connect, getDb, saveGameState, loadGameState };
+
+async function userExists(userToken) {
+  try {
+    const db = getDb();
+    const collection = db.collection("users");
+    const userDocument = await collection.findOne({ username });
+    
+    if (!userDocument) {
+      console.log("No user found for the provided username:", username);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("An error occurred while loading user ID:", error);
+    return false;
+  }
+}
+module.exports = { connect, getDb, saveGameState, loadGameState, userExists };
