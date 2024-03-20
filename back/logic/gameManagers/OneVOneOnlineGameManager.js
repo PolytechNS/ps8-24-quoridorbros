@@ -1,12 +1,13 @@
 const { BoardUtils } = require("../../../front/js/utils.js");
 const { Game } = require("../../../front/js/game.js");
+const { SocketMapper } = require("../../socket/socketMapper.js");
 
 class OneVOneOnlineGameManager {
-  constructor(io, roomId, socketClient1, socketClient2) {
+  constructor(io, roomId, idClient1, idClient2) {
     this.io = io;
     this.roomId = roomId;
-    this.socketClient1 = socketClient1;
-    this.socketClient2 = socketClient2;
+    this.idClient1 = idClient1;
+    this.idClient2 = idClient2;
 
     this.isGameFinished = false;
     this.isFirstTurn = true;
@@ -19,19 +20,21 @@ class OneVOneOnlineGameManager {
   }
 
   initBoardPlayer1(gameState) {
-    this.socketClient1.emit("initBoard", gameState);
+    console.log("idClient1", this.idClient1.id);
+    const socket1 = SocketMapper.this.idClient1.emit("initBoard", gameState);
   }
 
   initBoardPlayer2(gameState) {
-    this.socketClient2.emit("initBoard", gameState);
+    console.log("idClient2", this.idClient2.id);
+    this.idClient2.emit("initBoard", gameState);
   }
 
   updateGameStatePlayer1(gameState) {
-    this.socketClient1.emit("updatedBoard", gameState);
+    this.idClient1.emit("updatedBoard", gameState);
   }
 
   updateGameStatePlayer2(gameState) {
-    this.socketClient1.emit("updatedBoard", gameState);
+    this.idClient1.emit("updatedBoard", gameState);
   }
 
   playerWon(playerNumber) {

@@ -1,5 +1,8 @@
+const { Socket } = require("socket.io");
 const { AiGameManager } = require("../logic/gameManagers/aiGameManager.js");
 const { RoomManager } = require("../online/roomManager.js");
+const { SocketMapper } = require("./socketMapper.js");
+const { getIdOfUser } = require("../mongoDB/mongoManager.js");
 
 class SocketManager {
   constructor(io) {
@@ -11,11 +14,18 @@ class SocketManager {
 
   setupListeners() {
     this.io.on("connection", (socket) => {
-      console.log(`New connection: ${socket.id}`);
+      console.log(`connection: ${socket.id}`);
+
+      socket.emit("getCookie");
+
+      socket.on("cookie", async (cookie) => {
+        const userId = await getIdOfUser(cookie.user);
+        SocketMapper.updateSocket(userId, socket);
+      });
 
       //Local game
       socket.on("create game", (msg) => {
-        console.log(`Create game: ${socket.id}`);
+        console.log(`create game: ${socket.id}`);
         this.attachAiGameManager(new AiGameManager(this));
       });
 
@@ -34,26 +44,16 @@ class SocketManager {
       });
 
       //Online game
-      socket.on("enter matchmaking", (playertoken) => {
-        console.log(`enter matchmaking: ${socket.id}`);
-        this.roomManager.enterMatchmaking(socket,playertoken);
+      socket.on("enter matchmaking", async (cookie) => {
+        const userId = await getIdOfUser(cookie.user);
+        console.log(`enter matchmaking: ${userId}`);
+        this.roomManager.enterMatchmaking(userId);
       });
 
       socket.on("quit matchmaking", (playertoken) => {
         console.log(`quit matchmaking: ${socket.id}`);
-        this.roomManager.quitMatchmaking(socket,playertoken);
+        this.roomManager.quitMatchmaking(socket, playertoken);
       });
-
-      socket.on("create room", (playertoken) => {
-        console.log(`create room: ${socket.id}`);
-        this.roomManager.createRoomAndJoin(socket,playertoken);
-      });
-
-      socket.on('joinedRoom', (data) => {
-        console.log(`Joined room: ${data.roomName}`);
-        console.log(`Playing against: ${data.opponentName}`);
-    });
-    
     });
   }
 

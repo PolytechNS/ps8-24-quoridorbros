@@ -58,13 +58,13 @@ async function getIdOfUser(username) {
     const db = getDb();
     const collection = db.collection("users");
     const userDocument = await collection.findOne({ username });
-    
+
     if (!userDocument) {
       console.log("No user found for the provided username:", username);
       return null;
     }
 
-    return userDocument._id;
+    return userDocument._id.toString();
   } catch (error) {
     console.error("An error occurred while loading user ID:", error);
     return null;

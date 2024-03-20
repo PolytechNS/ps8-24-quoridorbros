@@ -1,42 +1,28 @@
-const { getIdOfUser } = require("../mongoDB/mongoManager.js");
+const {
+  OneVOneOnlineGameManager,
+} = require("../logic/gameManagers/OneVOneOnlineGameManager.js");
+const { SocketMapper } = require("../socket/socketMapper.js");
 class RoomManager {
   constructor(io) {
     this.io = io;
-    this.rooms = new Map();
+    this.rooms = new Array();
   }
 
-  enterMatchmaking(socketId, playerToken) {
+  enterMatchmaking(userId) {
     try {
-      const availableRoom = Array.from(this.rooms.values()).find(room => room.isAvaible() && !room.isOnGame(playerToken));
-  
-      if (availableRoom) {
-        availableRoom.add_player(socketId, playerToken);
-        const player1 = availableRoom.players[0];
-        const player2 = availableRoom.players[1];
-        this.io.to(player1.playersocket).emit('RoomFull', {
-          roomName: availableRoom.name,
-          opponentName: player2.playertoken.user
-        });
-        this.io.to(player2.playersocket).emit('RoomFull', {
-          roomName: availableRoom.name,
-          opponentName: player1.playertoken.user
-        });
+      if (this.playerAlreadyInARoom(userId)) {
+        console.log("the player is already in a room");
+        return;
+      }
+
+      const availableRooms = this.getAvailableRooms();
+      if (availableRooms.length === 0) {
+        this.createRoomAndJoin(userId);
       } else {
-        const existingRoom = this.findPlayerRoom(playerToken);
-        if (existingRoom) {
-          const player1 = existingRoom.players[0];
-          const player2 = existingRoom.players[1];
-          this.io.to(player1.playersocket).emit('RoomFull', {
-            roomName: existingRoom.name,
-            opponentName: player2.playerToken
-          });
-          this.io.to(player2.playersocket).emit('RoomFull', {
-            roomName: existingRoom.name,
-            opponentName: player1.playerToken
-          });
-        } else {
-          this.createRoomAndJoin(socketId, playerToken);
-        }
+        const availableRoom = availableRooms[0];
+        availableRoom.add_player(userId);
+        availableRoom.createSocketRoom();
+        availableRoom.initGame();
       }
     } catch (error) {
       console.error("An error occurred while entering matchmaking:", error);
@@ -44,81 +30,106 @@ class RoomManager {
     }
   }
 
-    quitMatchmaking(socketId, playerToken) {
-      try {
-        const existingRoom = this.findPlayerRoom(playerToken);
-        if (existingRoom) {
-          this.removePlayerFromRoom(existingRoom.name, socketId);
-          this.io.to(socketId).emit('quitMatchmaking');
-        }
-      } catch (error) {
-        console.error("An error occurred while quitting matchmaking:", error);
+  quitMatchmaking(userId) {
+    try {
+      const existingRoom = this.findPlayerRoom(userId);
+      if (!existingRoom) {
+        console.log("the player was not in a room");
+        return;
       }
-    }
 
-
-  findPlayerRoom(playerToken) {
-    return Array.from(this.rooms.values()).find(room => room.isOnGame(playerToken));
-  }
-
-  createRoomAndJoin(socketId, playerToken) {
-    let newRoom = new Room(playerToken);
-    newRoom.add_player(socketId,playerToken);
-    this.rooms.set(newRoom.name,newRoom);
-    this.io.to(socketId).emit('joinedRoom', newRoom.name);
-  }
-
-  removePlayerFromRoom(roomName, socketId) {
-    const room = this.rooms.get(roomName);
-    if (room) {
-      room.removePlayer(socketId);
-      if (room.players.length === 0) {
-        this.rooms.delete(roomName); // Remove the room if it becomes empty
-      }
+      this.removePlayerFromRoom(existingRoom.name, userId);
+      const socket = SocketMapper.getSocketById(userId);
+      socket.emit("quitMatchmaking");
+    } catch (error) {
+      console.error("An error occurred while quitting matchmaking:", error);
     }
   }
 
-  findAvaiableRoom(playerToken){
-    this.rooms.forEach(room => {
-      if (!room.isOnGame(playerToken)&&room.isAvaible())
-        return room;
+  findPlayerRoom(userId) {
+    return this.rooms.find((room) => room.players.includes(userId));
+  }
+
+  getAvailableRooms() {
+    return this.rooms.filter((value) => value.isAvailable());
+  }
+
+  playerAlreadyInARoom(userId) {
+    const playerRoom = this.findPlayerRoom(userId);
+    return playerRoom ? true : false;
+  }
+
+  createRoomAndJoin(userId) {
+    let newRoom = new Room(userId, this.io);
+    newRoom.add_player(userId);
+    this.rooms.push(newRoom);
+
+    console.log(SocketMapper.toString());
+    const socket = SocketMapper.getSocketById(userId);
+    socket.emit("joinedRoom");
+  }
+
+  removePlayerFromRoom(userId) {
+    const room = this.findPlayerRoom(userId);
+    if (!room) {
+      console.log(
+        "the player cannot be removed from the room since he is not in a room"
+      );
+      return;
+    }
+    room.removePlayer(socketId);
+    if (room.players.length === 0) {
+      this.rooms = this.rooms.filter((room) => {
+        return !room.players.includes(userId);
+      });
+    }
+  }
+
+  findAvaiableRoom() {
+    this.rooms.forEach((room) => {
+      if (room.isAvailable()) return room;
     });
     return null;
   }
 }
 
 class Room {
-  constructor(playerToken){
-    this.name=this.generate_name(playerToken),
-    this.players=[]
+  constructor(userId, io) {
+    this.io = io;
+    this.roomId = this.generateRoomId(userId);
+    this.players = [];
   }
 
-  generate_name(playerToken){
-    return "Room-"+Math.floor(Math.random() * 1000)+"-"+playerToken.user;
+  generateRoomId(userId) {
+    return "Room-" + Math.floor(Math.random() * 1000) + "-" + userId;
   }
 
-  add_player(socket,token){
-    if (this.players.length<2)
-      this.players.push({playertoken:token,playersocket:socket});
+  add_player(userId) {
+    if (this.players.length < 2) this.players.push(userId);
   }
 
-  removePlayer(socketId) {
-    this.players = this.players.filter(player => player.playersocket !== socketId);
+  removePlayer(userId) {
+    this.players = this.players.filter((playerId) => playerId !== userId);
   }
 
-  isAvaible(){
-    return this.players.length<2;
+  isAvailable() {
+    return this.players.length < 2;
   }
 
-  isOnGame(playerToken){
-    this.players.forEach(player => {
-      if (player.playertoken==playerToken)
-        return true;
+  initGame() {
+    const socket1 = SocketMapper.getSocketById(this.players[0]);
+    const socket2 = SocketMapper.getSocketById(this.players[1]);
+
+    new OneVOneOnlineGameManager(this.io, this.roomId, socket1, socket2);
+  }
+
+  createSocketRoom() {
+    this.players.forEach((playerId) => {
+      const socket = SocketMapper.getSocketById(playerId);
+      socket.join(this.roomId);
     });
-    return false;
+    this.io.to(this.roomId).emit("RoomFull");
   }
-
-
 }
 
 exports.RoomManager = RoomManager;

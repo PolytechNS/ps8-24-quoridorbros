@@ -5,6 +5,12 @@ socket.on("initBoard", (gameState) => {
   clientBoard = new ClientBoard(onCellClick, onWallClick, gameState);
 });
 
+socket.on("getCookie", () => {
+  let jsonCookie = getCookie("connected");
+  let cookie = JSON.parse(jsonCookie);
+  socket.emit("cookie", cookie);
+});
+
 socket.on("updatedBoard", (gameState) => {
   clientBoard.updateBoard(gameState);
 });
@@ -29,6 +35,15 @@ function loadGame(token) {
   socket.emit("load-game", token);
 }
 
-function enterMatchMaking(token){
-  socket.emit("enter matchmaking",token);
+socket.on("RoomFull", () => {
+  console.log("RoomFull");
+  window.location.href = "../pages/onlineGame.html";
+});
+
+socket.on("joinedRoom", () => {
+  console.log("joinedRoom");
+});
+
+function enterMatchMaking(cookie) {
+  socket.emit("enter matchmaking", cookie);
 }
