@@ -3,6 +3,7 @@ const { AiGameManager } = require("../logic/gameManagers/aiGameManager.js");
 const { RoomManager } = require("../online/roomManager.js");
 const { SocketMapper } = require("./socketMapper.js");
 const { getIdOfUser } = require("../mongoDB/mongoManager.js");
+const { SocketSender } = require("./socketSender.js");
 
 class SocketManager {
   constructor(io) {
@@ -21,6 +22,7 @@ class SocketManager {
       socket.on("cookie", async (cookie) => {
         const userId = await getIdOfUser(cookie.user);
         SocketMapper.updateSocket(userId, socket);
+        SocketSender.resendAllPending(userId);
       });
 
       //Local game

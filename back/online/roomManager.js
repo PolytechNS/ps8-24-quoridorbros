@@ -2,6 +2,8 @@ const {
   OneVOneOnlineGameManager,
 } = require("../logic/gameManagers/OneVOneOnlineGameManager.js");
 const { SocketMapper } = require("../socket/socketMapper.js");
+const { SocketSender } = require("../socket/socketSender.js");
+
 class RoomManager {
   constructor(io) {
     this.io = io;
@@ -39,8 +41,7 @@ class RoomManager {
       }
 
       this.removePlayerFromRoom(existingRoom.name, userId);
-      const socket = SocketMapper.getSocketById(userId);
-      socket.emit("quitMatchmaking");
+      SocketSender.sendMessage(userId, "quitMatchmaking");
     } catch (error) {
       console.error("An error occurred while quitting matchmaking:", error);
     }
@@ -65,8 +66,7 @@ class RoomManager {
     this.rooms.push(newRoom);
 
     console.log(SocketMapper.toString());
-    const socket = SocketMapper.getSocketById(userId);
-    socket.emit("joinedRoom");
+    SocketSender.sendMessage(userId, "joinedRoom");
   }
 
   removePlayerFromRoom(userId) {
@@ -117,10 +117,12 @@ class Room {
   }
 
   initGame() {
-    const socket1 = SocketMapper.getSocketById(this.players[0]);
-    const socket2 = SocketMapper.getSocketById(this.players[1]);
-
-    new OneVOneOnlineGameManager(this.io, this.roomId, socket1, socket2);
+    new OneVOneOnlineGameManager(
+      this.io,
+      this.roomId,
+      this.players[0],
+      this.players[1]
+    );
   }
 
   createSocketRoom() {

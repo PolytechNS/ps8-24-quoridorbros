@@ -1,6 +1,7 @@
 const { BoardUtils } = require("../../../front/js/utils.js");
 const { Game } = require("../../../front/js/game.js");
 const { SocketMapper } = require("../../socket/socketMapper.js");
+const { SocketSender } = require("../../socket/socketSender.js");
 
 class OneVOneOnlineGameManager {
   constructor(io, roomId, idClient1, idClient2) {
@@ -20,13 +21,13 @@ class OneVOneOnlineGameManager {
   }
 
   initBoardPlayer1(gameState) {
-    console.log("idClient1", this.idClient1.id);
-    const socket1 = SocketMapper.this.idClient1.emit("initBoard", gameState);
+    console.log("idClient1", this.idClient1);
+    SocketSender.sendMessage(this.idClient1, "initBoard", gameState);
   }
 
   initBoardPlayer2(gameState) {
-    console.log("idClient2", this.idClient2.id);
-    this.idClient2.emit("initBoard", gameState);
+    console.log("idClient2", this.idClient2);
+    SocketSender.sendMessage(this.idClient2, "initBoard", gameState);
   }
 
   updateGameStatePlayer1(gameState) {
