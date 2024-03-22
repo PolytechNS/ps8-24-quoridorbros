@@ -22,14 +22,15 @@ const {
   correction,
   updateBoard,
 } = require("../quoridorbros.js");
+const { SocketSender } = require("../../socket/socketSender.js");
 
 class AiGameManager {
-  constructor(socketManager, userToken) {
-    this.socketManager = socketManager;
+  constructor(userId, loadGame = false) {
+    this.userId = userId;
     this.isGameFinished = false;
     const initializeGame = async () => {
-      if (userToken) {
-        let gameState = await loadGameState(userToken);
+      if (loadGame) {
+        let gameState = await loadGameState(userId);
         this.game = new Game(this, gameState);
       } else {
         this.game = new Game(this);
@@ -42,17 +43,15 @@ class AiGameManager {
   }
 
   initBoardPlayer1(gameState) {
-    this.socketManager.initClientBoard(gameState);
+    SocketSender.sendMessage(this.userId, "initBoard", gameState);
   }
   initBoardPlayer2(gameState) {}
 
   updateGameStatePlayer1(gameState) {
     if (gameState.turnOf === 1) {
       this.transformGameState(gameState, 1);
-      //this.logHeuristicValues(gameState);
     }
-
-    this.socketManager.updateClientBoard(gameState);
+    SocketSender.sendMessage(this.userId, "updatedBoard", gameState);
   }
   updateGameStatePlayer2(gameState) {
     if (gameState.turnOf === 2) {
@@ -61,11 +60,10 @@ class AiGameManager {
   }
   playerWon(playerNumber) {
     this.isGameFinished = true;
-    this.socketManager.playerWon(playerNumber);
+    SocketSender.sendMessage(this.userId, "winner", playerNumber);
   }
 
   movePlayer1(move) {
-    this.transformMoves(move);
     if (this.isGameFinished) return;
     if (BoardUtils.isWall(move.x, move.y)) {
       this.game.onWallClick(move.x, move.y);
@@ -75,9 +73,6 @@ class AiGameManager {
   }
   async movePlayer2(gameState) {
     if (this.isGameFinished) return;
-
-    this.transformGameState(gameState, 2);
-    //this.logHeuristicValues(gameState);
 
     const vellaGameState = fromOurToVellaGameState(gameState, 2);
 
@@ -147,9 +142,9 @@ class AiGameManager {
     return ourMove;
   }
 
-  async saveGame(userToken) {
+  async saveGame(userId) {
     const gameState = this.game.generateGameState();
-    saveGameState(userToken, gameState);
+    saveGameState(userId, gameState);
   }
 }
 

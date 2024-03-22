@@ -1,17 +1,22 @@
 let socket = io();
 let clientBoard;
 
-socket.on("initBoard", (gameState) => {
+let jsonCookie = getCookie("connected");
+let cookie = JSON.parse(jsonCookie);
+
+socket.on("initBoard", (msg) => {
+  socket.emit("Acknowledgement", msg.id);
+  const gameState = msg.data;
   clientBoard = new ClientBoard(onCellClick, onWallClick, gameState);
 });
 
 socket.on("getCookie", () => {
-  let jsonCookie = getCookie("connected");
-  let cookie = JSON.parse(jsonCookie);
   socket.emit("cookie", cookie);
 });
 
-socket.on("updatedBoard", (gameState) => {
+socket.on("updatedBoard", (msg) => {
+  socket.emit("Acknowledgement", msg.id);
+  const gameState = msg.data;
   clientBoard.updateBoard(gameState);
 });
 
@@ -24,7 +29,7 @@ function onWallClick(x, y) {
 }
 
 function createGame() {
-  socket.emit("create game", {});
+  socket.emit("create game", cookie);
 }
 
 function saveGame(token) {
@@ -35,12 +40,14 @@ function loadGame(token) {
   socket.emit("load-game", token);
 }
 
-socket.on("RoomFull", () => {
+socket.on("RoomFull", (msg) => {
+  //socket.emit("Acknowledgement", msg.id);
   console.log("RoomFull");
   window.location.href = "../pages/onlineGame.html";
 });
 
 socket.on("joinedRoom", () => {
+  socket.emit("Acknowledgement", msg.id);
   console.log("joinedRoom");
 });
 

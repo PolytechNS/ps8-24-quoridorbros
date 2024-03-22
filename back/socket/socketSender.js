@@ -6,15 +6,16 @@ class SocketSender {
   static resetTimeOut = [];
 
   static sendMessage(userId, message, data) {
+    console.log("voici le user id", userId);
     console.log("voici le message envoyé", message);
     const socket = SocketMapper.getSocketById(userId);
+    console.log("voici la socket id", socket.id);
 
     if (!this.messageIdCounter[userId]) {
       this.messageIdCounter[userId] = 1;
     }
 
     const messageId = this.messageIdCounter[userId]++;
-
     if (!this.pendingMessages[userId]) {
       this.pendingMessages[userId] = [];
     }

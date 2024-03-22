@@ -1,5 +1,10 @@
-const { Socket } = require("socket.io");
 const { AiGameManager } = require("../logic/gameManagers/aiGameManager.js");
+const {
+  GameManagerFactory,
+} = require("../logic/gameManagers/gameManagerFactory.js");
+
+const { configureAiGameEvents } = require("./aiGameEvents.js");
+
 const { RoomManager } = require("../online/roomManager.js");
 const { SocketMapper } = require("./socketMapper.js");
 const { getIdOfUser } = require("../mongoDB/mongoManager.js");
@@ -25,24 +30,31 @@ class SocketManager {
         SocketSender.resendAllPending(userId);
       });
 
+      socket.on("Acknowledgement", (messageId) => {
+        const userId = SocketMapper.getUserIdBySocketId(socket.id);
+        console.log(`Acknowledgement socketid: ${socket.id}`);
+        console.log(`Acknowledgement userid: ${userId}`);
+        console.log(`id   message: ${messageId}`);
+
+        SocketSender.handleAcknowledgement(userId, messageId);
+      });
+
       //Local game
-      socket.on("create game", (msg) => {
+      socket.on("create game", async (cookie) => {
         console.log(`create game: ${socket.id}`);
-        this.attachAiGameManager(new AiGameManager(this));
+        const userId = await getIdOfUser(cookie.user);
+        const aiGameManager = GameManagerFactory.createAiGameManager(userId);
+        configureAiGameEvents(socket, aiGameManager);
       });
 
-      socket.on("load-game", (token) => {
+      socket.on("load-game", async (cookie) => {
         console.log(`load-game: ${socket.id}`);
-        this.attachAiGameManager(new AiGameManager(this, token));
-      });
-
-      socket.on("newMove", (move) => {
-        this.aiGameManager.movePlayer1(move);
-      });
-
-      socket.on("save-game", (token) => {
-        console.log(`save-game: ${socket.id}`);
-        this.aiGameManager.saveGame(token);
+        const userId = await getIdOfUser(cookie.user);
+        const aiGameManager = GameManagerFactory.createAiGameManager(
+          userId,
+          true
+        );
+        configureAiGameEvents(socket, aiGameManager);
       });
 
       //Online game
@@ -57,22 +69,6 @@ class SocketManager {
         this.roomManager.quitMatchmaking(socket, playertoken);
       });
     });
-  }
-
-  attachAiGameManager(AiGameManager) {
-    this.aiGameManager = AiGameManager;
-  }
-
-  updateClientBoard(gameState) {
-    this.io.emit("updatedBoard", gameState);
-  }
-
-  initClientBoard(gameState) {
-    this.io.emit("initBoard", gameState);
-  }
-
-  playerWon(playerNumber) {
-    this.io.emit("winner", playerNumber);
   }
 }
 

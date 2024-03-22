@@ -16,16 +16,16 @@ function getDb() {
   return db;
 }
 
-async function saveGameState(userToken, gameState) {
+async function saveGameState(userId, gameState) {
   const save = {
-    token: userToken,
+    token: userId,
     game: gameState,
   };
   try {
     const db = getDb();
     const collection = db.collection("gameStates");
     await collection.updateOne(
-      { token: userToken },
+      { token: userId },
       { $set: save },
       { upsert: true }
     );
@@ -34,12 +34,12 @@ async function saveGameState(userToken, gameState) {
   }
 }
 
-async function loadGameState(userToken) {
+async function loadGameState(userId) {
   try {
     const db = getDb();
     const collection = db.collection("gameStates");
     const save = await collection.findOne({
-      token: userToken,
+      token: userId,
     });
     if (!save) {
       console.log("No game state found for this user token");

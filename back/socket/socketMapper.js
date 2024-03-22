@@ -24,10 +24,19 @@ class SocketMapper {
     }
   }
 
+  static getUserIdBySocketId(socketId) {
+    for (const [userId, socket] of SocketMapper.mapper.entries()) {
+      if (socket.id === socketId) {
+        return userId;
+      }
+    }
+    return null;
+  }
+
   static toString() {
     console.log("Voici le mappe");
     this.mapper.forEach((value, key) => {
-      console.log(`Clé: ${key}, Valeur: ${value.id}`);
+      console.log(`UserId: ${key}, SocketId: ${value.id}`);
     });
     console.log("\n");
   }
