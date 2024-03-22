@@ -175,7 +175,7 @@ async function handleFriendRequest(request, response){
     const receiverExists = await userExists(receiver);
 
     if (!receiverExists) {
-      response.status(500).json({ error: 'Receiver not found' });
+      response.status(400).json({ error: 'User not found' });
     }
 
     const db = getDb();

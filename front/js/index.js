@@ -42,27 +42,32 @@ document.getElementById("sendRequestBtn").addEventListener("click", async functi
       const sender = connectedCookieValue.user;
       const receiver = document.getElementById("receiver").value;
 
-      const options = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json' // Assuming you're sending JSON data
-        },
+      const response = await fetch("/api/friend", {
+        method: "POST",
         body: JSON.stringify({
           sender: sender,
           receiver: receiver
         }),
-      };
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        }
+      });
 
-      const response = await fetch("/api/friend", options);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
+      if (response.ok) { // Vérifie si le statut de la réponse est OK (code HTTP 200-299)
+        alert("Friend request sended");
+      } else {
+        // Gestion des réponses d'erreur de l'API
+        const errorText = await response.text(); // ou response.json() si l'API retourne du JSON
+        alert("OUPS : " + errorText);
       }
-      alert("Request sent successfully");
+
+
     } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
+      console.error('Error:', error);
     }
   }
 });
+
 
 /*
 
