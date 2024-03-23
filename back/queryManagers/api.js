@@ -1,6 +1,7 @@
 const querystring = require("querystring");
 const jwt = require("jsonwebtoken");
 const { getDb, userExists} = require("../mongoDB/mongoManager.js");
+const url = require('url');
 
 function setCookie(name, value, daysToLive, response) {
   const stringValue = typeof value === "object" ? JSON.stringify(value) : value;
@@ -16,7 +17,8 @@ function setCookie(name, value, daysToLive, response) {
 
 function manageRequest(request, response) {
   if (request.method === "POST") {
-    switch (request.url) {
+    const path = request.url.split('?')[0];
+    switch (path) {
       case "/api/signin":
         handleSignIn(request, response);
         break;
@@ -169,17 +171,38 @@ function handleLogout(request, response) {
 }
 
 async function handleFriendRequest(request, response){
-  const { sender, receiver } = request.body;
+  console.log("In handle request");
+  const parsedUrl = url.parse(request.url, true);
+  const queryParameters = parsedUrl.query;
+
+  const sender = queryParameters.sender;
+  const receiver = queryParameters.receiver;
+
+  console.log(sender,receiver);
 
   try {
     const receiverExists = await userExists(receiver);
 
     if (!receiverExists) {
-      response.status(400).json({ error: 'User not found' });
+      response.statusCode = 400;
+      response.end(JSON.stringify({ error: 'User not found' }));
+      return;
     }
 
     const db = getDb();
     const collection = db.collection("notifications");
+
+    const existingNotification = await collection.findOne({
+      user_id: receiver,
+      'notifications.sender': sender,
+      'notifications.type': 'friendrequest'
+    });
+
+    if (existingNotification) {
+      response.statusCode = 400;
+      response.end(JSON.stringify({ error: 'Friend request already sent' }));
+      return;
+    }
 
     await collection.updateOne(
       { user_id: receiver },
@@ -194,10 +217,12 @@ async function handleFriendRequest(request, response){
       { upsert: true }
     );
 
-    response.status(200).json({ message: 'Friend request handled successfully' });
+    response.statusCode = 200;
+    response.end(JSON.stringify({ message: 'Friend request handled successfully' }));
   } catch (error) {
-    console.error(error); // Log the error for debugging purposes
-    response.status(500).json({ error: 'Internal server error' });
+    console.error(error);
+    response.statusCode = 500;
+    response.end(JSON.stringify({ error: 'Internal server error' }));
   }
 }
 

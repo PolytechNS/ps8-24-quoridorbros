@@ -57,10 +57,10 @@ async function userExists(userToken) {
   try {
     const db = getDb();
     const collection = db.collection("users");
-    const userDocument = await collection.findOne({ username });
+    const userDocument = await collection.findOne({ username: userToken });
     
     if (!userDocument) {
-      console.log("No user found for the provided username:", username);
+      console.log("No user found for the provided username:", userToken);
       return false;
     }
 

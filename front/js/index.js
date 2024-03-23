@@ -34,7 +34,9 @@ document.getElementById("logoutButton").addEventListener("click", function () {
     })
     .catch((error) => console.error("Error:", error));
 });
-document.getElementById("sendRequestBtn").addEventListener("click", async function() {
+document.getElementById("friendRequestForm").addEventListener("submit", async function(event) {
+  event.preventDefault();
+
   let connectedCookieValue = getCookie("connected");
   if (connectedCookieValue) {
     try {
@@ -42,31 +44,34 @@ document.getElementById("sendRequestBtn").addEventListener("click", async functi
       const sender = connectedCookieValue.user;
       const receiver = document.getElementById("receiver").value;
 
-      const response = await fetch("/api/friend", {
+      const requestURL = `/api/friend?sender=${encodeURIComponent(sender)}&receiver=${encodeURIComponent(receiver)}`;
+      const response = await fetch(requestURL, {
         method: "POST",
-        body: JSON.stringify({
-          sender: sender,
-          receiver: receiver
-        }),
         headers: {
-          "Content-type": "application/json; charset=UTF-8",
+            "Content-Type": "application/json"
         }
       });
 
-      if (response.ok) { // Vérifie si le statut de la réponse est OK (code HTTP 200-299)
-        alert("Friend request sended");
+      if (response.ok) {
+        alert("Friend request sent");
+        document.getElementById("friendRequestForm").reset();
       } else {
-        // Gestion des réponses d'erreur de l'API
-        const errorText = await response.text(); // ou response.json() si l'API retourne du JSON
-        alert("OUPS : " + errorText);
+        const error = await response.json();
+        throw new Error(error.message || "Failed to send friend request");
       }
-
 
     } catch (error) {
       console.error('Error:', error);
+      alert("An error occurred while processing your request.");
     }
   }
 });
+
+
+
+
+
+
 
 
 /*
