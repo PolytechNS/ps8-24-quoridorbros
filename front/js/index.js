@@ -35,30 +35,40 @@ document.getElementById("logoutButton").addEventListener("click", function () {
     .catch((error) => console.error("Error:", error));
 });
 document.getElementById("friendRequestForm").addEventListener("submit", async function(event) {
-  event.preventDefault();
+  event.preventDefault(); // Prevents the default form submission behavior
 
+  // Retrieves the value of the "connected" cookie
   let connectedCookieValue = getCookie("connected");
+
+  // Checks if the "connected" cookie exists
   if (connectedCookieValue) {
     try {
       connectedCookieValue = JSON.parse(connectedCookieValue);
+
       const sender = connectedCookieValue.user;
       const receiver = document.getElementById("receiver").value;
 
       const requestURL = `/api/friend?sender=${encodeURIComponent(sender)}&receiver=${encodeURIComponent(receiver)}`;
+
       const response = await fetch(requestURL, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+          "Content-Type": "application/json"
         }
       });
+      const responseData = await response.text();
 
-      if (response.ok) {
-        alert("Friend request sent");
-        document.getElementById("friendRequestForm").reset();
+      if (response.status === 200) {
+        alert("Friend request sent successfully!");
+      } else if (response.status === 400) {
+        const errorResponse = JSON.parse(responseData);
+        alert(`Bad request: ${errorResponse.error}`);
+      } else if (response.status === 500) {
+        alert("Internal Server Error. Please try again later.");
       } else {
-        const error = await response.json();
-        throw new Error(error.message || "Failed to send friend request");
+        alert("Unexpected error. Please try again later.");
       }
+        document.getElementById("friendRequestForm").reset();
 
     } catch (error) {
       console.error('Error:', error);
@@ -66,6 +76,9 @@ document.getElementById("friendRequestForm").addEventListener("submit", async fu
     }
   }
 });
+
+
+
 
 
 

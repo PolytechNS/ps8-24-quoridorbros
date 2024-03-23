@@ -30,6 +30,7 @@ function manageRequest(request, response) {
         break;
       case "/api/friend":
         handleFriendRequest(request, response);
+        break;
       default:
         response.end(`Merci d'avoir appelé ${request.url}`);
     }
@@ -171,14 +172,11 @@ function handleLogout(request, response) {
 }
 
 async function handleFriendRequest(request, response){
-  console.log("In handle request");
   const parsedUrl = url.parse(request.url, true);
   const queryParameters = parsedUrl.query;
 
   const sender = queryParameters.sender;
   const receiver = queryParameters.receiver;
-
-  console.log(sender,receiver);
 
   try {
     const receiverExists = await userExists(receiver);
