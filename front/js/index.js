@@ -14,6 +14,7 @@ window.onload = function () {
     document.getElementById("signinButton").style.display = "none";
     playWithAIButton.style.display = "inline";
     playLocalButton.style.display = "inline";
+    fetchNotifications();
   }
 };
 
@@ -77,23 +78,16 @@ document.getElementById("friendRequestForm").addEventListener("submit", async fu
   }
 });
 
-
-
-
-
-
-
-
-
-
-
-/*
-
 async function fetchNotifications() {
-  let connectedCookieValue = getCookie("connected");
-  if (connectedCookieValue) {
-    try {
-      const response = await fetch('/api/friends/' + connectedCookieValue.user);
+  try {
+    let connectedCookieValue = getCookie("connected");
+    if (connectedCookieValue) {
+      connectedCookieValue = JSON.parse(connectedCookieValue);
+      const sender = connectedCookieValue.user;
+      const response = await fetch(`/api/friends?userId=${sender}`);
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch notifications');
+      }
       const notifications = await response.json();
       const notificationsList = document.getElementById("notifications");
       notificationsList.innerHTML = '';
@@ -103,9 +97,9 @@ async function fetchNotifications() {
         listItem.textContent = `${notification.sender} sent you a friend request`;
         notificationsList.appendChild(listItem);
       });
-    } catch (error) {
-      console.error(error);
     }
+  } catch (error) {
+    console.error(error);
   }
 }
-*/
+

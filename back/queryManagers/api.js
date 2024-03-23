@@ -36,9 +36,10 @@ function manageRequest(request, response) {
     }
   }
   else if (request.method === "GET") {
-    switch (request.url) {
-      case "/api/friends/:user":
+    switch (true) {
+      case request.url.startsWith("/api/friends"):
         getFriendRequests(request, response);
+        break;
       default:
         response.end(`Merci d'avoir appelé ${request.url}`);
     }
@@ -225,7 +226,11 @@ async function handleFriendRequest(request, response){
 }
 
 async function getFriendRequests(request, response) {
-  const { user } = request.params;
+  const parsedUrl = url.parse(request.url, true);
+  const query = parsedUrl.query;
+  console.log(query);
+  const user = query.userId;
+
   try {
     const db = getDb();
     const collection = db.collection("notifications");
@@ -235,16 +240,20 @@ async function getFriendRequests(request, response) {
     );
 
     if (!friendRequests || !friendRequests.notifications) {
-      response.status(200).json([]);
+      response.statusCode = 200;
+      response.end(JSON.stringify({}));
       return;
     }
 
-    response.status(200).json(friendRequests.notifications);
+    response.statusCode = 200;
+    response.end(JSON.stringify(friendRequests.notifications));
   } catch (error) {
     console.error(error);
-    response.status(500).json({ error: 'Failed to retrieve friend requests' });
+    response.statusCode = 500;
+    response.end(JSON.stringify({ error: 'Internal server error' }));
   }
 }
+
 
 
 
