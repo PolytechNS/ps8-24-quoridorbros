@@ -1,5 +1,5 @@
-const { BoardUtils } = require("../../../front/js/utils");
-const { GameBoard } = require("../../../front/js/game");
+const { BoardUtils } = require("../../../front/utils/utils");
+const { GameBoard } = require("../../../front/utils/game");
 /*
 
 Transforme le gameState de Vella en gameState du moteur de jeu

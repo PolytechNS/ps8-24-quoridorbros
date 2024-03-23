@@ -43,7 +43,7 @@ function loadGame(token) {
 socket.on("RoomFull", (msg) => {
   //socket.emit("Acknowledgement", msg.id);
   console.log("RoomFull");
-  window.location.href = "../pages/onlineGame.html";
+  window.location.href = "../onlineGame/onlineGame.html";
 });
 
 socket.on("joinedRoom", () => {

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Game</title>
-    <link rel="stylesheet" type="text/css" href="../styles/game.css">
+    <link rel="stylesheet" type="text/css" href="../clientBoard/clientBoard.css">
 </head>
 <body>
     <button id="saveButton" style="display: none;">Save game & Quit</button>
@@ -11,11 +11,11 @@
     <button id="newGame" >New game</button>
     <div id="gameBoard" class="gameBoard"></div>
 
-    <script type="text/javascript" src="../js/socket.io.js"></script>
-    <script type="text/javascript" src="../js/utils.js"></script>
-    <script type="text/javascript" src="../js/clientBoard.js"></script>
-    <script type="text/javascript" src="../js/cookieManager.js"></script>
-    <script type="text/javascript" src="../js/ioManager.js"></script>
+    <script type="text/javascript" src="../sockets/socket.io.js"></script>
+    <script type="text/javascript" src="../../utils/utils.js"></script>
+    <script type="text/javascript" src="../clientBoard/clientBoard.js"></script>
+    <script type="text/javascript" src="../../utils/cookieManager.js"></script>
+    <script type="text/javascript" src="../sockets/ioManager.js"></script>
 
     <script>
         
@@ -28,7 +28,7 @@
             if (connectedCookieValue !== undefined) {
                 let connected = JSON.parse(connectedCookieValue);
                 saveGame(connected.token);
-                window.location.href = "../index.html";
+                window.location.href = "../../index.html";
             }
 
         });

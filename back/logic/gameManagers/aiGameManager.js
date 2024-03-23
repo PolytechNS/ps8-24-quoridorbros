@@ -1,5 +1,5 @@
-const { BoardUtils } = require("../../../front/js/utils.js");
-const { Game } = require("../../../front/js/game.js");
+const { BoardUtils } = require("../../../front/utils/utils.js");
+const { Game } = require("../../../front/utils/game.js");
 const {
   saveGameState,
   loadGameState,
