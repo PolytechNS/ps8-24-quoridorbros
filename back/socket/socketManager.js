@@ -4,7 +4,7 @@ const {
 
 const { configureAiGameEvents } = require("./gameEvents.js");
 
-const { RoomManager } = require("../online/roomManager.js");
+const { RoomManager } = require("../logic/online/roomManager.js");
 const { SocketMapper } = require("./socketMapper.js");
 const { getIdOfUser } = require("../mongoDB/mongoManager.js");
 const { SocketSender } = require("./socketSender.js");

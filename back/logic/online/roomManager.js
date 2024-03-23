@@ -1,12 +1,12 @@
 const {
   OneVOneOnlineGameManager,
-} = require("../logic/gameManagers/OneVOneOnlineGameManager.js");
-const { configureOneVOneOnlineGameEvents } = require("../socket/gameEvents.js");
+} = require("../gameManagers/OneVOneOnlineGameManager.js");
 const {
-  GameManagerFactory,
-} = require("../logic/gameManagers/gameManagerFactory.js");
-const { SocketMapper } = require("../socket/socketMapper.js");
-const { SocketSender } = require("../socket/socketSender.js");
+  configureOneVOneOnlineGameEvents,
+} = require("../../socket/gameEvents.js");
+const { GameManagerFactory } = require("../gameManagers/gameManagerFactory.js");
+const { SocketMapper } = require("../../socket/socketMapper.js");
+const { SocketSender } = require("../../socket/socketSender.js");
 
 class RoomManager {
   constructor(io) {
