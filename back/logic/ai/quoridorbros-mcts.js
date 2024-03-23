@@ -1,5 +1,5 @@
-const { findShortestPathMove } = require("../../front/js/pathfinding.js");
-const { BoardUtils } = require("../../front/js/utils.js");
+const { findShortestPathMove } = require("../../../front/utils/pathfinding.js");
+const { BoardUtils } = require("../../../front/utils/utils.js");
 const {
   fromVellaToOurGameState,
   fromOurToVellaGameState,
