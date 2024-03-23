@@ -1,6 +1,10 @@
 const {
   OneVOneOnlineGameManager,
 } = require("../logic/gameManagers/OneVOneOnlineGameManager.js");
+const { configureOneVOneOnlineGameEvents } = require("../socket/gameEvents.js");
+const {
+  GameManagerFactory,
+} = require("../logic/gameManagers/gameManagerFactory.js");
 const { SocketMapper } = require("../socket/socketMapper.js");
 const { SocketSender } = require("../socket/socketSender.js");
 
@@ -117,12 +121,18 @@ class Room {
   }
 
   initGame() {
-    new OneVOneOnlineGameManager(
-      this.io,
-      this.roomId,
-      this.players[0],
-      this.players[1]
-    );
+    const oneVOneOnlineGameManager =
+      GameManagerFactory.createOneVOneOnlineGameManager(
+        this.io,
+        this.roomId,
+        this.players[0],
+        this.players[1]
+      );
+
+    for (let i = 0; i < 2; i++) {
+      const socket = SocketMapper.getSocketById(this.players[i]);
+      configureOneVOneOnlineGameEvents(socket, oneVOneOnlineGameManager, i + 1);
+    }
   }
 
   createSocketRoom() {

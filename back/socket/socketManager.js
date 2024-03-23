@@ -1,9 +1,8 @@
-const { AiGameManager } = require("../logic/gameManagers/aiGameManager.js");
 const {
   GameManagerFactory,
 } = require("../logic/gameManagers/gameManagerFactory.js");
 
-const { configureAiGameEvents } = require("./aiGameEvents.js");
+const { configureAiGameEvents } = require("./gameEvents.js");
 
 const { RoomManager } = require("../online/roomManager.js");
 const { SocketMapper } = require("./socketMapper.js");

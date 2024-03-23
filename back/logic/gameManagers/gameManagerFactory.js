@@ -1,13 +1,11 @@
 const { AiGameManager } = require("./aiGameManager.js");
+const { GameManagerMapper } = require("./gameManagerMapper.js");
 const { OneVOneOnlineGameManager } = require("./OneVOneOnlineGameManager.js");
 
 class GameManagerFactory {
-  static aiGameManagers = [];
-  static oneVOneOnlineGameManagers = [];
-
   static createAiGameManager(userId, loadGame = false) {
     const aiGameManager = new AiGameManager(userId, loadGame);
-    this.aiGameManagers.push(aiGameManager);
+    GameManagerMapper.updateGameManager(userId, aiGameManager);
     return aiGameManager;
   }
 
@@ -18,18 +16,10 @@ class GameManagerFactory {
       idClient1,
       idClient2
     );
-    this.oneVOneOnlineGameManagers.push(oneVOneOnlineGameManager);
+    GameManagerMapper.updateGameManager(idClient1, oneVOneOnlineGameManager);
+    GameManagerMapper.updateGameManager(idClient2, oneVOneOnlineGameManager);
+
     return oneVOneOnlineGameManager;
-  }
-
-  static getAiGameManager(userId) {
-    return this.aiGameManagers.find((manager) => manager.userId === userId);
-  }
-
-  static getOneVOneOnlineGameManager(userId) {
-    return this.oneVOneOnlineGameManagers.find(
-      (manager) => manager.idClient1 === userId || manager.idClient2 === userId
-    );
   }
 }
 
