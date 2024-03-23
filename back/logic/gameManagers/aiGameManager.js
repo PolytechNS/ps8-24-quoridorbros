@@ -9,19 +9,19 @@ const {
   fromOurToVellaGameState,
   fromOurToVellaMove,
   fromVellaToOurMove,
-} = require("../aiAdapter.js");
+} = require("../ai/aiAdapter.js");
 
 const {
   deltaDistanceHeuristic,
   deltaWallsHeuristic,
-} = require("../heuristics.js");
+} = require("../ai/heuristics.js");
 
 const {
   setup,
   nextMove,
   correction,
   updateBoard,
-} = require("../quoridorbros.js");
+} = require("../ai/quoridorbros.js");
 const { SocketSender } = require("../../socket/socketSender.js");
 
 class AiGameManager {

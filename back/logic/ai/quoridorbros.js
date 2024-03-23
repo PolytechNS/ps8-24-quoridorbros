@@ -1,4 +1,4 @@
-const { findShortestPathMove } = require("../../front/js/pathfinding.js");
+const { findShortestPathMove } = require("../../../front/js/pathfinding.js");
 
 const {
   fromVellaToOurGameState,
@@ -14,7 +14,7 @@ const {
   deltaWallsHeuristic,
 } = require("./heuristics.js");
 
-const { BoardUtils } = require("../../front/js/utils.js");
+const { BoardUtils } = require("../../../front/js/utils.js");
 
 let numPlayer;
 let numOtherPlayer;
