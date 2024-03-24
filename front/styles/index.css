@@ -22,26 +22,29 @@ body{
 }
 
 button {
-   padding: 0.6em 2em;
-   border: none;
-   outline: none;
+    padding: 0.6em 2em;
+    border: none;
+    outline: none;
     width: 80%;
     height: 10%;
     font-family: inherit;
-   font-size: 2em;
-   color: rgb(255, 255, 255);
-   background: #111;
-   cursor: pointer;
-   position: relative;
-   z-index: 0;
-   border-radius: 20px;
-   user-select: none;
-   -webkit-user-select: none;
-   touch-action: manipulation;
+    font-size: 2em;
+    color: rgb(255, 255, 255);
+    background: #111;
+    cursor: pointer;
+    position: relative;
+    z-index: 0;
+    border-radius: 20px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
 }
 
 button:before {
     content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
     background: linear-gradient(
             45deg,
             #ff0000,
@@ -54,18 +57,20 @@ button:before {
             #ff00c8,
             #ff0000
     );
-    position: absolute;
-    top: -2px;
-    left: -2px;
     background-size: 400%;
     z-index: -1;
     filter: blur(10px);
     -webkit-filter: blur(10px);
     width: calc(100% + 4px);
     height: calc(100% + 4px);
-    animation: glowing-button 20s linear infinite;
     transition: opacity 0.3s ease-in-out;
     border-radius: 10px;
+    opacity: 0; /* Initially hide the rainbow effect */
+}
+
+button:hover:before {
+    opacity: 1; /* Show the rainbow effect on hover */
+    animation: glowing-button 20s linear infinite;
 }
 
 @keyframes glowing-button {
