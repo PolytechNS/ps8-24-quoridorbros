@@ -1,6 +1,6 @@
 const querystring = require("querystring");
 const jwt = require("jsonwebtoken");
-const { getDb, userExists} = require("../mongoDB/mongoManager.js");
+const { getDb, userExists, areFriends} = require("../mongoDB/mongoManager.js");
 const url = require('url');
 
 function setCookie(name, value, daysToLive, response) {
@@ -31,13 +31,16 @@ function manageRequest(request, response) {
       case "/api/friend":
         handleFriendRequest(request, response);
         break;
+      case "/api/friend/accept":
+        handleFriendAcceptance(request, response);
+        break;
       default:
         response.end(`Merci d'avoir appelé ${request.url}`);
     }
   }
   else if (request.method === "GET") {
     switch (true) {
-      case request.url.startsWith("/api/friends"):
+      case request.url.startsWith("/api/notifications/friends"):
         getFriendRequests(request, response);
         break;
       default:
@@ -81,6 +84,7 @@ async function handleSignIn(request, response) {
         username: parsedData.username,
         mail: parsedData.mail,
         token: token,
+        elo: 1000
       };
 
       await collection.insertOne(encodedData);
@@ -188,6 +192,15 @@ async function handleFriendRequest(request, response){
       return;
     }
 
+    const alreadyFriends = await areFriends(sender,receiver);
+
+    if (alreadyFriends){
+      response.statusCode = 400;
+      response.end(JSON.stringify({ error: 'Already friends' }));
+      return;
+    }
+
+
     const db = getDb();
     const collection = db.collection("notifications");
 
@@ -255,7 +268,49 @@ async function getFriendRequests(request, response) {
 }
 
 
+async function handleFriendAcceptance(request, response){
+  const parsedUrl = url.parse(request.url, true);
+  const queryParameters = parsedUrl.query;
 
+  const from = queryParameters.from;
+  const to = queryParameters.to;
+
+  try {
+    const db = await getDb();
+    const notificationsCollection = db.collection("notifications");
+    const usersCollection = db.collection("users");
+
+    await notificationsCollection.updateOne(
+      { user_id: to },
+      { $pull: { notifications: { sender: from, type: 'friendrequest' } } }
+    );
+
+    const updateFromResult = await usersCollection.updateOne(
+      { username: from },
+      { $addToSet: { friends: to } } // Using $addToSet to avoid duplicate entries
+    );
+
+    if (updateFromResult.modifiedCount === 0) {
+      throw new Error("Failed to update 'from' user's friends list.");
+    }
+
+    const updateToResult = await usersCollection.updateOne(
+      { username: to },
+      { $addToSet: { friends: from } }
+    );
+
+    if (updateToResult.modifiedCount === 0) {
+      throw new Error("Failed to update 'to' user's friends list.");
+    }
+
+    response.statusCode = 200;
+    response.end(JSON.stringify({ message: 'Friend added successfully' }));
+  } catch (error) {
+    console.error(error);
+    response.statusCode = 500;
+    response.end(JSON.stringify({ error: 'Internal server error' }));
+  }
+}
 
 
 /* This method is a helper in case you stumble upon CORS problems. It shouldn't be used as-is:

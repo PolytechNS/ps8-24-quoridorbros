@@ -14,7 +14,7 @@ window.onload = function () {
     document.getElementById("signinButton").style.display = "none";
     playWithAIButton.style.display = "inline";
     playLocalButton.style.display = "inline";
-    fetchNotifications();
+    fetchFriendRequestNotifications();
   }
 };
 
@@ -36,12 +36,8 @@ document.getElementById("logoutButton").addEventListener("click", function () {
     .catch((error) => console.error("Error:", error));
 });
 document.getElementById("friendRequestForm").addEventListener("submit", async function(event) {
-  event.preventDefault(); // Prevents the default form submission behavior
-
-  // Retrieves the value of the "connected" cookie
+  event.preventDefault();
   let connectedCookieValue = getCookie("connected");
-
-  // Checks if the "connected" cookie exists
   if (connectedCookieValue) {
     try {
       connectedCookieValue = JSON.parse(connectedCookieValue);
@@ -78,13 +74,13 @@ document.getElementById("friendRequestForm").addEventListener("submit", async fu
   }
 });
 
-async function fetchNotifications() {
+async function fetchFriendRequestNotifications() {
   try {
     let connectedCookieValue = getCookie("connected");
     if (connectedCookieValue) {
       connectedCookieValue = JSON.parse(connectedCookieValue);
       const sender = connectedCookieValue.user;
-      const response = await fetch(`/api/friends?userId=${sender}`);
+      const response = await fetch(`/api/notifications/friends?userId=${sender}`);
       if (response.status !== 200) {
         throw new Error('Failed to fetch notifications');
       }
@@ -95,6 +91,56 @@ async function fetchNotifications() {
       notifications.forEach(notification => {
         const listItem = document.createElement("li");
         listItem.textContent = `${notification.sender} sent you a friend request`;
+
+        const acceptButton = document.createElement("button");
+        acceptButton.textContent = "Accept";
+        acceptButton.addEventListener("click", async () => {
+          try {
+            const requestURL = `/api/friend/accept?from=${encodeURIComponent(notification.sender)}&to=${encodeURIComponent(sender)}`;
+            const response = await fetch(requestURL, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              }
+            });
+            
+            if (response.status === 200) {
+              alert(`Accepted friend request from ${notification.sender}`);
+              listItem.remove();
+            } else {
+              throw new Error('Failed to accept friend request');
+            }
+          } catch (error) {
+            console.error("Error accepting friend request:", error);
+          }
+        });
+
+        const declineButton = document.createElement("button");
+        declineButton.textContent = "Decline";
+        declineButton.addEventListener("click", async () => {
+          try {
+            const requestURL = `/api/friend/decline?from=${encodeURIComponent(notification.sender)}&to=${encodeURIComponent(sender)}`;
+            const response = await fetch(requestURL, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              }
+            });
+            
+            if (response.status === 200) {
+              alert(`Declined friend request from ${notification.sender}`);
+              listItem.remove();
+            } else {
+              throw new Error('Failed to decline friend request');
+            }
+          } catch (error) {
+            console.error("Error declining friend request:", error);
+          }
+        });
+
+        listItem.appendChild(acceptButton);
+        listItem.appendChild(declineButton);
+
         notificationsList.appendChild(listItem);
       });
     }

@@ -70,4 +70,31 @@ async function userExists(userToken) {
     return false;
   }
 }
-module.exports = { connect, getDb, saveGameState, loadGameState, userExists };
+
+async function areFriends(user1, user2) {
+  try {
+    const db = await getDb();
+    const usersCollection = db.collection("users");
+
+    const user1Document = await usersCollection.findOne({ username: user1 });
+    if (!user1Document) {
+      throw new Error(`User ${user1} not found.`);
+    }
+    const user1Friends = user1Document.friends || [];
+    const areFriendsUser1 = user1Friends.includes(user2);
+
+    const user2Document = await usersCollection.findOne({ username: user2 });
+    if (!user2Document) {
+      throw new Error(`User ${user2} not found.`);
+    }
+    const user2Friends = user2Document.friends || [];
+    const areFriendsUser2 = user2Friends.includes(user1);
+
+    return areFriendsUser1 && areFriendsUser2;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
+module.exports = { connect, getDb, saveGameState, loadGameState, userExists,areFriends };
