@@ -22,20 +22,22 @@ class OneVOneOnlineGameManager {
 
   initBoardPlayer1(gameState) {
     console.log("idClient1", this.idClient1);
+    SocketMapper.removeSocketById(this.idClient1);
     SocketSender.sendMessage(this.idClient1, "initBoard", gameState);
   }
 
   initBoardPlayer2(gameState) {
     console.log("idClient2", this.idClient2);
+    SocketMapper.removeSocketById(this.idClient2);
     SocketSender.sendMessage(this.idClient2, "initBoard", gameState);
   }
 
   updateGameStatePlayer1(gameState) {
-    this.idClient1.emit("updatedBoard", gameState);
+    SocketSender.sendMessage(this.idClient1, "updatedBoard", gameState);
   }
 
   updateGameStatePlayer2(gameState) {
-    this.idClient1.emit("updatedBoard", gameState);
+    SocketSender.sendMessage(this.idClient2, "updatedBoard", gameState);
   }
 
   playerWon(playerNumber) {

@@ -1,33 +1,70 @@
 class GameManagerMapper {
-  static mapper = new Map();
+  static aiGameManagerMap = new Map();
+  static onlineGameManagerMap = new Map();
 
-  static updateGameManager(userId, gameManager) {
+  static updateAiGameManager(userId, gameManager) {
     if (userId === null) {
       console.log("User ID is null");
       return;
     }
-    GameManagerMapper.mapper.set(userId, gameManager);
+    GameManagerMapper.aiGameManagerMap.set(userId, gameManager);
     this.toString();
   }
 
-  static getGameManagerByUserId(userId) {
-    return GameManagerMapper.mapper.get(userId);
+  static updateOnlineGameManager(userId, playerNumber, gameManager) {
+    if (userId === null) {
+      console.log("User ID is null");
+      return;
+    }
+    GameManagerMapper.onlineGameManagerMap.set(userId, {
+      playerNumber,
+      gameManager,
+    });
+    this.toString();
   }
 
-  static removeGameManagerByUserId(userId) {
-    const success = GameManagerMapper.mapper.delete(userId);
+  static getAiGameManagerByUserId(userId) {
+    return GameManagerMapper.aiGameManagerMap.get(userId);
+  }
 
+  static getOnlineGameInfoByUserId(userId) {
+    return GameManagerMapper.onlineGameManagerMap.get(userId);
+  }
+
+  static removeAiGameManagerByUserId(userId) {
+    const success = GameManagerMapper.aiGameManagerMap.delete(userId);
     if (success) {
-      console.log(`Game manager successfully removed for user ID ${userId}`);
+      console.log(`AI game manager successfully removed for user ID ${userId}`);
     } else {
-      console.error(`User ID ${userId} not found in the map.`);
+      console.error(`User ID ${userId} not found in the AI game manager map.`);
+    }
+  }
+
+  static removeOnlineGameManagerByUserId(userId) {
+    const success = GameManagerMapper.onlineGameManagerMap.delete(userId);
+    if (success) {
+      console.log(
+        `Online game manager successfully removed for user ID ${userId}`
+      );
+    } else {
+      console.error(
+        `User ID ${userId} not found in the online game manager map.`
+      );
     }
   }
 
   static toString() {
-    console.log("GameManagerMapper contents:");
-    this.mapper.forEach((value, key) => {
+    console.log("AI GameManager Map contents:");
+    this.aiGameManagerMap.forEach((value, key) => {
       console.log(`UserID: ${key}, GameManager: ${value}`);
+    });
+    console.log("\n");
+
+    console.log("Online GameManager Map contents:");
+    this.onlineGameManagerMap.forEach((value, key) => {
+      console.log(
+        `UserID: ${key}, PlayerNumber: ${value.playerNumber}, GameManager: ${value.gameManager}`
+      );
     });
     console.log("\n");
   }

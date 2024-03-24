@@ -1,6 +1,10 @@
 const querystring = require("querystring");
 const jwt = require("jsonwebtoken");
-const { getDb } = require("../mongoDB/mongoManager.js");
+const { getDb, getIdOfUser } = require("../mongoDB/mongoManager.js");
+const { RoomManager } = require("../logic/matchMaking/roomManager");
+const url = require('url');
+
+
 
 function setCookie(name, value, daysToLive, response) {
   const stringValue = typeof value === "object" ? JSON.stringify(value) : value;
@@ -16,7 +20,9 @@ function setCookie(name, value, daysToLive, response) {
 
 function manageRequest(request, response) {
   if (request.method === "POST") {
-    switch (request.url) {
+    const path = request.url.split('?')[0];
+    console.log("request.url", request.url);
+    switch (path) {
       case "/api/signin":
         handleSignIn(request, response);
         break;
@@ -25,6 +31,9 @@ function manageRequest(request, response) {
         break;
       case "/api/logout":
         handleLogout(request, response);
+        break;
+      case "/api/matchmaking":
+        handleMatchmakingRequest(request, response);
         break;
       default:
         response.end(`Merci d'avoir appelé ${request.url}`);
@@ -157,6 +166,28 @@ function handleLogout(request, response) {
     response.end("Erreur serveur lors de la déconnexion");
   }
 }
+
+async function handleMatchmakingRequest(request, response){
+  const parsedUrl = url.parse(request.url, true);
+  const queryParameters = parsedUrl.query;
+
+  const userName = queryParameters.userName;
+
+  try {
+    const userId = await getIdOfUser(userName);
+
+    console.log("userId handle", userId );
+    RoomManager.enterMatchmaking(userId);
+
+    response.statusCode = 200;
+    response.end(JSON.stringify({ message: 'Matchmaking request handled successfully' }));
+  } catch (error) {
+    console.error(error);
+    response.statusCode = 500;
+    response.end(JSON.stringify({ error: 'Internal server error' }));
+  }
+}
+
 /* This method is a helper in case you stumble upon CORS problems. It shouldn't be used as-is:
  ** Access-Control-Allow-Methods should only contain the authorized method for the url that has been targeted
  ** (for instance, some of your api urls may accept GET and POST request whereas some others will only accept PUT).

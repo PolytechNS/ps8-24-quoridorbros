@@ -5,7 +5,7 @@ const { OneVOneOnlineGameManager } = require("./OneVOneOnlineGameManager.js");
 class GameManagerFactory {
   static createAiGameManager(userId, loadGame = false) {
     const aiGameManager = new AiGameManager(userId, loadGame);
-    GameManagerMapper.updateGameManager(userId, aiGameManager);
+    GameManagerMapper.updateAiGameManager(userId, aiGameManager);
     return aiGameManager;
   }
 
@@ -16,8 +16,16 @@ class GameManagerFactory {
       idClient1,
       idClient2
     );
-    GameManagerMapper.updateGameManager(idClient1, oneVOneOnlineGameManager);
-    GameManagerMapper.updateGameManager(idClient2, oneVOneOnlineGameManager);
+    GameManagerMapper.updateOnlineGameManager(
+      idClient1,
+      1,
+      oneVOneOnlineGameManager
+    );
+    GameManagerMapper.updateOnlineGameManager(
+      idClient2,
+      2,
+      oneVOneOnlineGameManager
+    );
 
     return oneVOneOnlineGameManager;
   }
