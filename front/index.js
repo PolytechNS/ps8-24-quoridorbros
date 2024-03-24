@@ -1,5 +1,7 @@
 let playWithAIButton = document.getElementById("playAIButton");
 let playLocalButton = document.getElementById("playLocalButton");
+let playOnlineButton = document.getElementById("playOnlineButton");
+let logoutButton = document.getElementById("logoutButton");
 
 window.onload = function () {
   let connectedCookieValue = getCookie("connected");
@@ -10,12 +12,11 @@ window.onload = function () {
       "loggedInText"
     ).innerText = `You are logged as ${connected.user}`;
     document.getElementById("logoutButton").style.display = "block";
-    document.getElementById("playOnline").style.display = "block";
-    document.getElementById("playOnline").style.display = "block";
     document.getElementById("loginButton").style.display = "none";
     document.getElementById("signinButton").style.display = "none";
     playWithAIButton.style.display = "inline";
     playLocalButton.style.display = "inline";
+    playOnlineButton.style.display = "inline";
   }
 };
 
@@ -27,11 +28,11 @@ document.getElementById("logoutButton").addEventListener("click", function () {
       if (response.ok) {
         document.getElementById("loggedInText").style.display = "none";
         document.getElementById("logoutButton").style.display = "none";
-        document.getElementById("playOnline").style.display = "none";
         document.getElementById("loginButton").style.display = "inline";
         document.getElementById("signinButton").style.display = "inline";
         playWithAIButton.style.display = "none";
         playLocalButton.style.display = "none";
+        playOnlineButton.style.display = "none";
         alert("Deconnexion Successful");
       }
     })
