@@ -1,7 +1,7 @@
 /*Definition du font*/
 @font-face {
     font-family: 'Spritendo';
-    src: url('../ressources/spritendo.otf') format('opentype');
+    src: url('./assets/fonts/spritendo.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
 }
