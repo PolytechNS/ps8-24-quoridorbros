@@ -15,6 +15,7 @@ window.onload = function () {
     playWithAIButton.style.display = "inline";
     playLocalButton.style.display = "inline";
     fetchFriendRequestNotifications();
+    fetchFriendList();
   }
 };
 
@@ -147,5 +148,34 @@ async function fetchFriendRequestNotifications() {
   } catch (error) {
     console.error(error);
   }
+}
+
+async function fetchFriendList() {
+  try {
+    let connectedCookieValue = getCookie("connected");
+    if (connectedCookieValue) {
+      connectedCookieValue = JSON.parse(connectedCookieValue);
+      const sender = connectedCookieValue.user;
+      const response = await fetch(`/api/friends?of=${sender}`);
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch friends');
+      }
+      const friends = await response.json();
+      displayFriends(friends.friendList);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+function displayFriends(friends) {
+  const friendListContainer = document.getElementById('friend-list');
+  friendListContainer.innerHTML = '';
+  
+  friends.forEach(friend => {
+    const friendElement = document.createElement('div');
+    friendElement.textContent = friend;
+    friendListContainer.appendChild(friendElement);
+  });
 }
 

@@ -1,6 +1,6 @@
 const querystring = require("querystring");
 const jwt = require("jsonwebtoken");
-const { getDb, userExists, areFriends} = require("../mongoDB/mongoManager.js");
+const { getDb, userExists, areFriends, getFriendList} = require("../mongoDB/mongoManager.js");
 const url = require('url');
 
 function setCookie(name, value, daysToLive, response) {
@@ -46,6 +46,9 @@ function manageRequest(request, response) {
       case request.url.startsWith("/api/notifications/friends"):
         getFriendRequests(request, response);
         break;
+      case request.url.startsWith("/api/friends"):
+        getFriends(request, response);
+        break;
       default:
         response.end(`Merci d'avoir appelé ${request.url}`);
     }
@@ -62,7 +65,8 @@ async function handleSignIn(request, response) {
 
     try {
       const db = getDb();
-      const collection = db.collection("users");
+      const userCollection = db.collection("users");
+      const userProfileCollection = db.collection("user_profile");
 
       const tokenPayload = {
         username: parsedData.username,
@@ -70,7 +74,7 @@ async function handleSignIn(request, response) {
         password: parsedData.password,
       };
 
-      const existingUser = await collection.findOne({
+      const existingUser = await userCollection.findOne({
         $or: [{ mail: parsedData.mail }, { username: parsedData.username }],
       });
 
@@ -83,25 +87,36 @@ async function handleSignIn(request, response) {
       }
       const token = jwt.sign(tokenPayload, parsedData.username);
 
-      const encodedData = {
+      const userData = {
         username: parsedData.username,
         mail: parsedData.mail,
-        token: token,
-        elo: 1000
+        token: token
       };
 
-      await collection.insertOne(encodedData);
+      const { insertedId } = await userCollection.insertOne(userData);
+
+      const userProfileData = {
+        _id: insertedId,
+        elo: 1000,
+        friends: [],
+        photo: '',
+        achievements: []
+      };
+
+      await userProfileCollection.insertOne(userProfileData);
+
       response.setHeader("Content-Type", "text/html");
       response.end(
         `<script>window.location.href = "/index.html";alert("Sign in successful");</script>`
       );
     } catch (error) {
-      console.error("Erreur lors de l’insertion des données", error);
+      console.error("Error while inserting data", error);
       response.statusCode = 500;
-      response.end(`Erreur serveur`);
+      response.end(`Server error`);
     }
   });
 }
+
 
 async function handleLogin(request, response) {
   let body = "";
@@ -196,7 +211,6 @@ async function handleFriendRequest(request, response){
     }
 
     const alreadyFriends = await areFriends(sender,receiver);
-
     if (alreadyFriends){
       response.statusCode = 400;
       response.end(JSON.stringify({ error: 'Already friends' }));
@@ -275,36 +289,43 @@ async function handleFriendAcceptance(request, response){
   const parsedUrl = url.parse(request.url, true);
   const queryParameters = parsedUrl.query;
 
-  const from = queryParameters.from;
-  const to = queryParameters.to;
+  const fromUsername = queryParameters.from;
+  const toUsername = queryParameters.to;
 
   try {
     const db = await getDb();
     const notificationsCollection = db.collection("notifications");
-    const usersCollection = db.collection("users");
+    const userCollection = db.collection("users");
+    const userProfileCollection = db.collection("user_profile");
+
+    const fromUser = await userCollection.findOne({ username: fromUsername });
+    if (!fromUser) {
+      throw new Error(`User with username '${fromUsername}' not found.`);
+    }
+    const fromUserId = fromUser._id;
+
+    const toUser = await userCollection.findOne({ username: toUsername });
+    if (!toUser) {
+      throw new Error(`User with username '${toUsername}' not found.`);
+    }
+    const toUserId = toUser._id;
 
     await notificationsCollection.updateOne(
-      { user_id: to },
-      { $pull: { notifications: { sender: from, type: 'friendrequest' } } }
+      { user_id: toUsername },
+      { $pull: { notifications: { sender: fromUsername, type: 'friendrequest' } } }
     );
 
-    const updateFromResult = await usersCollection.updateOne(
-      { username: from },
-      { $addToSet: { friends: to } } // Using $addToSet to avoid duplicate entries
+    await userProfileCollection.updateOne(
+      { _id: fromUserId },
+      { $addToSet: { friends: toUserId } }
     );
 
-    if (updateFromResult.modifiedCount === 0) {
-      throw new Error("Failed to update 'from' user's friends list.");
-    }
-
-    const updateToResult = await usersCollection.updateOne(
-      { username: to },
-      { $addToSet: { friends: from } }
+    await userProfileCollection.updateOne(
+      { _id: toUserId },
+      { $addToSet: { friends: fromUserId } }
     );
 
-    if (updateToResult.modifiedCount === 0) {
-      throw new Error("Failed to update 'to' user's friends list.");
-    }
+    console.log('accept');
 
     response.statusCode = 200;
     response.end(JSON.stringify({ message: 'Friend added successfully' }));
@@ -314,6 +335,7 @@ async function handleFriendAcceptance(request, response){
     response.end(JSON.stringify({ error: 'Internal server error' }));
   }
 }
+
 
 async function handleFriendDecline(request, response){
   const parsedUrl = url.parse(request.url, true);
@@ -340,6 +362,22 @@ async function handleFriendDecline(request, response){
   }
 }
 
+async function getFriends(request, response){
+  const parsedUrl = url.parse(request.url, true);
+  const queryParameters = parsedUrl.query;
+
+  const fromUsername = queryParameters.of;
+
+  try {
+    const friendList = await getFriendList(fromUsername);
+    response.statusCode = 200;
+    response.end(JSON.stringify({ friendList }));
+  } catch (error) {
+    console.error(error);
+    response.statusCode = 500;
+    response.end(JSON.stringify({ error: 'Internal server error' }));
+  }
+}
 
 /* This method is a helper in case you stumble upon CORS problems. It shouldn't be used as-is:
  ** Access-Control-Allow-Methods should only contain the authorized method for the url that has been targeted
