@@ -16,10 +16,6 @@ class OneVOneOnlineGameManager {
     this.game = new Game(this);
   }
 
-  playerWon(playerNumber) {
-    this.io.emit("winner", playerNumber);
-  }
-
   initBoardPlayer1(gameState) {
     console.log("idClient1", this.idClient1);
     SocketMapper.removeSocketById(this.idClient1);
@@ -42,7 +38,8 @@ class OneVOneOnlineGameManager {
 
   playerWon(playerNumber) {
     this.isGameFinished = true;
-    this.io.to(roomId).emit("winner", playerNumber);
+    SocketSender.sendMessage(this.idClient1, "winner", playerNumber);
+    SocketSender.sendMessage(this.idClient2, "winner", playerNumber);
   }
 
   movePlayer1(move) {
