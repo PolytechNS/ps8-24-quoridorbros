@@ -11,15 +11,17 @@ function appendMessage(sender, message) {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// Fonction pour envoyer un message
+socket.on("newMessage", (msg) => {
+    socket.emit("Acknowledgement", msg.id);
+    const message = msg.data;
+    appendMessage(message.sender, message.content);
+});
+
 function sendMessage() {
     var messageInput = document.getElementById('message-input');
     var message = messageInput.value;
-    // Ajoutez ici votre code pour envoyer le message au serveur
-    // Par exemple, vous pouvez utiliser une requête AJAX pour l'envoyer à une API
-    // et gérer la réponse de l'API en affichant le message dans la boîte de chat
-    // Remplacez ce commentaire par votre propre logique de communication avec le serveur
-    // En attendant, affichons simplement le message localement
+
+    socket.emit("newMessage", message );
     appendMessage('Moi', message);
     // Effacer le champ de saisie après l'envoi
     messageInput.value = '';

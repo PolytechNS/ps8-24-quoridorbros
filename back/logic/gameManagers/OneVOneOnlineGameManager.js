@@ -36,6 +36,16 @@ class OneVOneOnlineGameManager {
     SocketSender.sendMessage(this.idClient2, "updatedBoard", gameState);
   }
 
+  sendMessagePlayer1(message){
+    const messageObject = {sender: "player2", content: message};
+    SocketSender.sendMessage(this.idClient1, "newMessage", messageObject);
+  }
+
+  sendMessagePlayer2(message){
+    const messageObject = {sender: "player1", content: message};
+    SocketSender.sendMessage(this.idClient2, "newMessage", messageObject);
+  }
+
   playerWon(playerNumber) {
     this.isGameFinished = true;
     SocketSender.sendMessage(this.idClient1, "winner", playerNumber);
