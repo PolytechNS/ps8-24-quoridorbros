@@ -5,16 +5,17 @@
     <title>Quoribros</title>
     <link rel="stylesheet" type="text/css" href="../../index.css">
 </head>
-<body>
-    <button id="back" onclick="window.location.href='../../index.html'" style="display: none;">Back</button>
-    <button id="join">Join room</button>
-    <div id="roomInfo">
-        <p><strong>Room Name:</strong> <span id="roomName"></span></p>
-        <p><strong>Opponent:</strong> <span id="opponentName"></span></p>
-    </div>
-    <script type="text/javascript" src="../sockets/socket.io.js"></script>
-    <script type="text/javascript" src="../../utils/cookieManager.js"></script>
-    <script type="text/javascript" src="../sockets/ioManager.js"></script>
-    <script type="text/javascript" src="./matchmaking.js"></script>
-</body>
+    <div class="background"></div>
+    <body>
+        <button id="back" onclick="window.location.href='../../index.html'" style="display: none;">Back</button>
+        <button id="join">Join room</button>
+        <div id="roomInfo">
+            <p><strong>Room Name:</strong> <span id="roomName"></span></p>
+            <p><strong>Opponent:</strong> <span id="opponentName"></span></p>
+        </div>
+        <script type="text/javascript" src="../sockets/socket.io.js"></script>
+        <script type="text/javascript" src="../../utils/cookieManager.js"></script>
+        <script type="text/javascript" src="../sockets/ioManager.js"></script>
+        <script type="text/javascript" src="./matchmaking.js"></script>
+    </body>
 </html>

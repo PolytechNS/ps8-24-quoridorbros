@@ -12,13 +12,13 @@ html{
     margin: 0;
     padding: 0;
     font-family: 'Spritendo', sans-serif;
-    background-color: #f0f0f0;
 }
 body{
     min-height: 100%;
     display: flex;
     clear: both;
     flex-direction: row;
+    z-index: 1;
 }
 
 button {
@@ -110,18 +110,47 @@ div.panel {
 div#leftPanel {
     width: 25%;
     height: 100vh;
-    background-color: lightgrey;
+    background-color: rgba(150,150,150,0.5);
 }
 div#midPanel {
     width: 50%;
     height: 100vh;
-    background-color: #f0f0f0;
+    background-color: rgba(240,240,240,0.2);
     overflow: visible;
 }
 div#rightPanel {
     width: 25%;
     height: 100vh;
-    background-color: lightgrey;
+    background-color: rgba(150,150,150,0.5);
+}
+
+div.panel * {
+    /*Content inside panels was needed before, might need later*/
+}
+div.background {
+    height: 100vh;
+    width: 100vw;
+    background-image: url("assets/images/marco.gif"), url("./assets/images/ground.png"), url("./assets/images/bushes.png"), url("./assets/images/back.png");
+    background-color: #F8E0B0;
+    background-repeat: no-repeat, repeat-x, repeat-x, repeat-x;
+    background-position: left 30% bottom 22px, left 0px bottom 0px, left 0px bottom 22px, left 0px bottom 0px;
+    animation: back 15s infinite linear;
+    position: fixed;
+    z-index: -1;
+    margin-top: -8px;
+    margin-left: -8px;
+}
+
+@keyframes back {
+    0% {
+        background-position: left 30% bottom 22px, left 0px bottom 0px, left 0px bottom 22px, left 0px bottom 0px;
+    }
+    50% {
+        background-position: left 50% bottom 22px, left -816px bottom 0px, left -508px bottom 22px, left -256px bottom 0px;
+    }
+    100% {
+        background-position: left 30% bottom 22px, left -1632px bottom 0px, left -1016px bottom 22px, left -512px bottom 0px;
+    }
 }
 
 
