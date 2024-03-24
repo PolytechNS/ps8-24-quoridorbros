@@ -34,21 +34,21 @@ class SocketManager {
         console.log(`Acknowledgement socketid: ${socket.id}`);
         console.log(`Acknowledgement userid: ${userId}`);
         console.log(`id   message: ${messageId}`);
-
         SocketSender.handleAcknowledgement(userId, messageId);
       });
 
       //Local game
-      socket.on("create game", async (cookie) => {
+      socket.on("create game", () => {
         console.log(`create game: ${socket.id}`);
-        const userId = await getIdOfUser(cookie.user);
+        const userId = SocketMapper.getUserIdBySocketId(socket.id);
         const aiGameManager = GameManagerFactory.createAiGameManager(userId);
         configureAiGameEvents(socket, aiGameManager);
       });
 
-      socket.on("load-game", async (cookie) => {
+      socket.on("load-game", () => {
         console.log(`load-game: ${socket.id}`);
-        const userId = await getIdOfUser(cookie.user);
+
+        const userId = SocketMapper.getUserIdBySocketId(socket.id);
         const aiGameManager = GameManagerFactory.createAiGameManager(
           userId,
           true
@@ -57,15 +57,17 @@ class SocketManager {
       });
 
       //Online game
-      socket.on("enter matchmaking", async (cookie) => {
-        const userId = await getIdOfUser(cookie.user);
+      socket.on("enter matchmaking", () => {
+        const userId = SocketMapper.getUserIdBySocketId(socket.id);
         console.log(`enter matchmaking: ${userId}`);
         this.roomManager.enterMatchmaking(userId);
       });
 
-      socket.on("quit matchmaking", (playertoken) => {
+      socket.on("quit matchmaking", () => {
+        const userId = SocketMapper.getUserIdBySocketId(socket.id);
+
         console.log(`quit matchmaking: ${socket.id}`);
-        this.roomManager.quitMatchmaking(socket, playertoken);
+        this.roomManager.quitMatchmaking(userId);
       });
     });
   }

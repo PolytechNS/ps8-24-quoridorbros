@@ -4,14 +4,14 @@ let clientBoard;
 let jsonCookie = getCookie("connected");
 let cookie = JSON.parse(jsonCookie);
 
+socket.on("getCookie", () => {
+  socket.emit("cookie", cookie);
+});
+
 socket.on("initBoard", (msg) => {
   socket.emit("Acknowledgement", msg.id);
   const gameState = msg.data;
   clientBoard = new ClientBoard(onCellClick, onWallClick, gameState);
-});
-
-socket.on("getCookie", () => {
-  socket.emit("cookie", cookie);
 });
 
 socket.on("updatedBoard", (msg) => {
@@ -29,7 +29,7 @@ function onWallClick(x, y) {
 }
 
 function createGame() {
-  socket.emit("create game", cookie);
+  socket.emit("create game");
 }
 
 function saveGame(token) {
@@ -51,6 +51,6 @@ socket.on("joinedRoom", () => {
   console.log("joinedRoom");
 });
 
-function enterMatchMaking(cookie) {
-  socket.emit("enter matchmaking", cookie);
+function enterMatchMaking() {
+  socket.emit("enter matchmaking");
 }
