@@ -34,6 +34,9 @@ function manageRequest(request, response) {
       case "/api/friend/accept":
         handleFriendAcceptance(request, response);
         break;
+      case "/api/friend/decline":
+        handleFriendDecline(request,response);
+        break;
       default:
         response.end(`Merci d'avoir appelé ${request.url}`);
     }
@@ -305,6 +308,31 @@ async function handleFriendAcceptance(request, response){
 
     response.statusCode = 200;
     response.end(JSON.stringify({ message: 'Friend added successfully' }));
+  } catch (error) {
+    console.error(error);
+    response.statusCode = 500;
+    response.end(JSON.stringify({ error: 'Internal server error' }));
+  }
+}
+
+async function handleFriendDecline(request, response){
+  const parsedUrl = url.parse(request.url, true);
+  const queryParameters = parsedUrl.query;
+
+  const from = queryParameters.from;
+  const to = queryParameters.to;
+
+  try {
+    const db = await getDb();
+    const notificationsCollection = db.collection("notifications");
+    const usersCollection = db.collection("users");
+
+    await notificationsCollection.updateOne(
+      { user_id: to },
+      { $pull: { notifications: { sender: from, type: 'friendrequest' } } }
+    );
+    response.statusCode = 200;
+    response.end(JSON.stringify({ message: 'Friend request declined successfully' }));
   } catch (error) {
     console.error(error);
     response.statusCode = 500;
