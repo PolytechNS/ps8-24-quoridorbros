@@ -160,7 +160,7 @@ async function getProfileOf(username) {
     const user = await userCollection.findOne({ username: username });
     const userProfile = await userProfileCollection.findOne({ _id: user._id });
     if (userProfile){
-      const photoPath = `back/ressources/${user.photo}`;
+      let photoPath;
       if (user.photo!=='')
         photoPath = `back/ressources/img1.webp`;
       else
@@ -181,9 +181,6 @@ async function getProfileOf(username) {
     throw error;
   }
 }
-
-
-module.exports = { connect, getDb, saveGameState, loadGameState, userExists,areFriends, getFriendList, getProfileOf,getIdOfUser};
 async function getIdOfUser(username) {
   try {
     const db = getDb();

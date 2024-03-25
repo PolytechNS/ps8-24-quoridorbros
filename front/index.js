@@ -16,9 +16,10 @@ window.onload = function () {
     document.getElementById("signinButton").style.display = "none";
     playWithAIButton.style.display = "inline";
     playLocalButton.style.display = "inline";
+    playOnlineButton.style.display = "inline";
+
     fetchFriendRequestNotifications();
     fetchFriendList();
-    playOnlineButton.style.display = "inline";
   }
 };
 
