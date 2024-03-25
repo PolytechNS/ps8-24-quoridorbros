@@ -151,5 +151,36 @@ async function getFriendList(username) {
   }
 }
 
+async function getProfileOf(username) {
+  try {
+    const db = await getDb();
+    const userCollection = db.collection("users");
+    const userProfileCollection = db.collection("user_profile");
 
-module.exports = { connect, getDb, saveGameState, loadGameState, userExists,areFriends, getFriendList};
+    const user = await userCollection.findOne({ username: username });
+    const userProfile = await userProfileCollection.findOne({ _id: user._id });
+    if (userProfile){
+      const photoPath = `back/ressources/${user.photo}`;
+      if (user.photo!=='')
+        photoPath = `back/ressources/img1.webp`;
+      else
+        photoPath = `back/ressources/${user.photo}`;
+        return {
+          photo: photoPath,
+          username: user.username,
+          elo: userProfile.elo
+      };
+    }
+    else {
+      return null;
+  }
+
+    
+  } catch (error) {
+    console.error("Error getting friend list:", error);
+    throw error;
+  }
+}
+
+
+module.exports = { connect, getDb, saveGameState, loadGameState, userExists,areFriends, getFriendList, getProfileOf};

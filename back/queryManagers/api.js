@@ -1,6 +1,6 @@
 const querystring = require("querystring");
 const jwt = require("jsonwebtoken");
-const { getDb, userExists, areFriends, getFriendList} = require("../mongoDB/mongoManager.js");
+const { getDb, userExists, areFriends, getFriendList,getProfileOf} = require("../mongoDB/mongoManager.js");
 const url = require('url');
 
 function setCookie(name, value, daysToLive, response) {
@@ -48,6 +48,9 @@ function manageRequest(request, response) {
         break;
       case request.url.startsWith("/api/friends"):
         getFriends(request, response);
+        break;
+      case request.url.startsWith("/api/profile"):
+        getProfile(request, response);
         break;
       default:
         response.end(`Merci d'avoir appelé ${request.url}`);
@@ -379,6 +382,22 @@ async function getFriends(request, response){
   }
 }
 
+async function getProfile(request, response){
+  const parsedUrl = url.parse(request.url, true);
+  const queryParameters = parsedUrl.query;
+
+  const fromUsername = queryParameters.of;
+
+  try {
+    const profile = await getProfileOf(receiver);
+    response.statusCode = 200;
+    response.end(JSON.stringify({ profile }));
+  } catch (error) {
+    console.error(error);
+    response.statusCode = 500;
+    response.end(JSON.stringify({ error: 'Internal server error' }));
+  }
+}
 /* This method is a helper in case you stumble upon CORS problems. It shouldn't be used as-is:
  ** Access-Control-Allow-Methods should only contain the authorized method for the url that has been targeted
  ** (for instance, some of your api urls may accept GET and POST request whereas some others will only accept PUT).
