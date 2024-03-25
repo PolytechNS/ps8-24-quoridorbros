@@ -8,4 +8,5 @@ function getCookie(name) {
       return decodeURIComponent(cookieValue);
     }
   }
+  return null;
 }
