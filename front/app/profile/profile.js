@@ -17,20 +17,25 @@ async function displayProfile() {
             const profilePhotoElement = document.createElement('img');
             profilePhotoElement.src = profileData.photo;
             profilePhotoElement.alt = "Profile Photo";
+            profilePhotoElement.id = "profilePhoto";
 
-            const profileEmailElement = document.createElement('div');
-            profileEmailElement.textContent = `${profileData.username}`;
+            const profileUsernameElement = document.createElement('div');
+            profileUsernameElement.textContent = profileData.username;
+            profileUsernameElement.id = "profileUsername";
 
-            const profileBioElement = document.createElement('div');
-            profileBioElement.textContent = `Elo: ${profileData.elo}`;
+            const profileEloElement = document.createElement('div');
+            profileEloElement.textContent = `ELO: ${profileData.elo}`;
+            profileEloElement.id = "profileElo";
+
             profileContainer.appendChild(profilePhotoElement);
-            profileContainer.appendChild(profileEmailElement);
-            profileContainer.appendChild(profileBioElement);
+            profileContainer.appendChild(profileUsernameElement);
+            profileContainer.appendChild(profileEloElement);
         }
     } catch (error) {
         console.error(error);
     }
 }
+
 
 async function loadProfile() {
     const response = await fetch('./app/profile/profile.html');
