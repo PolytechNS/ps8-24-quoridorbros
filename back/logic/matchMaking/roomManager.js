@@ -1,29 +1,23 @@
-const {
-  OneVOneOnlineGameManager,
-} = require("../gameManagers/OneVOneOnlineGameManager.js");
-const {
-  configureOneVOneOnlineGameEvents,
-} = require("../../socket/gameEvents.js");
 const { GameManagerFactory } = require("../gameManagers/gameManagerFactory.js");
 const { SocketMapper } = require("../../socket/socketMapper.js");
-const { SocketSender } = require("../../socket/socketSender.js");
-
 class RoomManager {
-  constructor(io) {
-    this.io = io;
-    this.rooms = new Array();
+  static io;
+  static rooms = [];
+
+  static initialize(ioInstance) {
+    RoomManager.io = ioInstance;
   }
 
-  enterMatchmaking(userId) {
+  static enterMatchmaking(userId) {
     try {
-      if (this.playerAlreadyInARoom(userId)) {
+      if (RoomManager.playerAlreadyInARoom(userId)) {
         console.log("the player is already in a room");
         return;
       }
 
-      const availableRooms = this.getAvailableRooms();
+      const availableRooms = RoomManager.getAvailableRooms();
       if (availableRooms.length === 0) {
-        this.createRoomAndJoin(userId);
+        RoomManager.createRoomAndJoin(userId);
       } else {
         const availableRoom = availableRooms[0];
         availableRoom.add_player(userId);
@@ -36,70 +30,67 @@ class RoomManager {
     }
   }
 
-  quitMatchmaking(userId) {
+  static quitMatchmaking(userId) {
     try {
-      const existingRoom = this.findPlayerRoom(userId);
+      const existingRoom = RoomManager.findPlayerRoom(userId);
       if (!existingRoom) {
         console.log("the player was not in a room");
         return;
       }
 
-      this.removePlayerFromRoom(existingRoom.name, userId);
-      SocketSender.sendMessage(userId, "quitMatchmaking");
+      RoomManager.removePlayerFromRoom(existingRoom.name, userId);
     } catch (error) {
       console.error("An error occurred while quitting matchmaking:", error);
     }
   }
 
-  findPlayerRoom(userId) {
-    return this.rooms.find((room) => room.players.includes(userId));
+  static findPlayerRoom(userId) {
+    return RoomManager.rooms.find((room) => room.players.includes(userId));
   }
 
-  getAvailableRooms() {
-    return this.rooms.filter((value) => value.isAvailable());
+  static getAvailableRooms() {
+    return RoomManager.rooms.filter((value) => value.isAvailable());
   }
 
-  playerAlreadyInARoom(userId) {
-    const playerRoom = this.findPlayerRoom(userId);
+  static playerAlreadyInARoom(userId) {
+    const playerRoom = RoomManager.findPlayerRoom(userId);
     return playerRoom ? true : false;
   }
 
-  createRoomAndJoin(userId) {
-    let newRoom = new Room(userId, this.io);
+  static createRoomAndJoin(userId) {
+    let newRoom = new Room(userId);
     newRoom.add_player(userId);
-    this.rooms.push(newRoom);
+    RoomManager.rooms.push(newRoom);
 
     console.log(SocketMapper.toString());
-    SocketSender.sendMessage(userId, "joinedRoom");
   }
 
-  removePlayerFromRoom(userId) {
-    const room = this.findPlayerRoom(userId);
+  static removePlayerFromRoom(userId) {
+    const room = RoomManager.findPlayerRoom(userId);
     if (!room) {
       console.log(
-        "the player cannot be removed from the room since he is not in a room"
+          "the player cannot be removed from the room since he is not in a room"
       );
       return;
     }
     room.removePlayer(socketId);
     if (room.players.length === 0) {
-      this.rooms = this.rooms.filter((room) => {
+      RoomManager.rooms = RoomManager.rooms.filter((room) => {
         return !room.players.includes(userId);
       });
     }
   }
 
-  findAvaiableRoom() {
-    this.rooms.forEach((room) => {
+  static findAvaiableRoom() {
+    for (const room of RoomManager.rooms) {
       if (room.isAvailable()) return room;
-    });
+    }
     return null;
   }
 }
 
 class Room {
-  constructor(userId, io) {
-    this.io = io;
+  constructor(userId) {
     this.roomId = this.generateRoomId(userId);
     this.players = [];
   }
@@ -122,25 +113,21 @@ class Room {
 
   initGame() {
     const oneVOneOnlineGameManager =
-      GameManagerFactory.createOneVOneOnlineGameManager(
-        this.io,
-        this.roomId,
-        this.players[0],
-        this.players[1]
-      );
-
-    for (let i = 0; i < 2; i++) {
-      const socket = SocketMapper.getSocketById(this.players[i]);
-      configureOneVOneOnlineGameEvents(socket, oneVOneOnlineGameManager, i + 1);
-    }
+        GameManagerFactory.createOneVOneOnlineGameManager(
+            RoomManager.io,
+            this.roomId,
+            this.players[0],
+            this.players[1]
+        );
   }
 
   createSocketRoom() {
     this.players.forEach((playerId) => {
       const socket = SocketMapper.getSocketById(playerId);
       socket.join(this.roomId);
+      SocketMapper.removeSocketById(playerId);
     });
-    this.io.to(this.roomId).emit("RoomFull");
+    RoomManager.io.to(this.roomId).emit("RoomFull");
   }
 }
 

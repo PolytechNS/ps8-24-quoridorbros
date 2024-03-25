@@ -18,9 +18,18 @@ function configureOneVOneOnlineGameEvents(
     socket.on("newMove", (move) => {
       oneVOneOnlineGameManager.movePlayer1(move);
     });
+
+    socket.on("newMessage", (message) => {
+      oneVOneOnlineGameManager.sendMessagePlayer2(message)
+    });
+
   } else if (playerNumber === 2) {
     socket.on("newMove", (move) => {
       oneVOneOnlineGameManager.movePlayer2(move);
+    });
+
+    socket.on("newMessage", (message) => {
+      oneVOneOnlineGameManager.sendMessagePlayer1(message)
     });
   }
 }

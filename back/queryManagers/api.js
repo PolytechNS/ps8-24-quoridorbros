@@ -1,5 +1,7 @@
 const querystring = require("querystring");
 const jwt = require("jsonwebtoken");
+const { RoomManager } = require("../logic/matchMaking/roomManager");
+
 const { getDb, userExists, areFriends, getFriendList,getProfileOf} = require("../mongoDB/mongoManager.js");
 const url = require('url');
 
@@ -27,6 +29,9 @@ function manageRequest(request, response) {
         break;
       case "/api/logout":
         handleLogout(request, response);
+        break;
+      case "/api/matchmaking":
+        handleMatchmakingRequest(request, response);
         break;
       case "/api/friend":
         handleFriendRequest(request, response);
@@ -197,6 +202,26 @@ function handleLogout(request, response) {
   }
 }
 
+async function handleMatchmakingRequest(request, response){
+  const parsedUrl = url.parse(request.url, true);
+  const queryParameters = parsedUrl.query;
+
+  const userName = queryParameters.userName;
+
+  try {
+    const userId = await getIdOfUser(userName);
+
+    console.log("userId handle", userId );
+    RoomManager.enterMatchmaking(userId);
+
+    response.statusCode = 200;
+    response.end(JSON.stringify({ message: 'Matchmaking request handled successfully' }));
+} catch (error) {
+    console.error(error);
+    response.statusCode = 500;
+    response.end(JSON.stringify({ error: 'Internal server error' }));
+  }
+}
 async function handleFriendRequest(request, response){
   const parsedUrl = url.parse(request.url, true);
   const queryParameters = parsedUrl.query;
@@ -398,7 +423,8 @@ async function getProfile(request, response){
     response.end(JSON.stringify({ error: 'Internal server error' }));
   }
 }
-/* This method is a helper in case you stumble upon CORS problems. It shouldn't be used as-is:
+
+ /* This method is a helper in case you stumble upon CORS problems. It shouldn't be used as-is:
  ** Access-Control-Allow-Methods should only contain the authorized method for the url that has been targeted
  ** (for instance, some of your api urls may accept GET and POST request whereas some others will only accept PUT).
  ** Access-Control-Allow-Headers is an example of how to authorize some headers, the ones given in this example

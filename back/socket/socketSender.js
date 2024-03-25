@@ -6,10 +6,8 @@ class SocketSender {
   static resetTimeOut = [];
 
   static sendMessage(userId, message, data) {
-    console.log("voici le user id", userId);
-    console.log("voici le message envoyé", message);
-    const socket = SocketMapper.getSocketById(userId);
-    console.log("voici la socket id", socket.id);
+    //console.log("voici le user id", userId);
+    //console.log("voici le message envoyé", message);
 
     if (!this.messageIdCounter[userId]) {
       this.messageIdCounter[userId] = 1;
@@ -27,38 +25,16 @@ class SocketSender {
     const messageObject = {
       id: messageId,
       message,
-      data,
-      timestamp: Date.now(),
+      data
     };
 
     this.pendingMessages[userId].push(messageObject);
 
-    socket.emit(message, { id: messageId, data });
-
-    this.scheduleResendIfNoAcknowledgement(userId, messageId, message, data);
-  }
-
-  static scheduleResendIfNoAcknowledgement(userId, messageId, message, data) {
-    setTimeout(() => {
-      if (this.resetTimeOut[userId] === true) {
-        this.resetTimeOut[userId].push(false);
-        this.scheduleResendIfNoAcknowledgement(
-          userId,
-          messageId,
-          message,
-          data
-        );
-      } else if (this.pendingMessages[userId]) {
-        const index = this.pendingMessages[userId].findIndex(
-          (msg) => msg.id === messageId
-        );
-        if (index !== -1) {
-          // Si pas d'acknowledgement reçu, renvoyer le message
-          const socket = SocketMapper.getSocketById(userId);
-          socket.emit(message, { id: messageId, data });
-        }
-      }
-    }, 5000);
+    const socket = SocketMapper.getSocketById(userId);
+    if (socket) {
+      //console.log("voici la socket id", socket.id);
+      socket.emit(message, { id: messageId, data });
+    }
   }
 
   static handleAcknowledgement(userId, messageId) {

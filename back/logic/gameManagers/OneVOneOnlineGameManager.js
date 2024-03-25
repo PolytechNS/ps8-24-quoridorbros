@@ -16,31 +16,40 @@ class OneVOneOnlineGameManager {
     this.game = new Game(this);
   }
 
-  playerWon(playerNumber) {
-    this.io.emit("winner", playerNumber);
-  }
-
   initBoardPlayer1(gameState) {
     console.log("idClient1", this.idClient1);
+    SocketMapper.removeSocketById(this.idClient1);
     SocketSender.sendMessage(this.idClient1, "initBoard", gameState);
   }
 
   initBoardPlayer2(gameState) {
     console.log("idClient2", this.idClient2);
+    SocketMapper.removeSocketById(this.idClient2);
     SocketSender.sendMessage(this.idClient2, "initBoard", gameState);
   }
 
   updateGameStatePlayer1(gameState) {
-    this.idClient1.emit("updatedBoard", gameState);
+    SocketSender.sendMessage(this.idClient1, "updatedBoard", gameState);
   }
 
   updateGameStatePlayer2(gameState) {
-    this.idClient1.emit("updatedBoard", gameState);
+    SocketSender.sendMessage(this.idClient2, "updatedBoard", gameState);
+  }
+
+  sendMessagePlayer1(message){
+    const messageObject = {sender: "player2", content: message};
+    SocketSender.sendMessage(this.idClient1, "newMessage", messageObject);
+  }
+
+  sendMessagePlayer2(message){
+    const messageObject = {sender: "player1", content: message};
+    SocketSender.sendMessage(this.idClient2, "newMessage", messageObject);
   }
 
   playerWon(playerNumber) {
     this.isGameFinished = true;
-    this.io.to(roomId).emit("winner", playerNumber);
+    SocketSender.sendMessage(this.idClient1, "winner", playerNumber);
+    SocketSender.sendMessage(this.idClient2, "winner", playerNumber);
   }
 
   movePlayer1(move) {
