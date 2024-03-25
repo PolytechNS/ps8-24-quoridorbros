@@ -8,7 +8,8 @@
 .cell {
     width: 50px;
     height: 50px;
-    background-color: #eee;
+    background-image: url("../../assets/images/grass.png");
+    background-size: 50px;
     border: 1px solid #333;
 }
 
@@ -41,7 +42,7 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center center;
-    background-image: url("../ressources/cloud.png");
+    background-image: url("../../assets/images/cloud.png");
 }
 
 #joueur-1, #joueur-2 {
@@ -52,11 +53,11 @@
 }
 
 #joueur-1 {
-    background-image: url("../ressources/mario.png");
+    background-image: url("../../assets/images/mario.png");
 }
 
 #joueur-2 {
-    background-image: url("../ressources/luigi.png");
+    background-image: url("../../assets/images/luigi.png");
 }
 
 .gameBoard {

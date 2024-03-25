@@ -8,7 +8,7 @@ let db = null;
 async function connect() {
   const client = new MongoClient(url);
   await client.connect();
-  console.log("Connected à MongoDB");
+  console.log("Connected to MongoDB");
   db = client.db(dbName);
 }
 
@@ -16,16 +16,16 @@ function getDb() {
   return db;
 }
 
-async function saveGameState(userToken, gameState) {
+async function saveGameState(userId, gameState) {
   const save = {
-    token: userToken,
+    token: userId,
     game: gameState,
   };
   try {
     const db = getDb();
     const collection = db.collection("gameStates");
     await collection.updateOne(
-      { token: userToken },
+      { token: userId },
       { $set: save },
       { upsert: true }
     );
@@ -34,12 +34,12 @@ async function saveGameState(userToken, gameState) {
   }
 }
 
-async function loadGameState(userToken) {
+async function loadGameState(userId) {
   try {
     const db = getDb();
     const collection = db.collection("gameStates");
     const save = await collection.findOne({
-      token: userToken,
+      token: userId,
     });
     if (!save) {
       console.log("No game state found for this user token");
@@ -183,4 +183,23 @@ async function getProfileOf(username) {
 }
 
 
-module.exports = { connect, getDb, saveGameState, loadGameState, userExists,areFriends, getFriendList, getProfileOf};
+module.exports = { connect, getDb, saveGameState, loadGameState, userExists,areFriends, getFriendList, getProfileOf,getIdOfUser};
+async function getIdOfUser(username) {
+  try {
+    const db = getDb();
+    const collection = db.collection("users");
+    const userDocument = await collection.findOne({ username });
+
+    if (!userDocument) {
+      console.log("No user found for the provided username:", username);
+      return null;
+    }
+
+    return userDocument._id.toString();
+  } catch (error) {
+    console.error("An error occurred while loading user ID:", error);
+    return null;
+  }
+}
+
+module.exports = { connect, getDb, saveGameState, loadGameState, userExists,areFriends, getFriendList, getProfileOf,getIdOfUser};

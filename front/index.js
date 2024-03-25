@@ -1,5 +1,7 @@
 let playWithAIButton = document.getElementById("playAIButton");
 let playLocalButton = document.getElementById("playLocalButton");
+let playOnlineButton = document.getElementById("playOnlineButton");
+let logoutButton = document.getElementById("logoutButton");
 
 window.onload = function () {
   let connectedCookieValue = getCookie("connected");
@@ -16,6 +18,7 @@ window.onload = function () {
     playLocalButton.style.display = "inline";
     fetchFriendRequestNotifications();
     fetchFriendList();
+    playOnlineButton.style.display = "inline";
   }
 };
 
@@ -31,6 +34,7 @@ document.getElementById("logoutButton").addEventListener("click", function () {
         document.getElementById("signinButton").style.display = "inline";
         playWithAIButton.style.display = "none";
         playLocalButton.style.display = "none";
+        playOnlineButton.style.display = "none";
         alert("Deconnexion Successful");
       }
     })

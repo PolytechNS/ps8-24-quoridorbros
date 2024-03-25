@@ -1,32 +1,36 @@
-const { BoardUtils } = require("../../front/js/utils.js");
-const { Game } = require("../../front/js/game.js");
-const { saveGameState, loadGameState } = require("../mongoDB/mongoManager.js");
+const { BoardUtils } = require("../../../front/utils/utils.js");
+const { Game } = require("../../../front/utils/game.js");
+const {
+  saveGameState,
+  loadGameState,
+} = require("../../mongoDB/mongoManager.js");
 const {
   fromVellaToOurGameState,
   fromOurToVellaGameState,
   fromOurToVellaMove,
   fromVellaToOurMove,
-} = require("./aiAdapter.js");
+} = require("../ai/aiAdapter.js");
 
 const {
   deltaDistanceHeuristic,
   deltaWallsHeuristic,
-} = require("./heuristics.js");
+} = require("../ai/heuristics.js");
 
 const {
   setup,
   nextMove,
   correction,
   updateBoard,
-} = require("../bots/quoridorbros.js");
+} = require("../ai/quoridorbros.js");
+const { SocketSender } = require("../../socket/socketSender.js");
 
-class GameManager {
-  constructor(socketManager, userToken) {
-    this.socketManager = socketManager;
+class AiGameManager {
+  constructor(userId, loadGame = false) {
+    this.userId = userId;
     this.isGameFinished = false;
     const initializeGame = async () => {
-      if (userToken) {
-        let gameState = await loadGameState(userToken);
+      if (loadGame) {
+        let gameState = await loadGameState(userId);
         this.game = new Game(this, gameState);
       } else {
         this.game = new Game(this);
@@ -39,17 +43,15 @@ class GameManager {
   }
 
   initBoardPlayer1(gameState) {
-    this.socketManager.initClientBoard(gameState);
+    SocketSender.sendMessage(this.userId, "initBoard", gameState);
   }
   initBoardPlayer2(gameState) {}
 
   updateGameStatePlayer1(gameState) {
     if (gameState.turnOf === 1) {
       this.transformGameState(gameState, 1);
-      //this.logHeuristicValues(gameState);
     }
-
-    this.socketManager.updateClientBoard(gameState);
+    SocketSender.sendMessage(this.userId, "updatedBoard", gameState);
   }
   updateGameStatePlayer2(gameState) {
     if (gameState.turnOf === 2) {
@@ -58,11 +60,10 @@ class GameManager {
   }
   playerWon(playerNumber) {
     this.isGameFinished = true;
-    this.socketManager.playerWon(playerNumber);
+    SocketSender.sendMessage(this.userId, "winner", playerNumber);
   }
 
   movePlayer1(move) {
-    this.transformMoves(move);
     if (this.isGameFinished) return;
     if (BoardUtils.isWall(move.x, move.y)) {
       this.game.onWallClick(move.x, move.y);
@@ -72,9 +73,6 @@ class GameManager {
   }
   async movePlayer2(gameState) {
     if (this.isGameFinished) return;
-
-    this.transformGameState(gameState, 2);
-    //this.logHeuristicValues(gameState);
 
     const vellaGameState = fromOurToVellaGameState(gameState, 2);
 
@@ -144,9 +142,9 @@ class GameManager {
     return ourMove;
   }
 
-  async saveGame(userToken) {
+  async saveGame(userId) {
     const gameState = this.game.generateGameState();
-    saveGameState(userToken, gameState);
+    saveGameState(userId, gameState);
   }
 }
 
@@ -176,4 +174,4 @@ function findDifferences(obj1, obj2) {
   return differences;
 }
 
-exports.GameManager = GameManager;
+exports.AiGameManager = AiGameManager;
