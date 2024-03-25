@@ -160,11 +160,11 @@ async function getProfileOf(username) {
     const user = await userCollection.findOne({ username: username });
     const userProfile = await userProfileCollection.findOne({ _id: user._id });
     if (userProfile){
-      const photoPath = `back/ressources/${user.photo}`;
+      let photoPath;
       if (user.photo!=='')
-        photoPath = `back/ressources/img1.webp`;
+        photoPath = `./assets/images/profile/img1.webp`;
       else
-        photoPath = `back/ressources/${user.photo}`;
+        photoPath = `./assets/images/profile/${user.photo}`;
         return {
           photo: photoPath,
           username: user.username,

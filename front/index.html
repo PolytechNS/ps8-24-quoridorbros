@@ -7,6 +7,8 @@
     <link rel="stylesheet" type="text/css" href="./index.css">
 </head>
 <body>
+<div class="background"></div>
+<div class="panel" id="leftPanel">
     <div id="friend-list"></div>
     <div id="friendRequest">
         <h2>Send Friend Request</h2>
@@ -19,8 +21,7 @@
     
     <h1>Notifications</h1>
     <ul id="notifications"></ul>
-<div class="background"></div>
-<div class="panel" id="leftPanel"></div>
+</div>
 <div class="panel" id="midPanel">
     <button id="playOnline" onclick="window.location.href='./app/matchmaking/matchmaking.html'" style="display: none;">Play Online</button>
     <button id="playAIButton" onclick="window.location.href='./app/aiGame/aiGame.html'" style="display: none;">Play with AI</button>
@@ -36,5 +37,6 @@
 
     <script type="text/javascript" src="./utils/cookieManager.js"></script>
     <script type="text/javascript" src="./index.js"></script>
+    <script type="text/javascript" src="./app/profile/profile.js"></script>
 </body>
 </html>

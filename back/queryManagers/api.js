@@ -414,7 +414,7 @@ async function getProfile(request, response){
   const fromUsername = queryParameters.of;
 
   try {
-    const profile = await getProfileOf(receiver);
+    const profile = await getProfileOf(fromUsername);
     response.statusCode = 200;
     response.end(JSON.stringify({ profile }));
   } catch (error) {
