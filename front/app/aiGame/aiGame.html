@@ -3,14 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Game</title>
+    <link rel="stylesheet" type="text/css" href="../../index.css">
     <link rel="stylesheet" type="text/css" href="../clientBoard/clientBoard.css">
 </head>
 <body>
-    <button id="saveButton" style="display: none;">Save game & Quit</button>
+<div class="panel" id="leftPanel"><button id="saveButton" style="display: none;">Save game & Quit</button>
     <button id="loadGame" >Load game</button>
     <button id="newGame" >New game</button>
+</div>
+<div class="panel" id="midPanel">
     <div id="gameBoard" class="gameBoard"></div>
-
+</div>
+<div class="panel" id="rightPanel"></div>
     <script type="text/javascript" src="../sockets/socket.io.js"></script>
     <script type="text/javascript" src="../../utils/utils.js"></script>
     <script type="text/javascript" src="../clientBoard/clientBoard.js"></script>

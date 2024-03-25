@@ -53,6 +53,137 @@ async function loadGameState(userId) {
   }
 }
 
+async function userExists(userToken) {
+  try {
+    const db = getDb();
+    const collection = db.collection("users");
+    const userDocument = await collection.findOne({ username: userToken });
+    
+    if (!userDocument) {
+      console.log("No user found for the provided username:", userToken);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("An error occurred while loading user ID:", error);
+    return false;
+  }
+}
+
+async function getUserProfileById(userId, userProfileCollection) {
+  const userProfile = await userProfileCollection.findOne({ _id: userId });
+  if (!userProfile) {
+    throw new Error(`User profile not found for user with ID ${userId}.`);
+  }
+  return userProfile;
+}
+
+async function areFriends(user1, user2) {
+  try {
+    if (!user1 || !user2) {
+      throw new Error("Invalid input: Both users must be provided.");
+    }
+
+    const db = await getDb();
+    const usersCollection = db.collection("users");
+    const userProfileCollection = db.collection("user_profile");
+
+    const user1Document = await usersCollection.findOne({ username: user1 });
+    if (!user1Document) {
+      throw new Error(`User ${user1} not found.`);
+    }
+
+    const user2Document = await usersCollection.findOne({ username: user2 });
+    if (!user2Document) {
+      throw new Error(`User ${user2} not found.`);
+    }
+
+    const user1Profile = await getUserProfileById(user1Document._id, userProfileCollection);
+    const user2Profile = await getUserProfileById(user2Document._id, userProfileCollection);
+
+    let areFriendsUser1 = false;
+    user1Profile.friends.forEach(e => {
+      if (e.equals(user2Document._id))
+        areFriendsUser1 = true;
+    });
+
+    let areFriendsUser2 = false;
+    user2Profile.friends.forEach(e => {
+      if (e.equals(user1Document._id))
+        areFriendsUser2 = true;
+    });
+
+    return areFriendsUser1 && areFriendsUser2;
+  } catch (error) {
+    console.error("Error checking friendship:", error);
+    return false;
+  }
+}
+
+
+
+
+async function getFriendList(username) {
+  try {
+    const db = await getDb();
+    const userCollection = db.collection("users");
+    const userProfileCollection = db.collection("user_profile");
+
+    const user = await userCollection.findOne({ username: username });
+    if (!user) {
+      throw new Error(`User with username '${username}' not found.`);
+    }
+    
+    const userProfile = await userProfileCollection.findOne({ _id: user._id });
+    if (!userProfile) {
+      throw new Error(`User profile not found for user '${username}'.`);
+    }
+
+    const friendUsernames = await userCollection.find(
+      { _id: { $in: userProfile.friends } },
+      { projection: { _id: 0, username: 1 } }
+    ).toArray();
+    return friendUsernames.map(friend => friend.username);
+  } catch (error) {
+    console.error("Error getting friend list:", error);
+    throw error;
+  }
+}
+
+async function getProfileOf(username) {
+  try {
+    const db = await getDb();
+    const userCollection = db.collection("users");
+    const userProfileCollection = db.collection("user_profile");
+
+    const user = await userCollection.findOne({ username: username });
+    const userProfile = await userProfileCollection.findOne({ _id: user._id });
+    if (userProfile){
+      const photoPath = `back/ressources/${user.photo}`;
+      if (user.photo!=='')
+        photoPath = `back/ressources/img1.webp`;
+      else
+        photoPath = `back/ressources/${user.photo}`;
+        return {
+          photo: photoPath,
+          username: user.username,
+          elo: userProfile.elo
+      };
+    }
+    else {
+      return null;
+  }
+
+    
+  } catch (error) {
+    console.error("Error getting friend list:", error);
+    throw error;
+  }
+}
+
+
+module.exports = { connect, getDb, saveGameState, loadGameState, userExists,areFriends, getFriendList, getProfileOf,getIdOfUser};
 async function getIdOfUser(username) {
   try {
     const db = getDb();
@@ -71,4 +202,4 @@ async function getIdOfUser(username) {
   }
 }
 
-module.exports = { connect, getDb, saveGameState, loadGameState, getIdOfUser };
+module.exports = { connect, getDb, saveGameState, loadGameState, userExists,areFriends, getFriendList, getProfileOf,getIdOfUser};
