@@ -1,0 +1,1 @@
+const profileContainer = document.getElementById('profile-container');
