@@ -140,13 +140,25 @@ async function getFriendList(username) {
       throw new Error(`User profile not found for user '${username}'.`);
     }
 
-    const friendUsernames = await userCollection.find(
-      { _id: { $in: userProfile.friends } },
-      { projection: { _id: 0, username: 1 } }
-    ).toArray();
-    return friendUsernames.map(friend => friend.username);
+    const friends = await userCollection
+      .find(
+        { _id: { $in: userProfile.friends } },
+        { projection: { _id: 0, username: 1 } }
+      )
+      .toArray();
+
+    const friendListWithProfiles = [];
+    for (const friend of friends) {
+      const friendProfile = await getProfileOf(friend.username);
+      if (!friendProfile) {
+        throw new Error(`Profile not found for user '${friend.username}'.`);
+      }
+      friendListWithProfiles.push(friendProfile);
+    }
+
+    return friendListWithProfiles;
   } catch (error) {
-    console.error("Error getting friend list:", error);
+    console.error("Error getting friend list with profiles:", error);
     throw error;
   }
 }
@@ -161,10 +173,10 @@ async function getProfileOf(username) {
     const userProfile = await userProfileCollection.findOne({ _id: user._id });
     if (userProfile){
       let photoPath;
-      if (user.photo!=='')
-        photoPath = `back/ressources/img1.webp`;
+      if (userProfile.photo==='')
+        photoPath = `./assets/images/profile/img1.webp`;
       else
-        photoPath = `back/ressources/${user.photo}`;
+        photoPath = `./assets/images/profile/${userProfile.photo}`;
         return {
           photo: photoPath,
           username: user.username,

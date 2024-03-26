@@ -1,0 +1,22 @@
+#profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+}
+
+#profilePhoto {
+    max-width: 75%;
+    width: auto;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+#profileUsername {
+    margin-bottom: 20px;
+}
+
+#profileElo {
+    margin-bottom: 20px;
+}
