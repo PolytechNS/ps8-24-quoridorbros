@@ -194,37 +194,6 @@ async function getProfileOf(username) {
   }
 }
 
-async function getProfileOf(username) {
-  try {
-    const db = await getDb();
-    const userCollection = db.collection("users");
-    const userProfileCollection = db.collection("user_profile");
-
-    const user = await userCollection.findOne({ username: username });
-    const userProfile = await userProfileCollection.findOne({ _id: user._id });
-    if (userProfile){
-      let photoPath;
-      if (user.photo!=='')
-        photoPath = `back/ressources/img1.webp`;
-      else
-        photoPath = `back/ressources/${user.photo}`;
-      return {
-        photo: photoPath,
-        username: user.username,
-        elo: userProfile.elo
-      };
-    }
-    else {
-      return null;
-    }
-
-
-  } catch (error) {
-    console.error("Error getting friend list:", error);
-    throw error;
-  }
-}
-
 async function getProfileByUserId(userId) {
   const username = await getUserById(userId);
   const profile =  await getProfileOf(username);
