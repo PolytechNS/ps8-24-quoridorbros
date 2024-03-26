@@ -19,6 +19,8 @@ body{
     clear: both;
     flex-direction: row;
     z-index: 1;
+    margin: 0;
+    padding: 0;
 }
 
 button {
@@ -104,7 +106,6 @@ div.panel {
     gap : 20px;
     justify-content: center;
     align-items: center;
-    margin-top: 10px;
 }
 
 div#leftPanel {
