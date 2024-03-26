@@ -193,9 +193,6 @@ async function getProfileOf(username) {
     throw error;
   }
 }
-
-
-module.exports = { connect, getDb, saveGameState, loadGameState, userExists,areFriends, getFriendList, getProfileOf,getIdOfUser};
 async function getIdOfUser(username) {
   try {
     const db = getDb();
