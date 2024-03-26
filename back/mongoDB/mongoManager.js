@@ -1,4 +1,4 @@
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 
 const url = "mongodb://mongodb:27017";
 const dbName = "QuoribrosB";
@@ -181,6 +181,66 @@ async function getProfileOf(username) {
     throw error;
   }
 }
+
+async function getProfileOf(username) {
+  try {
+    const db = await getDb();
+    const userCollection = db.collection("users");
+    const userProfileCollection = db.collection("user_profile");
+
+    const user = await userCollection.findOne({ username: username });
+    const userProfile = await userProfileCollection.findOne({ _id: user._id });
+    if (userProfile){
+      let photoPath;
+      if (user.photo!=='')
+        photoPath = `back/ressources/img1.webp`;
+      else
+        photoPath = `back/ressources/${user.photo}`;
+      return {
+        photo: photoPath,
+        username: user.username,
+        elo: userProfile.elo
+      };
+    }
+    else {
+      return null;
+    }
+
+
+  } catch (error) {
+    console.error("Error getting friend list:", error);
+    throw error;
+  }
+}
+
+async function getProfileByUserId(userId) {
+  const username = await getUserById(userId);
+  const profile =  await getProfileOf(username);
+  return profile;
+
+}
+
+
+async function getUserById(userId) {
+  try {
+    const db = await getDb();
+    const collection = db.collection("users");
+
+    const objectIdUserId = new ObjectId(userId);
+    const userDocument = await collection.findOne({ _id: objectIdUserId });
+
+    if (!userDocument) {
+      console.log("No user found for the provided username:", username);
+      return null;
+    }
+
+    return userDocument.username;
+  } catch (error) {
+    console.error("An error occurred while loading username:", error);
+    return null;
+  }
+}
+
 async function getIdOfUser(username) {
   try {
     const db = getDb();
@@ -199,4 +259,4 @@ async function getIdOfUser(username) {
   }
 }
 
-module.exports = { connect, getDb, saveGameState, loadGameState, userExists,areFriends, getFriendList, getProfileOf,getIdOfUser};
+module.exports = { connect, getDb, saveGameState, loadGameState, userExists,areFriends, getFriendList, getProfileOf,getIdOfUser, getUserById, getProfileByUserId};
