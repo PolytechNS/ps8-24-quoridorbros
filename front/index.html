@@ -6,22 +6,12 @@
     <link rel="icon" type="image/png" href="./assets/images/icon.png">
     <link rel="stylesheet" type="text/css" href="./index.css">
     <link rel="stylesheet" type="text/css" href="./app/profile/profile.css">
+    <link rel="stylesheet" type="text/css" href="./app/friendlist/friendlist.css">
 </head>
 <body>
 <div class="background"></div>
 <div class="panel" id="leftPanel">
-    <div id="friend-list"></div>
-    <div id="friendRequest">
-        <h2>Send Friend Request</h2>
-        <form id="friendRequestForm">
-            <label for="receiver">Receiver's Name:</label>
-            <input type="text" id="receiver" name="receiver" required>
-            <button type="submit">Send Request</button>
-        </form>
-    </div>
-    
-    <h1>Notifications</h1>
-    <ul id="notifications"></ul>
+    <div id="friend-container"></div>
 </div>
 <div class="panel" id="midPanel">
     <button id="playOnline" onclick="window.location.href='./app/matchmaking/matchmaking.html'" style="display: none;">Play Online</button>
@@ -32,12 +22,12 @@
 </div>
 <div class="panel" id="rightPanel">
     <div id="profile-container"></div>
-    <p id="loggedInText" style="display: none;">You are connected</p>
     <button id="logoutButton" style="display: none;">Logout</button>
 </div>
 
     <script type="text/javascript" src="./utils/cookieManager.js"></script>
     <script type="text/javascript" src="./index.js"></script>
     <script type="text/javascript" src="./app/profile/profile.js"></script>
+    <script type="text/javascript" src="./app/friendlist/friendlist.js"></script>
 </body>
 </html>

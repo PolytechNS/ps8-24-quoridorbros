@@ -36,6 +36,9 @@ function manageRequest(request, response) {
       case "/api/friend":
         handleFriendRequest(request, response);
         break;
+      case "/api/versus":
+        handleVersus(request, response);
+        break;
       case "/api/friend/accept":
         handleFriendAcceptance(request, response);
         break;
@@ -266,7 +269,7 @@ async function handleFriendRequest(request, response){
       { 
         $push: {
           notifications: {
-            $each: [{ type: "friendrequest", sender: sender }],
+            $each: [{ type: "friendrequest", sender: sender, readed: false }],
             $slice: -50
           }
         }
@@ -305,6 +308,34 @@ async function getFriendRequests(request, response) {
 
     response.statusCode = 200;
     response.end(JSON.stringify(friendRequests.notifications));
+  } catch (error) {
+    console.error(error);
+    response.statusCode = 500;
+    response.end(JSON.stringify({ error: 'Internal server error' }));
+  }
+}
+
+async function getNotifications(request, response) {
+  const parsedUrl = url.parse(request.url, true);
+  const query = parsedUrl.query;
+  console.log(query);
+  const user = query.userId;
+
+  try {
+    const db = getDb();
+    const collection = db.collection("notifications");
+    const notifications = await collection.findOne(
+      { user_id: user }
+    );
+
+    if (!notifications || !notifications.notifications) {
+      response.statusCode = 200;
+      response.end(JSON.stringify({}));
+      return;
+    }
+
+    response.statusCode = 200;
+    response.end(JSON.stringify(notifications.notifications));
   } catch (error) {
     console.error(error);
     response.statusCode = 500;
@@ -357,6 +388,60 @@ async function handleFriendAcceptance(request, response){
 
     response.statusCode = 200;
     response.end(JSON.stringify({ message: 'Friend added successfully' }));
+  } catch (error) {
+    console.error(error);
+    response.statusCode = 500;
+    response.end(JSON.stringify({ error: 'Internal server error' }));
+  }
+}
+
+async function handleVersus(request, response){
+  const parsedUrl = url.parse(request.url, true);
+  const queryParameters = parsedUrl.query;
+
+  const sender = queryParameters.sender;
+  const receiver = queryParameters.receiver;
+
+  try {
+    const receiverExists = await userExists(receiver);
+
+    if (!receiverExists) {
+      response.statusCode = 400;
+      response.end(JSON.stringify({ error: 'User not found' }));
+      return;
+    }
+
+
+    const db = getDb();
+    const collection = db.collection("notifications");
+
+    const existingNotification = await collection.findOne({
+      user_id: receiver,
+      'notifications.sender': sender,
+      'notifications.type': 'versus'
+    });
+
+    if (existingNotification) {
+      response.statusCode = 400;
+      response.end(JSON.stringify({ error: 'Versus request already sent' }));
+      return;
+    }
+
+    await collection.updateOne(
+      { user_id: receiver },
+      { 
+        $push: {
+          notifications: {
+            $each: [{ type: "versus", sender: sender, readed: false }],
+            $slice: -50
+          }
+        }
+      },
+      { upsert: true }
+    );
+
+    response.statusCode = 200;
+    response.end(JSON.stringify({ message: 'Versus request handled successfully' }));
   } catch (error) {
     console.error(error);
     response.statusCode = 500;

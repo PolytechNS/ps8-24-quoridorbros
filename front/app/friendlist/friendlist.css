@@ -1,0 +1,39 @@
+  .friend {
+    display: flex;
+    flex-direction: line;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .profile-picture {
+    max-height: 100px;
+  }
+  
+  .username {
+    margin-left: 5px;
+  }
+  
+  .challenge-button {
+    padding: 0.3em 1em;
+    font-size: 1em;
+    height: auto;
+    display: inline-block;
+  }
+  
+  #requestopener {
+    max-height: 100px;
+  }
+
+  #friendRequestForm {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group {
+    display: flex;
+    align-items: center; /* Align items vertically in the center */
+}
+
+.input-group input {
+    margin-right: 10px; /* Adjust the space between input and button */
+}

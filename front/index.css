@@ -130,6 +130,11 @@ div#rightPanel {
 div.panel * {
     /*Content inside panels was needed before, might need later*/
 }
+
+.clickable-img {
+    cursor: pointer;
+}
+
 div.background {
     height: 100vh;
     width: 100vw;
