@@ -1,7 +1,7 @@
 const querystring = require("querystring");
 const jwt = require("jsonwebtoken");
 const { RoomManager } = require("../logic/matchMaking/roomManager");
-
+const { AchievementsManager } = require("../social/achievements");
 const { getDb, userExists, areFriends, getFriendList,getProfileOf, getIdOfUser,updateProfileImage} = require("../mongoDB/mongoManager.js");
 const url = require('url');
 
@@ -118,6 +118,7 @@ async function handleSignIn(request, response) {
       };
 
       await userProfileCollection.insertOne(userProfileData);
+      await AchievementsManager.updateAchievementsList(userProfileCollection,insertedId);
 
       response.setHeader("Content-Type", "text/html");
       response.end(
@@ -182,6 +183,8 @@ async function handleLogin(request, response) {
         1,
         response
       );
+      const userProfileCollection = db.collection("user_profile");
+      await AchievementsManager.updateAchievementsList(userProfileCollection,existingUser._id);
       response.setHeader("Content-Type", "text/html");
       response.end(
         `<script>window.location.href = "/index.html";alert("Connexion success");</script>`
