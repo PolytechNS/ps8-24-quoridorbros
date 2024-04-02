@@ -6,6 +6,8 @@ function appendMessage(sender, message) {
     let chatBox = document.getElementById('chat-box');
     let messageElement = document.createElement('div');
     messageElement.innerHTML = '<strong>' + sender + ':</strong> ' + message;
+    messageElement.classList.add('message');
+    messageElement.id = "message-" + sender;
     chatBox.appendChild(messageElement);
     // Faites défiler la boîte de chat pour afficher le dernier message
     chatBox.scrollTop = chatBox.scrollHeight;
