@@ -211,7 +211,7 @@ async function getUserById(userId) {
     const userDocument = await collection.findOne({ _id: objectIdUserId });
 
     if (!userDocument) {
-      console.log("No user found for the provided username:", username);
+      console.log("No user found for the provided userId:", userId);
       return null;
     }
 

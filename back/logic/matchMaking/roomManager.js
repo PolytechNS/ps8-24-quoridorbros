@@ -12,23 +12,15 @@ class RoomManager {
   }
 
   static async enterMatchmaking(userId) {
+    console.log("enterMatchmaking", userId);
     try {
       if (RoomManager.playerAlreadyInARoom(userId)) {
         console.log("the player is already in a room");
         return;
       }
 
-      const availableRooms = RoomManager.getAvailableRooms();
-      if (availableRooms.length === 0) {
-        RoomManager.createRoomAndJoin(userId);
-      } else {
-        const availableRoom = availableRooms[0];
-        availableRoom.add_player(userId);
-        const userProfile1 = await getProfileByUserId(availableRoom.players[0]);
-        const userProfile2 = await getProfileByUserId(availableRoom.players[1]);
-        await availableRoom.createSocketRoom(userProfile1, userProfile2);
-        availableRoom.initGame(userProfile1.elo, userProfile2.elo);
-      }
+      await this.findRoom(userId);
+
     } catch (error) {
       console.error("An error occurred while entering matchmaking:", error);
       // Handle the error as needed
@@ -53,21 +45,14 @@ class RoomManager {
     return RoomManager.rooms.find((room) => room.players.includes(userId));
   }
 
-  static getAvailableRooms() {
-    return RoomManager.rooms.filter((value) => value.isAvailable());
-  }
-
   static playerAlreadyInARoom(userId) {
     const playerRoom = RoomManager.findPlayerRoom(userId);
     return playerRoom ? true : false;
   }
 
-  static createRoomAndJoin(userId) {
-    let newRoom = new Room(userId);
-    newRoom.add_player(userId);
+  static createRoomAndJoin(userId, userElo) {
+    let newRoom = new Room(userId, userElo);
     RoomManager.rooms.push(newRoom);
-
-    console.log(SocketMapper.toString());
   }
 
   static removePlayerFromRoom(userId) {
@@ -78,7 +63,7 @@ class RoomManager {
       );
       return;
     }
-    room.removePlayer(socketId);
+    room.removePlayer(userId);
     if (room.players.length === 0) {
       RoomManager.rooms = RoomManager.rooms.filter((room) => {
         return !room.players.includes(userId);
@@ -86,18 +71,38 @@ class RoomManager {
     }
   }
 
-  static findAvaiableRoom() {
-    for (const room of RoomManager.rooms) {
-      if (room.isAvailable()) return room;
+  static async findRoom(userId) {
+    const userProfile = await getProfileByUserId(userId);
+    const userElo = userProfile.elo;
+
+    const room = RoomManager.rooms.find((room) =>
+        Math.abs(room.elo - userElo) <= room.deltaElo
+    );
+
+
+    if(!room){
+      this.createRoomAndJoin(userId, userElo);
+      return;
     }
-    return null;
+    room.add_player(userId);
+    const userProfile1 = await getProfileByUserId(room.players[0]);
+    const userProfile2 = await getProfileByUserId(room.players[1]);
+    await room.createSocketRoom(userProfile1, userProfile2);
+    room.initGame(userProfile1.elo, userProfile2.elo);
+    RoomManager.rooms = RoomManager.rooms.filter((element) => {
+      return room.roomId !== element.roomId;
+    });
+
   }
 }
 
 class Room {
-  constructor(userId) {
+  constructor(userId, userElo) {
     this.roomId = this.generateRoomId(userId);
+    this.elo = userElo;
+    this.deltaElo = 50;
     this.players = [];
+    this.players.push(userId);
   }
 
   generateRoomId(userId) {
@@ -112,14 +117,11 @@ class Room {
     this.players = this.players.filter((playerId) => playerId !== userId);
   }
 
-  isAvailable() {
-    return this.players.length < 2;
-  }
 
   initGame(eloPlayer1, eloPlayer2) {
 
-    const oneVOneOnlineGameManager =
-        GameManagerFactory.createOneVOneOnlineGameManager(
+
+      GameManagerFactory.createOneVOneOnlineGameManager(
             this.players[0],
             this.players[1],
             eloPlayer1,

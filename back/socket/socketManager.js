@@ -31,14 +31,12 @@ class SocketManager {
         const userId = await getIdOfUser(cookie.user);
         SocketMapper.updateSocket(userId, socket);
 
-        console.log("le mec se reconnecte bite", userId);
 
         //si le user était déjà en partie
         let aiGameManagerameManager =
           GameManagerMapper.getAiGameManagerByUserId(userId);
         let onlineGameInfo =
           GameManagerMapper.getOnlineGameInfoByUserId(userId);
-        console.log("onlineGameInfoe", onlineGameInfo);
 
         if (aiGameManagerameManager) {
           console.log(`déjà en aiGameManagerameManager: ${aiGameManagerameManager}`);
