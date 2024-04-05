@@ -20,7 +20,7 @@ class SocketMapper {
     if (success) {
       //console.log(`Socket supprimée avec succès pour l'ID ${id}`);
     } else {
-      //console.error(`Impossible de trouver l'ID ${id} dans le map.`);
+      console.error(`Impossible de trouver l'ID ${id} dans le map.`);
     }
   }
 

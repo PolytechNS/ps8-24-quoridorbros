@@ -47,7 +47,7 @@ class RoomManager {
 
   static playerAlreadyInARoom(userId) {
     const playerRoom = RoomManager.findPlayerRoom(userId);
-    return playerRoom ? true : false;
+    return !!playerRoom;
   }
 
   static createRoomAndJoin(userId, userElo) {

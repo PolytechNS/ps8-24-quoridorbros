@@ -20,8 +20,8 @@ socket.on("newMessage", (msg) => {
 });
 
 function sendMessage() {
-    var messageInput = document.getElementById('message-input');
-    var message = messageInput.value;
+    let messageInput = document.getElementById('message-input');
+    let message = messageInput.value;
 
     socket.emit("newMessage", message );
     appendMessage('Moi', message);
