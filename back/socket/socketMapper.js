@@ -18,9 +18,9 @@ class SocketMapper {
     const success = SocketMapper.mapper.delete(id);
 
     if (success) {
-      console.log(`Socket supprimée avec succès pour l'ID ${id}`);
+      //console.log(`Socket supprimée avec succès pour l'ID ${id}`);
     } else {
-      console.error(`Impossible de trouver l'ID ${id} dans le map.`);
+      //console.error(`Impossible de trouver l'ID ${id} dans le map.`);
     }
   }
 
@@ -34,11 +34,11 @@ class SocketMapper {
   }
 
   static toString() {
-    console.log("Voici le mappe");
+    //console.log("Voici le mappe");
     this.mapper.forEach((value, key) => {
-      console.log(`UserId: ${key}, SocketId: ${value.id}`);
+      //console.log(`UserId: ${key}, SocketId: ${value.id}`);
     });
-    console.log("\n");
+    //console.log("\n");
   }
 }
 

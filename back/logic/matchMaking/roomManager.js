@@ -24,8 +24,10 @@ class RoomManager {
       } else {
         const availableRoom = availableRooms[0];
         availableRoom.add_player(userId);
-        await availableRoom.createSocketRoom();
-        availableRoom.initGame();
+        const userProfile1 = await getProfileByUserId(availableRoom.players[0]);
+        const userProfile2 = await getProfileByUserId(availableRoom.players[1]);
+        await availableRoom.createSocketRoom(userProfile1, userProfile2);
+        availableRoom.initGame(userProfile1.elo, userProfile2.elo);
       }
     } catch (error) {
       console.error("An error occurred while entering matchmaking:", error);
@@ -114,20 +116,18 @@ class Room {
     return this.players.length < 2;
   }
 
-  initGame() {
+  initGame(eloPlayer1, eloPlayer2) {
+
     const oneVOneOnlineGameManager =
         GameManagerFactory.createOneVOneOnlineGameManager(
-            RoomManager.io,
-            this.roomId,
             this.players[0],
-            this.players[1]
+            this.players[1],
+            eloPlayer1,
+            eloPlayer2
         );
   }
 
-  async createSocketRoom() {
-    const userProfile1 = await getProfileByUserId(this.players[0]);
-    const userProfile2 = await getProfileByUserId(this.players[1]);
-    
+  async createSocketRoom(userProfile1, userProfile2) {
     SocketSender.sendMessage(this.players[0], "RoomFull", userProfile2);
     SocketSender.sendMessage(this.players[1], "RoomFull", userProfile1);
     SocketMapper.removeSocketById(this.players[0]);

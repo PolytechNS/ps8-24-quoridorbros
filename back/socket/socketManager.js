@@ -31,11 +31,15 @@ class SocketManager {
         const userId = await getIdOfUser(cookie.user);
         SocketMapper.updateSocket(userId, socket);
 
+        console.log("le mec se reconnecte bite", userId);
+
         //si le user était déjà en partie
         let aiGameManagerameManager =
           GameManagerMapper.getAiGameManagerByUserId(userId);
         let onlineGameInfo =
           GameManagerMapper.getOnlineGameInfoByUserId(userId);
+        console.log("onlineGameInfoe", onlineGameInfo);
+
         if (aiGameManagerameManager) {
           console.log(`déjà en aiGameManagerameManager: ${aiGameManagerameManager}`);
           configureAiGameEvents(socket, aiGameManagerameManager);
@@ -54,9 +58,9 @@ class SocketManager {
 
       socket.on("Acknowledgement", (messageId) => {
         const userId = SocketMapper.getUserIdBySocketId(socket.id);
-        console.log(`Acknowledgement socketid: ${socket.id}`);
-        console.log(`Acknowledgement userid: ${userId}`);
-        console.log(`id   message: ${messageId}`);
+        //console.log(`Acknowledgement socketid: ${socket.id}`);
+        //console.log(`Acknowledgement userid: ${userId}`);
+        //console.log(`id   message: ${messageId}`);
         SocketSender.handleAcknowledgement(userId, messageId);
       });
 

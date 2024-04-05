@@ -12,6 +12,12 @@ socket.on("updatedBoard", (msg) => {
   clientBoard.updateBoard(gameState);
 });
 
+socket.on("winner", (msg) => {
+  socket.emit("Acknowledgement", msg.id);
+  const winningMessage = msg.data;
+  console.log(winningMessage);
+});
+
 function onCellClick(x, y) {
   socket.emit("newMove", { x: x, y: y });
 }
