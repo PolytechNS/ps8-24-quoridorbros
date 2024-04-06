@@ -35,7 +35,7 @@ class RoomManager {
         return;
       }
 
-      RoomManager.removePlayerFromRoom(existingRoom.name, userId);
+      RoomManager.removeRoom(existingRoom);
     } catch (error) {
       console.error("An error occurred while quitting matchmaking:", error);
     }
@@ -53,22 +53,6 @@ class RoomManager {
   static createRoomAndJoin(userId, userElo) {
     let newRoom = new Room(userId, userElo);
     RoomManager.rooms.push(newRoom);
-  }
-
-  static removePlayerFromRoom(userId) {
-    const room = RoomManager.findPlayerRoom(userId);
-    if (!room) {
-      console.log(
-          "the player cannot be removed from the room since he is not in a room"
-      );
-      return;
-    }
-    room.removePlayer(userId);
-    if (room.players.length === 0) {
-      RoomManager.rooms = RoomManager.rooms.filter((room) => {
-        return !room.players.includes(userId);
-      });
-    }
   }
 
   static async findRoom(userId) {
@@ -89,10 +73,14 @@ class RoomManager {
     const userProfile2 = await getProfileByUserId(room.players[1]);
     await room.createSocketRoom(userProfile1, userProfile2);
     room.initGame(userProfile1.elo, userProfile2.elo);
+    RoomManager.removeRoom(room);
+
+  }
+
+  static removeRoom(room) {
     RoomManager.rooms = RoomManager.rooms.filter((element) => {
       return room.roomId !== element.roomId;
     });
-
   }
 }
 

@@ -13,6 +13,7 @@ const { SocketSender } = require("./socketSender.js");
 const {
   GameManagerMapper,
 } = require("../logic/gameManagers/gameManagerMapper.js");
+const {RoomManager} = require("../logic/matchMaking/roomManager");
 
 class SocketManager {
   constructor(io) {
@@ -83,11 +84,11 @@ class SocketManager {
 
       //Online game
 
-      socket.on("quit matchmaking", () => {
+      socket.on("quitMatchMaking", () => {
         const userId = SocketMapper.getUserIdBySocketId(socket.id);
 
         console.log(`quit matchmaking: ${socket.id}`);
-        this.roomManager.quitMatchmaking(userId);
+        RoomManager.quitMatchmaking(userId);
       });
     });
   }

@@ -3,5 +3,5 @@ socket.on("RoomFull", (msg) => {
   console.log("RoomFull");
   let profileOpponentDataString = JSON.stringify(msg.data);
   localStorage.setItem("profileOpponentString", profileOpponentDataString);
-  window.location.href = "../onlineGame/onlineGame.html";
+  opponentFound(msg.data);
 });

@@ -4,21 +4,29 @@
     <meta charset="UTF-8">
     <title>Quoribros</title>
     <link rel="stylesheet" type="text/css" href="../../index.css">
+
+    <link rel="stylesheet" type="text/css" href="matchmaking.css">
+
 </head>
 <body>
     <div class="background"></div>
-    <button id="back" onclick="window.location.href='../../index.html'" style="display: none;">Back</button>
-    <button id="join" onclick="enterMatchMaking()">Join room</button>
-    <div id="roomInfo">
-        <p><strong>Room Name:</strong> <span id="roomName"></span></p>
-        <p><strong>Opponent:</strong> <span id="opponentName"></span></p>
+    <div id="matchmaking-container">
+        <div id="waiting-container">
+            <h1 id="waiting-text">Waiting for a worthy opponent .</h1>
+            <div id="waitingIndicator">
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+        <button id="back" onclick="quitMatchMaking()">Back</button>
     </div>
+
+
+
+
     <script type="text/javascript" src="../../utils/cookieManager.js"></script>
     <script type="text/javascript" src="../sockets/socket.io.js"></script>
     <script type="text/javascript" src="../sockets/ioManager.js"></script>
     <script type="text/javascript" src="../sockets/matchmakingEvents.js"></script>
-
-
     <script type="text/javascript" src="../matchmaking/matchmaking.js"></script>
 
 
