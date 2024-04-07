@@ -27,6 +27,14 @@ async function displayProfile() {
             profileEloElement.textContent = `ELO: ${profileData.elo}`;
             profileEloElement.id = "profileElo";
 
+
+            let profileDataString = JSON.stringify(profileData);
+            localStorage.setItem("profileString", profileDataString);
+
+
+
+
+
             profileContainer.appendChild(profilePhotoElement);
             profileContainer.appendChild(profileUsernameElement);
             profileContainer.appendChild(profileEloElement);

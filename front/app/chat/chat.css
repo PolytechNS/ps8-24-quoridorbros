@@ -1,5 +1,49 @@
-#chat-box
-{
+
+body {
+    font-family: 'Spritendo', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f2f2f2;
+}
+
+.chat-container {
+    width: 400px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#chat-box {
     height: 300px;
     overflow-y: scroll;
+    padding: 10px;
+}
+
+.input-container {
+    display: flex;
+    padding: 10px;
+}
+
+.input-container input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px 0 0 5px;
+}
+
+.input-container button {
+    padding: 8px 15px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+}
+
+.input-container button:hover {
+    background-color: #0056b3;
 }

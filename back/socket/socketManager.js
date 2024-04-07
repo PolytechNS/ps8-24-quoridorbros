@@ -13,6 +13,7 @@ const { SocketSender } = require("./socketSender.js");
 const {
   GameManagerMapper,
 } = require("../logic/gameManagers/gameManagerMapper.js");
+const {RoomManager} = require("../logic/matchMaking/roomManager");
 
 class SocketManager {
   constructor(io) {
@@ -31,11 +32,13 @@ class SocketManager {
         const userId = await getIdOfUser(cookie.user);
         SocketMapper.updateSocket(userId, socket);
 
+
         //si le user était déjà en partie
         let aiGameManagerameManager =
           GameManagerMapper.getAiGameManagerByUserId(userId);
         let onlineGameInfo =
           GameManagerMapper.getOnlineGameInfoByUserId(userId);
+
         if (aiGameManagerameManager) {
           console.log(`déjà en aiGameManagerameManager: ${aiGameManagerameManager}`);
           configureAiGameEvents(socket, aiGameManagerameManager);
@@ -54,9 +57,9 @@ class SocketManager {
 
       socket.on("Acknowledgement", (messageId) => {
         const userId = SocketMapper.getUserIdBySocketId(socket.id);
-        console.log(`Acknowledgement socketid: ${socket.id}`);
-        console.log(`Acknowledgement userid: ${userId}`);
-        console.log(`id   message: ${messageId}`);
+        //console.log(`Acknowledgement socketid: ${socket.id}`);
+        //console.log(`Acknowledgement userid: ${userId}`);
+        //console.log(`id   message: ${messageId}`);
         SocketSender.handleAcknowledgement(userId, messageId);
       });
 
@@ -81,11 +84,11 @@ class SocketManager {
 
       //Online game
 
-      socket.on("quit matchmaking", () => {
+      socket.on("quitMatchMaking", () => {
         const userId = SocketMapper.getUserIdBySocketId(socket.id);
 
         console.log(`quit matchmaking: ${socket.id}`);
-        this.roomManager.quitMatchmaking(userId);
+        RoomManager.quitMatchmaking(userId);
       });
     });
   }

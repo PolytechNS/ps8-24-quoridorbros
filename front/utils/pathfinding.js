@@ -20,7 +20,7 @@ function findShortestPathMove(possibleMoves, board, playerNumber) {
 }
 
 function arrayContainsArray(superset, subset) {
-  for (var i = 0; i < superset.length; i++) {
+  for (let i = 0; i < superset.length; i++) {
     if (superset[i][0] === subset[0] && superset[i][1] === subset[1]) {
       return true;
     }
@@ -29,9 +29,9 @@ function arrayContainsArray(superset, subset) {
 }
 
 function computeDistanceOfShortestPath(gameBoard, player) {
-  var queue = [];
-  var visited = [];
-  var position = [player.y, player.x, 0];
+  let queue = [];
+  let visited = [];
+  let position = [player.y, player.x, 0];
   queue.push(position);
   while (queue.length > 0) {
     let current = queue.shift();
@@ -75,7 +75,7 @@ function computeDistanceOfShortestPath(gameBoard, player) {
 class PathFinding {
   static checkPathPlayers(gameBoard, players) {
     let possible = false;
-    for (var i = 0; i < 2; i++) {
+    for (let i = 0; i < 2; i++) {
       if (this.checkPath(gameBoard, players[i])) {
         possible = true;
       } else {
@@ -86,7 +86,7 @@ class PathFinding {
   }
 
   static arrayContainsArray(superset, subset) {
-    for (var i = 0; i < superset.length; i++) {
+    for (let i = 0; i < superset.length; i++) {
       if (superset[i][0] === subset[0] && superset[i][1] === subset[1]) {
         return true;
       }
@@ -95,14 +95,14 @@ class PathFinding {
   }
 
   static checkPath(gameBoard, player) {
-    var queue = [];
-    var visited = [];
-    var position = [player.y, player.x];
+    let queue = [];
+    let visited = [];
+    let position = [player.y, player.x];
     queue.push(position);
     while (queue.length > 0) {
-      var current = queue.shift();
-      var x = current[1];
-      var y = current[0];
+      let current = queue.shift();
+      let x = current[1];
+      let y = current[0];
       if (
         (y === 0 && player.playerNumber === 1) ||
         (y === 16 && player.playerNumber === 2)

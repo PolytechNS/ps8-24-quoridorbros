@@ -158,15 +158,13 @@ function findDifferences(obj1, obj2) {
 
       if (typeof value1 === "object" && typeof value2 === "object") {
         compareObjects(value1, value2, [...path, key]);
-      } else {
-        if (value1 !== value2) {
+      } else if (value1 !== value2) {
           differences.push({
             path: [...path, key],
             obj1Value: value1,
             obj2Value: value2,
           });
         }
-      }
     }
   }
 
