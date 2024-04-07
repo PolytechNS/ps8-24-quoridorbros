@@ -67,13 +67,13 @@ class OneVOneOnlineGameManager {
     saveElo(this.idClient2, this.eloClient2 + deltaClient2);
 
     const winningMessageClient1 = {
-      playerNumber,
+      result:(playerNumber === 1) ? true : false,
       elo: this.eloClient1 + deltaClient1,
       deltaElo: deltaClient1
     }
 
     const winningMessageClient2 = {
-      playerNumber,
+      result:(playerNumber === 2) ? true : false,
       elo: this.eloClient2 + deltaClient2,
       deltaElo: deltaClient2
     }
@@ -106,7 +106,7 @@ class OneVOneOnlineGameManager {
 
   calculateRatingChange(playerRating, opponentRating, gameResult, kFactor) {
     const expectedScore = this.calculateWinProbability(playerRating, opponentRating);
-    return kFactor * (gameResult - expectedScore);
+    return parseInt(kFactor * (gameResult - expectedScore));
   }
 }
 
