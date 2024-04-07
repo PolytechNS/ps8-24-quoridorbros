@@ -18,9 +18,7 @@ class RoomManager {
         console.log("the player is already in a room");
         return;
       }
-
       await this.findRoom(userId);
-
     } catch (error) {
       console.error("An error occurred while entering matchmaking:", error);
       // Handle the error as needed

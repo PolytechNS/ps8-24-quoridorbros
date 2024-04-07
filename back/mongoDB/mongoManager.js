@@ -254,8 +254,35 @@ async function saveElo(userId, newElo) {
     console.log(`Elo updated for user with ID ${userId}`);
   } catch (error) {
     console.error("Error updating Elo:", error);
+     throw error;
+  }
+}
+
+async function updateProfileImage(username, img){
+  try {
+    const db = await getDb();
+    const userCollection = db.collection("users");
+    const userProfileCollection = db.collection("user_profile");
+
+    const user = await userCollection.findOne({ username: username });
+    if (!user) {
+      throw new Error(`User with username '${username}' not found.`);
+    }
+    
+    const userProfile = await userProfileCollection.findOne({ _id: user._id });
+    if (!userProfile) {
+      throw new Error(`User profile not found for user '${username}'.`);
+    }
+
+    const modif = await userProfileCollection.updateOne(
+      { _id: user._id },
+      { $set: { photo: img } }
+    );
+    return modif;
+  } catch (error) {
+    console.error("Error getting friend list with profiles:", error);
     throw error;
   }
 }
 
-module.exports = { connect, getDb, saveGameState, loadGameState, userExists,areFriends, getFriendList, getProfileOf,getIdOfUser, getUserById, getProfileByUserId, saveElo};
+module.exports = { connect, getDb, saveGameState, loadGameState, userExists,areFriends, getFriendList, getProfileOf,getIdOfUser, updateProfileImage, getUserById, getProfileByUserId, saveElo};
