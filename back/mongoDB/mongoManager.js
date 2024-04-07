@@ -1,4 +1,4 @@
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 
 const url = "mongodb://mongodb:27017";
 const dbName = "QuoribrosB";
@@ -193,6 +193,35 @@ async function getProfileOf(username) {
     throw error;
   }
 }
+
+async function getProfileByUserId(userId) {
+  const username = await getUserById(userId);
+  const profile =  await getProfileOf(username);
+  return profile;
+
+}
+
+
+async function getUserById(userId) {
+  try {
+    const db = await getDb();
+    const collection = db.collection("users");
+
+    const objectIdUserId = new ObjectId(userId);
+    const userDocument = await collection.findOne({ _id: objectIdUserId });
+
+    if (!userDocument) {
+      console.log("No user found for the provided username:", username);
+      return null;
+    }
+
+    return userDocument.username;
+  } catch (error) {
+    console.error("An error occurred while loading username:", error);
+    return null;
+  }
+}
+
 async function getIdOfUser(username) {
   try {
     const db = getDb();
@@ -238,4 +267,4 @@ async function updateProfileImage(username, img){
   }
 }
 
-module.exports = { connect, getDb, saveGameState, loadGameState, userExists,areFriends, getFriendList, getProfileOf,getIdOfUser, updateProfileImage};
+module.exports = { connect, getDb, saveGameState, loadGameState, userExists,areFriends, getFriendList, getProfileOf,getIdOfUser, updateProfileImage, getUserById, getProfileByUserId};
