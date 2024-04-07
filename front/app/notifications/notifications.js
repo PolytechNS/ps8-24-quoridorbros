@@ -10,10 +10,10 @@ async function fetchFriendRequestNotifications() {
         if (response.status !== 200) {
           throw new Error('Failed to fetch notifications');
         }
-        const notifications = await response.json();
+        const notifications = await response.json()
         const notificationsList = document.getElementById("notifications");
         notificationsList.innerHTML = '';
-  
+        if (notifications) {
         notifications.forEach(notification => {
           const listItem = document.createElement("li");
           listItem.textContent = `${notification.sender} sent you a friend request`;
@@ -68,7 +68,7 @@ async function fetchFriendRequestNotifications() {
           listItem.appendChild(declineButton);
   
           notificationsList.appendChild(listItem);
-        });
+        });}
       }
     } catch (error) {
       console.error(error);

@@ -34,6 +34,7 @@ function manageRequest(request, response) {
         handleMatchmakingRequest(request, response);
         break;
       case "/api/friend":
+        console.log("friendRequest");
         handleFriendRequest(request, response);
         break;
       case "/api/versus":
@@ -81,6 +82,7 @@ async function handleSignIn(request, response) {
       const db = getDb();
       const userCollection = db.collection("users");
       const userProfileCollection = db.collection("user_profile");
+      const notificationsCollection = db.collection("notifications");
 
       const tokenPayload = {
         username: parsedData.username,
@@ -116,6 +118,8 @@ async function handleSignIn(request, response) {
         photo: '',
         achievements: []
       };
+
+      await notificationsCollection.insertOne({user_id:parsedData.username,notifications:[]});
 
       await userProfileCollection.insertOne(userProfileData);
       await AchievementsManager.updateAchievementsList(userProfileCollection,insertedId);
@@ -184,7 +188,12 @@ async function handleLogin(request, response) {
         response
       );
       const userProfileCollection = db.collection("user_profile");
+      const notificationsCollection = db.collection("notifications");
       await AchievementsManager.updateAchievementsList(userProfileCollection,existingUser._id);
+      let achievementNotifications = await AchievementsManager.getNotifiedAchievements(userProfileCollection,notificationsCollection,existingUser);
+
+      console.log(achievementNotifications);
+      
       response.setHeader("Content-Type", "text/html");
       response.end(
         `<script>window.location.href = "/index.html";alert("Connexion success");</script>`
@@ -237,6 +246,7 @@ async function handleFriendRequest(request, response){
 
   const sender = queryParameters.sender;
   const receiver = queryParameters.receiver;
+  console.log("Friend request");
 
   try {
     const receiverExists = await userExists(receiver);
@@ -265,6 +275,7 @@ async function handleFriendRequest(request, response){
     });
 
     if (existingNotification) {
+      console.log("Dejà existant");
       response.statusCode = 400;
       response.end(JSON.stringify({ error: 'Friend request already sent' }));
       return;
@@ -282,6 +293,8 @@ async function handleFriendRequest(request, response){
       },
       { upsert: true }
     );
+
+    console.log("updateOne OK");
 
     response.statusCode = 200;
     response.end(JSON.stringify({ message: 'Friend request handled successfully' }));
@@ -302,8 +315,8 @@ async function getFriendRequests(request, response) {
     const db = getDb();
     const collection = db.collection("notifications");
     const friendRequests = await collection.findOne(
-      { user_id: user },
-      { notifications: { $elemMatch: { type: "friendrequest" } } }
+      { user_id: user, "notifications.type": "friendrequest" },
+      { "notifications.$": 1 }
     );
 
     if (!friendRequests || !friendRequests.notifications) {
