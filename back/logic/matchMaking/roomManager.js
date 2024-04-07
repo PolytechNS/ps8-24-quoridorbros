@@ -1,5 +1,8 @@
 const { GameManagerFactory } = require("../gameManagers/gameManagerFactory.js");
 const { SocketMapper } = require("../../socket/socketMapper.js");
+const { getProfileOf, getUserById, getProfileByUserId } = require("../../mongoDB/mongoManager.js");
+const {SocketSender} = require("../../socket/socketSender");
+
 class RoomManager {
   static io;
   static rooms = [];
@@ -8,7 +11,7 @@ class RoomManager {
     RoomManager.io = ioInstance;
   }
 
-  static enterMatchmaking(userId) {
+  static async enterMatchmaking(userId) {
     try {
       if (RoomManager.playerAlreadyInARoom(userId)) {
         console.log("the player is already in a room");
@@ -21,7 +24,7 @@ class RoomManager {
       } else {
         const availableRoom = availableRooms[0];
         availableRoom.add_player(userId);
-        availableRoom.createSocketRoom();
+        await availableRoom.createSocketRoom();
         availableRoom.initGame();
       }
     } catch (error) {
@@ -121,13 +124,18 @@ class Room {
         );
   }
 
-  createSocketRoom() {
-    this.players.forEach((playerId) => {
-      const socket = SocketMapper.getSocketById(playerId);
-      socket.join(this.roomId);
-      SocketMapper.removeSocketById(playerId);
-    });
-    RoomManager.io.to(this.roomId).emit("RoomFull");
+  async createSocketRoom() {
+    const userProfile1 = await getProfileByUserId(this.players[0]);
+    const userProfile2 = await getProfileByUserId(this.players[1]);
+    
+    SocketSender.sendMessage(this.players[0], "RoomFull", userProfile2);
+    SocketSender.sendMessage(this.players[1], "RoomFull", userProfile1);
+    SocketMapper.removeSocketById(this.players[0]);
+    SocketMapper.removeSocketById(this.players[1]);
+
+
+    //const profilePlayer1 = getProfileById()
+
   }
 }
 
