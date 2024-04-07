@@ -5,7 +5,7 @@ let logoutButton = document.getElementById("logoutButton");
 
 window.onload = function () {
   let connectedCookieValue = getCookie("connected");
-  if (connectedCookieValue !== undefined) {
+  if (connectedCookieValue !== null) {
     document.getElementById("profile-container").style.display = "block";
     document.getElementById("logoutButton").style.display = "block";
     document.getElementById("loginButton").style.display = "none";

@@ -1,8 +1,8 @@
 const querystring = require("querystring");
 const jwt = require("jsonwebtoken");
 const { RoomManager } = require("../logic/matchMaking/roomManager");
-
-const { getDb, userExists, areFriends, getFriendList,getProfileOf, getIdOfUser} = require("../mongoDB/mongoManager.js");
+const { AchievementsManager } = require("../social/achievements");
+const { getDb, userExists, areFriends, getFriendList,getProfileOf, getIdOfUser,updateProfileImage} = require("../mongoDB/mongoManager.js");
 const url = require('url');
 
 function setCookie(name, value, daysToLive, response) {
@@ -44,6 +44,9 @@ function manageRequest(request, response) {
         break;
       case "/api/friend/decline":
         handleFriendDecline(request,response);
+        break;
+      case "/api/profile":
+        handleChangeProfile(request,response);
         break;
       default:
         response.end(`Merci d'avoir appelé ${request.url}`);
@@ -115,6 +118,7 @@ async function handleSignIn(request, response) {
       };
 
       await userProfileCollection.insertOne(userProfileData);
+      await AchievementsManager.updateAchievementsList(userProfileCollection,insertedId);
 
       response.setHeader("Content-Type", "text/html");
       response.end(
@@ -179,6 +183,8 @@ async function handleLogin(request, response) {
         1,
         response
       );
+      const userProfileCollection = db.collection("user_profile");
+      await AchievementsManager.updateAchievementsList(userProfileCollection,existingUser._id);
       response.setHeader("Content-Type", "text/html");
       response.end(
         `<script>window.location.href = "/index.html";alert("Connexion success");</script>`
@@ -507,6 +513,25 @@ async function getProfile(request, response){
     response.statusCode = 500;
     response.end(JSON.stringify({ error: 'Internal server error' }));
   }
+}
+
+async function handleChangeProfile(request,response){
+  const parsedUrl = url.parse(request.url, true);
+  const queryParameters = parsedUrl.query;
+
+  const fromUsername = queryParameters.of;
+  const img = queryParameters.newimg;
+
+  try {
+    const profile = await updateProfileImage(fromUsername,img);
+    response.statusCode = 200;
+    response.end(JSON.stringify({ profile }));
+  } catch (error) {
+    console.error(error);
+    response.statusCode = 500;
+    response.end(JSON.stringify({ error: 'Internal server error' }));
+  }
+
 }
 
  /* This method is a helper in case you stumble upon CORS problems. It shouldn't be used as-is:
