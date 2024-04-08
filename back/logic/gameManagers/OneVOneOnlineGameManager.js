@@ -69,12 +69,14 @@ class OneVOneOnlineGameManager {
     saveElo(this.idClient2, this.eloClient2 + deltaClient2);
 
     const winningMessageClient1 = {
+      type: "online",
       result:(playerNumber === 1) ? true : false,
       elo: this.eloClient1 + deltaClient1,
       deltaElo: deltaClient1
     }
 
     const winningMessageClient2 = {
+      type: "online",
       result:(playerNumber === 2) ? true : false,
       elo: this.eloClient2 + deltaClient2,
       deltaElo: deltaClient2

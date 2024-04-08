@@ -63,7 +63,13 @@ class AiGameManager {
     this.isGameFinished = true;
     GameManagerMapper.removeAiGameManagerByUserId(this.userId);
     this.game = null;
-    SocketSender.sendMessage(this.userId, "winner", playerNumber);
+
+    const winningMessageClient = {
+      type: "ai",
+      result:(playerNumber === 1) ? true : false,
+    }
+
+    SocketSender.sendMessage(this.userId, "winner", winningMessageClient);
   }
 
   movePlayer1(move) {

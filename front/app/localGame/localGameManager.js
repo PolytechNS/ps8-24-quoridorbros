@@ -34,6 +34,12 @@ class LocalGameManager {
 
   playerWon(playerNumber) {
     this.isGameFinished = true;
+    const gameResults = {
+      type: "local"
+    }
+    let gameResultsString = JSON.stringify(gameResults);
+    localStorage.setItem("gameResultsString", gameResultsString);
+    window.location.href = "../gameFinished/gameFinished.html";
   }
 
   onCellClick(x, y) {

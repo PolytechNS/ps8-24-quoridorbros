@@ -7,11 +7,14 @@
     <link rel="stylesheet" type="text/css" href="../clientBoard/clientBoard.css">
 </head>
 <body>
-<div class="panel" id="leftPanel"><button id="saveButton" style="display: none;">Save game & Quit</button>
+<div class="panel" id="leftPanel">
+    <button id="saveButton" class="mainButtonClass" style="display: none;">Save  & Quit</button>
     <button class="mainButtonClass" id="loadGame" >Load game</button>
     <button class="mainButtonClass" id="newGame" >New game</button>
 </div>
 <div class="panel" id="midPanel">
+    <p id="text-your-turn"></p>
+    <p id="texte-chrono"></p>
     <div id="gameBoard" class="gameBoard"></div>
 </div>
 <div class="panel" id="rightPanel"></div>
