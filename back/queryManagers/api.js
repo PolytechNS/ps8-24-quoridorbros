@@ -49,6 +49,9 @@ function manageRequest(request, response) {
       case "/api/profile":
         handleChangeProfile(request,response);
         break;
+      case "/api/notification/del":
+        handleDeleteNotification(request,response);
+        break;
       default:
         response.end(`Merci d'avoir appelé ${request.url}`);
     }
@@ -556,6 +559,37 @@ async function handleChangeProfile(request,response){
     response.end(JSON.stringify({ error: 'Internal server error' }));
   }
 
+}
+
+async function handleDeleteNotification(request,response){
+  const parsedUrl = url.parse(request.url, true);
+  const queryParameters = parsedUrl.query;
+
+  const from = queryParameters.of;
+  const notif = queryParameters.notif;
+
+  try {
+    
+    const db = getDb();
+    const collection = db.collection('notifications');
+    // Delete the specified notification for the user
+    const result = await collection.updateOne(
+      { user_id: from },
+      { $pull: { notifications: { _id: notif } } }
+    );
+
+    if (result.modifiedCount === 1) {
+      response.statusCode = 200;
+      response.end(JSON.stringify({ success: true, message: 'Notification deleted successfully' }));
+    } else {
+      response.statusCode = 404;
+      response.end(JSON.stringify({ success: false, message: 'Notification not found or already deleted' }));
+    }
+  } catch (error) {
+    console.error('Error occurred:', error);
+    response.writeHead(500, { 'Content-Type': 'application/json' });
+    response.end(JSON.stringify({ success: false, message: 'Internal Server Error' }));
+  }
 }
 
  /* This method is a helper in case you stumble upon CORS problems. It shouldn't be used as-is:
