@@ -4,11 +4,16 @@ C'est le board côté frontend, il ne contient que les informations nécessaires
 paramètres :
 
 */
+
+const YOUR_TURN_TEXT = "YOUR TURN";
+const NOT_YOUR_TURN_TEXT = "YOUR OPPONENT TURN";
+
 class ClientBoard {
   constructor(onCellClick, onWallClick, gameState, elementId = "gameBoard") {
     this.onCellClick = onCellClick;
     this.onWallClick = onWallClick;
     this.element = document.getElementById(elementId);
+    this.textYouTurn = document.getElementById("text-your-turn");
     this.board = gameState.board;
     this.divBoard = [];
     this.turnOf = gameState.turnOf;
@@ -61,7 +66,10 @@ class ClientBoard {
       }
     }
     if (this.turnOf !== this.playerNumber) {
+      this.textYouTurn.textContent = NOT_YOUR_TURN_TEXT;
       this.element.style.pointerEvents = "none";
+    } else {
+      this.textYouTurn.textContent = YOUR_TURN_TEXT;
     }
   }
 
@@ -69,8 +77,11 @@ class ClientBoard {
     //Empêche le joueur de cliquer si ce n'est pas son tour
     this.turnOf = gameState.turnOf;
     if (this.turnOf !== this.playerNumber) {
+      this.textYouTurn.textContent = NOT_YOUR_TURN_TEXT;
       this.element.style.pointerEvents = "none";
     } else {
+      this.textYouTurn.textContent = YOUR_TURN_TEXT;
+
       this.element.style.pointerEvents = "auto";
     }
 
