@@ -2,7 +2,7 @@ const querystring = require("querystring");
 const jwt = require("jsonwebtoken");
 const { RoomManager } = require("../logic/matchMaking/roomManager");
 const { AchievementsManager } = require("../social/achievements");
-const { getDb, userExists, areFriends, getFriendList,getProfileOf, getIdOfUser,updateProfileImage} = require("../mongoDB/mongoManager.js");
+const { getDb, userExists, areFriends, getFriendList,getProfileOf, getIdOfUser,updateProfileImage, getAllProfiles} = require("../mongoDB/mongoManager.js");
 const url = require('url');
 
 function setCookie(name, value, daysToLive, response) {
@@ -49,6 +49,9 @@ function manageRequest(request, response) {
       case "/api/profile":
         handleChangeProfile(request,response);
         break;
+      case "/api/notification/del":
+        handleDeleteNotification(request,response);
+        break;
       default:
         response.end(`Merci d'avoir appelé ${request.url}`);
     }
@@ -64,8 +67,14 @@ function manageRequest(request, response) {
       case request.url.startsWith("/api/friends"):
         getFriends(request, response);
         break;
+      case request.url.startsWith("/api/achievements"):
+        getAchievements(request, response);
+        break;
       case request.url.startsWith("/api/profile"):
         getProfile(request, response);
+        break;
+      case request.url.startsWith("/api/world"):
+        getWorld(request, response);
         break;
       default:
         response.end(`Merci d'avoir appelé ${request.url}`);
@@ -370,6 +379,26 @@ async function getNotifications(request, response) {
   }
 }
 
+async function getAchievements(request,response){
+  const parsedUrl = url.parse(request.url, true);
+  const queryParameters = parsedUrl.query;
+
+  const fromUsername = queryParameters.of;
+
+  try {
+    const profile = await getProfileOf(fromUsername);
+    let achievements = profile.achievements;
+    console.log(achievements);
+    response.statusCode = 200;
+    response.end(JSON.stringify({ achievements }));
+  } catch (error) {
+    console.error(error);
+    response.statusCode = 500;
+    response.end(JSON.stringify({ error: 'Internal server error' }));
+  }
+
+}
+
 
 async function handleFriendAcceptance(request, response){
   const parsedUrl = url.parse(request.url, true);
@@ -550,6 +579,50 @@ async function handleChangeProfile(request,response){
     const profile = await updateProfileImage(fromUsername,img);
     response.statusCode = 200;
     response.end(JSON.stringify({ profile }));
+  } catch (error) {
+    console.error(error);
+    response.statusCode = 500;
+    response.end(JSON.stringify({ error: 'Internal server error' }));
+  }
+
+}
+
+async function handleDeleteNotification(request,response){
+  const parsedUrl = url.parse(request.url, true);
+  const queryParameters = parsedUrl.query;
+
+  const from = queryParameters.of;
+  const notif = queryParameters.notif;
+
+  try {
+    
+    const db = getDb();
+    const collection = db.collection('notifications');
+    // Delete the specified notification for the user
+    const result = await collection.updateOne(
+      { user_id: from },
+      { $pull: { notifications: { _id: notif } } }
+    );
+
+    if (result.modifiedCount === 1) {
+      response.statusCode = 200;
+      response.end(JSON.stringify({ success: true, message: 'Notification deleted successfully' }));
+    } else {
+      response.statusCode = 404;
+      response.end(JSON.stringify({ success: false, message: 'Notification not found or already deleted' }));
+    }
+  } catch (error) {
+    console.error('Error occurred:', error);
+    response.writeHead(500, { 'Content-Type': 'application/json' });
+    response.end(JSON.stringify({ success: false, message: 'Internal Server Error' }));
+  }
+}
+
+async function getWorld(request,response){
+  try {
+    const profiles = await getAllProfiles();
+    response.statusCode = 200;
+    response.end(JSON.stringify({ profiles }));
   } catch (error) {
     console.error(error);
     response.statusCode = 500;

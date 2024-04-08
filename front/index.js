@@ -49,6 +49,130 @@ document.getElementById("logoutButton").addEventListener("click", function () {
     .catch((error) => console.error("Error:", error));
 });
 
+
+async function getAchievements(){
+  try {
+    let connectedCookieValue = getCookie("connected");
+    if (connectedCookieValue) {
+        connectedCookieValue = JSON.parse(connectedCookieValue);
+        const sender = connectedCookieValue.user;
+        const response = await fetch(`/api/achievements?of=${sender}`);
+        if (response.status !== 200) {
+            throw new Error('Failed to fetch profile');
+        }
+        
+        const data = await response.json();
+        return data.achievements;
+    }
+} catch (error) {
+    console.error(error);
+}
+}
+
+async function displayAchievements() {
+  try {
+    let achievements = await getAchievements();
+    const achievementsDiv = document.getElementById('achievements');
+    console.log(achievements);
+
+    for (let achievementId in achievements) {
+      const achievement = achievements[achievementId];
+
+      const achievementElement = document.createElement('div');
+      achievementElement.classList.add('achievement');
+
+      const imageElement = document.createElement('img');
+      imageElement.src = `./assets/images/achievements/${achievement.id}.png`;
+      imageElement.style.filter = achievement.progression < achievement.out ? 'grayscale(100%)' : 'none';
+      achievementElement.appendChild(imageElement);
+
+      const descriptionElement = document.createElement('p');
+      descriptionElement.textContent = achievement.description;
+      achievementElement.appendChild(descriptionElement);
+
+      achievementsDiv.appendChild(achievementElement);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+
+async function getEloWorld(){
+  try {
+    let connectedCookieValue = getCookie("connected");
+    if (connectedCookieValue) {
+        const response = await fetch(`/api/world`);
+        if (response.status !== 200) {
+            throw new Error('Failed to fetch profile');
+        }
+        
+        const profiles = await response.json();
+        return profiles.profiles;
+    }
+} catch (error) {
+    console.error(error);
+}
+}
+
+async function displayEloWorld() {
+  try {
+      let elos = await getEloWorld();
+      if (elos) {
+          elos.sort((a, b) => {
+              if (a.elo !== b.elo) {
+                  return b.elo - a.elo;
+              } else {
+                  return a.username.localeCompare(b.username);
+              }
+          });
+          let connectedCookieValue = getCookie("connected");
+          connectedCookieValue = JSON.parse(connectedCookieValue);
+          
+          const achievementsDiv = document.getElementById('elos-world');
+          console.log(elos);
+          let profilenumber=1;
+
+          elos.forEach(profile => {
+            const profileElement = document.createElement('div');
+
+            if (connectedCookieValue && connectedCookieValue.user === profile.username){
+              profileElement.style.backgroundColor = 'green';
+            }
+
+            const num = document.createElement('div');
+            num.textContent = profilenumber;
+            profileElement.appendChild(num);
+
+            const profilePic = document.createElement('img');
+            profilePic.src = profile.photo;
+            profilePic.style.maxHeight = '100px';
+            profilePic.classList.add('profile-picture');
+            profileElement.appendChild(profilePic);
+
+            const usernameElement = document.createElement('div');
+            console.log(profile.username);
+            usernameElement.textContent = profile.username;
+            usernameElement.classList.add('username');
+            profileElement.appendChild(usernameElement);
+            
+            const eloElement = document.createElement('div');
+            eloElement.textContent = profile.elo;
+            console.log(profile.elo);
+            eloElement.classList.add('elo');
+            profileElement.appendChild(eloElement);
+
+            achievementsDiv.appendChild(profileElement);
+            profilenumber++;
+        });
+          // Here you can manipulate the DOM to display elos data as needed
+      } else {
+          console.log("User not connected or data not available.");
+      }
+  } catch (error) {
+      console.error(error);
+  }
+}
 document.getElementById("playButton").addEventListener("click", function () {
   playWithAIButton.style.display = "inline";
   playLocalButton.style.display = "inline";

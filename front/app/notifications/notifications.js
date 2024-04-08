@@ -36,12 +36,43 @@ async function loadNotifications() {
 }
 
 function createNotification(user,notification){
-  const listItem = document.createElement("li");
+  console.log(notification.type);
   switch (notification.type){
     case "friendrequest":
-      return createFriendNotification(user,notification)
+      return createFriendNotification(user,notification);
+    case "achievement":
+      return createAchievementNotification(user,notification);
   }
   return null;
+}
+
+function createAchievementNotification(user,notification){
+  const listItem = document.createElement("li");
+  listItem.textContent = notification.message;
+
+  const acceptButton = document.createElement("button");
+  acceptButton.textContent = "V";
+  acceptButton.addEventListener("click", async () => {
+    try {
+      const requestURL = `/api/notification/del?notif=${encodeURIComponent(notification._id)}&of=${encodeURIComponent(user)}`;
+      const response = await fetch(requestURL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      
+      if (response.status === 200) {
+        listItem.remove();
+      } else {
+        throw new Error('Failed to remove notification');
+      }
+    } catch (error) {
+      console.error("Error removing notification:", error);
+    }
+  });
+  listItem.appendChild(acceptButton);
+  return listItem;
 }
 
 function createFriendNotification(user,notification){
