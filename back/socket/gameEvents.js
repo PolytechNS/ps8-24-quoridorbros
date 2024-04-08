@@ -23,6 +23,10 @@ function configureOneVOneOnlineGameEvents(
       oneVOneOnlineGameManager.sendMessagePlayer2(message)
     });
 
+    socket.on("concede", () => {
+      oneVOneOnlineGameManager.concede(1)
+    });
+
   } else if (playerNumber === 2) {
     socket.on("newMove", (move) => {
       oneVOneOnlineGameManager.movePlayer2(move);
@@ -30,6 +34,10 @@ function configureOneVOneOnlineGameEvents(
 
     socket.on("newMessage", (message) => {
       oneVOneOnlineGameManager.sendMessagePlayer1(message)
+    });
+
+    socket.on("concede", () => {
+      oneVOneOnlineGameManager.concede(2)
     });
   }
 }

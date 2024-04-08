@@ -1,12 +1,50 @@
-div.background {
+#background {
     height: 100vh;
     width: 100vw;
     background-image: url("../../assets/images/win.png");
     background-color: #F8E0B0;
-    background-repeat: no-repeat, repeat-x, repeat-x, repeat-x;
-    background-position: left 30% bottom 22px, left 0px bottom 0px, left 0px bottom 22px, left 0px bottom 0px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
     position: fixed;
     z-index: -1;
-    margin-top: -8px;
-    margin-left: -8px;
+    margin: 0;
+    padding: 0;
+}
+
+
+#game-finished-container {
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+#results-container {
+    height: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.navigation-buttons {
+    width: 50%;
+    height: 40%;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+#elo-text {
+    padding: 20px;
+    background: white;
+    border-radius: 2px;
+    border: #111 solid 4px;
 }

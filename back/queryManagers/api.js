@@ -2,8 +2,9 @@ const querystring = require("querystring");
 const jwt = require("jsonwebtoken");
 const { RoomManager } = require("../logic/matchMaking/roomManager");
 const { AchievementsManager } = require("../social/achievements");
-const { getDb, userExists, areFriends, getFriendList,getProfileOf, getIdOfUser,updateProfileImage} = require("../mongoDB/mongoManager.js");
+const { getDb, userExists, areFriends, getFriendList,getProfileOf, getIdOfUser,updateProfileImage, getAllProfiles} = require("../mongoDB/mongoManager.js");
 const url = require('url');
+const {SocketSender} = require("../socket/socketSender");
 
 function setCookie(name, value, daysToLive, response) {
   const stringValue = typeof value === "object" ? JSON.stringify(value) : value;
@@ -49,6 +50,9 @@ function manageRequest(request, response) {
       case "/api/profile":
         handleChangeProfile(request,response);
         break;
+      case "/api/notification/del":
+        handleDeleteNotification(request,response);
+        break;
       default:
         response.end(`Merci d'avoir appelé ${request.url}`);
     }
@@ -64,8 +68,14 @@ function manageRequest(request, response) {
       case request.url.startsWith("/api/friends"):
         getFriends(request, response);
         break;
+      case request.url.startsWith("/api/achievements"):
+        getAchievements(request, response);
+        break;
       case request.url.startsWith("/api/profile"):
         getProfile(request, response);
+        break;
+      case request.url.startsWith("/api/world"):
+        getWorld(request, response);
         break;
       default:
         response.end(`Merci d'avoir appelé ${request.url}`);
@@ -100,7 +110,7 @@ async function handleSignIn(request, response) {
       if (existingUser) {
         response.setHeader("Content-Type", "text/html");
         response.end(
-          `<script>window.location.href = "/pages/signin.html";alert("Invalid username or password");</script>`
+          `<script>window.location.href = "/app/signin/signin.html";alert("Invalid username or password");</script>`
         );
         return;
       }
@@ -155,7 +165,7 @@ async function handleLogin(request, response) {
       if (!collection) {
         response.setHeader("Content-Type", "text/html");
         response.end(
-          `<script>window.location.href = "/pages/login.html";alert("Wrong username");</script>`
+          `<script>window.location.href = "/app/login/login.html";alert("Wrong username");</script>`
         );
         return;
       }
@@ -167,7 +177,7 @@ async function handleLogin(request, response) {
       if (!existingUser) {
         response.setHeader("Content-Type", "text/html");
         response.end(
-          `<script>window.location.href = "/pages/login.html";alert("Wrong username");</script>`
+          `<script>window.location.href = "/app/login/login.html";alert("Wrong username");</script>`
         );
         return;
       }
@@ -180,7 +190,7 @@ async function handleLogin(request, response) {
       if (parsedData.password != decodedToken.password) {
         response.setHeader("Content-Type", "text/html");
         response.end(
-          `<script>window.location.href = "/pages/login.html";alert("Wrong username or password");</script>`
+          `<script>window.location.href = "/app/login/login.html";alert("Wrong username or password");</script>`
         );
         return;
       }
@@ -231,8 +241,6 @@ async function handleMatchmakingRequest(request, response){
 
   try {
     const userId = await getIdOfUser(userName);
-
-    console.log("userId handle", userId );
     RoomManager.enterMatchmaking(userId);
 
     response.statusCode = 200;
@@ -368,6 +376,26 @@ async function getNotifications(request, response) {
     response.statusCode = 500;
     response.end(JSON.stringify({ error: 'Internal server error' }));
   }
+}
+
+async function getAchievements(request,response){
+  const parsedUrl = url.parse(request.url, true);
+  const queryParameters = parsedUrl.query;
+
+  const fromUsername = queryParameters.of;
+
+  try {
+    const profile = await getProfileOf(fromUsername);
+    let achievements = profile.achievements;
+    console.log(achievements);
+    response.statusCode = 200;
+    response.end(JSON.stringify({ achievements }));
+  } catch (error) {
+    console.error(error);
+    response.statusCode = 500;
+    response.end(JSON.stringify({ error: 'Internal server error' }));
+  }
+
 }
 
 
@@ -550,6 +578,50 @@ async function handleChangeProfile(request,response){
     const profile = await updateProfileImage(fromUsername,img);
     response.statusCode = 200;
     response.end(JSON.stringify({ profile }));
+  } catch (error) {
+    console.error(error);
+    response.statusCode = 500;
+    response.end(JSON.stringify({ error: 'Internal server error' }));
+  }
+
+}
+
+async function handleDeleteNotification(request,response){
+  const parsedUrl = url.parse(request.url, true);
+  const queryParameters = parsedUrl.query;
+
+  const from = queryParameters.of;
+  const notif = queryParameters.notif;
+
+  try {
+    
+    const db = getDb();
+    const collection = db.collection('notifications');
+    // Delete the specified notification for the user
+    const result = await collection.updateOne(
+      { user_id: from },
+      { $pull: { notifications: { _id: notif } } }
+    );
+
+    if (result.modifiedCount === 1) {
+      response.statusCode = 200;
+      response.end(JSON.stringify({ success: true, message: 'Notification deleted successfully' }));
+    } else {
+      response.statusCode = 404;
+      response.end(JSON.stringify({ success: false, message: 'Notification not found or already deleted' }));
+    }
+  } catch (error) {
+    console.error('Error occurred:', error);
+    response.writeHead(500, { 'Content-Type': 'application/json' });
+    response.end(JSON.stringify({ success: false, message: 'Internal Server Error' }));
+  }
+}
+
+async function getWorld(request,response){
+  try {
+    const profiles = await getAllProfiles();
+    response.statusCode = 200;
+    response.end(JSON.stringify({ profiles }));
   } catch (error) {
     console.error(error);
     response.statusCode = 500;

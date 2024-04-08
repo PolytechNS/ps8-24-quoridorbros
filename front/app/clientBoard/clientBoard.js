@@ -4,15 +4,22 @@ C'est le board côté frontend, il ne contient que les informations nécessaires
 paramètres :
 
 */
+
+const YOUR_TURN_TEXT = "YOUR TURN";
+const NOT_YOUR_TURN_TEXT = "YOUR OPPONENT TURN";
+const TOUR_DURATION = 20;
+
 class ClientBoard {
   constructor(onCellClick, onWallClick, gameState, elementId = "gameBoard") {
     this.onCellClick = onCellClick;
     this.onWallClick = onWallClick;
     this.element = document.getElementById(elementId);
+    this.textYouTurn = document.getElementById("text-your-turn");
     this.board = gameState.board;
     this.divBoard = [];
     this.turnOf = gameState.turnOf;
     this.playerNumber = gameState.playerNumber;
+    this.timer = new Timer();
     this.initBoard();
   }
 
@@ -61,16 +68,23 @@ class ClientBoard {
       }
     }
     if (this.turnOf !== this.playerNumber) {
+      this.textYouTurn.textContent = NOT_YOUR_TURN_TEXT;
       this.element.style.pointerEvents = "none";
+    } else {
+      this.textYouTurn.textContent = YOUR_TURN_TEXT;
     }
   }
 
   updateBoard(gameState) {
     //Empêche le joueur de cliquer si ce n'est pas son tour
     this.turnOf = gameState.turnOf;
+    this.timer.start();
     if (this.turnOf !== this.playerNumber) {
+      this.textYouTurn.textContent = NOT_YOUR_TURN_TEXT;
       this.element.style.pointerEvents = "none";
     } else {
+      this.textYouTurn.textContent = YOUR_TURN_TEXT;
+
       this.element.style.pointerEvents = "auto";
     }
 
@@ -135,3 +149,36 @@ class ClientBoard {
     this.element.style.pointerEvents = "none";
   }
 }
+
+class Timer {
+  constructor() {
+    this.timerInterval = null;
+    this.texte = document.getElementById("texte-chrono");
+  }
+
+  start() {
+    this.seconds = TOUR_DURATION;
+    this.timerInterval = setInterval(() => {
+      this.update();
+    }, 1000);
+  }
+
+  stop() {
+    clearInterval(this.timerInterval);
+  }
+
+  reset() {
+    clearInterval(this.timerInterval);
+    this.seconds = 0;
+  }
+
+  update() {
+    this.seconds--;
+    if (this.seconds < 0) {
+      this.stop();
+    } else {
+      this.texte.textContent = this.seconds + " secondes restantes";
+    }
+  }
+}
+
