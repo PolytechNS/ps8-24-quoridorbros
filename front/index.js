@@ -8,10 +8,14 @@ let backButton = document.getElementById("backButton");
 window.onload = function () {
   let connectedCookieValue = getCookie("connected");
   if (connectedCookieValue !== null) {
+    /* Une hérésie qui nous évite de refactor : */
+    document.getElementById("friendSocketInitAnchor").appendChild(document.createElement("script")).src = "/app/sockets/ioManager.js";
+    /* Désolé */
     document.getElementById("profile-container").style.display = "block";
     document.getElementById("logoutButton").style.display = "block";
     document.getElementById("loginButton").style.display = "none";
     document.getElementById("signinButton").style.display = "none";
+    document.getElementById("friend-container").style.display = "inline";
     playWithAIButton.style.display = "none";
     playLocalButton.style.display = "none";
     playOnlineButton.style.display = "none";
@@ -34,6 +38,7 @@ document.getElementById("logoutButton").addEventListener("click", function () {
         document.getElementById("logoutButton").style.display = "none";
         document.getElementById("loginButton").style.display = "inline";
         document.getElementById("signinButton").style.display = "inline";
+        document.getElementById("friend-container").style.display = "none";
         playWithAIButton.style.display = "none";
         playLocalButton.style.display = "none";
         playOnlineButton.style.display = "none";
