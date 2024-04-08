@@ -109,7 +109,7 @@ async function handleSignIn(request, response) {
       if (existingUser) {
         response.setHeader("Content-Type", "text/html");
         response.end(
-          `<script>window.location.href = "/pages/signin.html";alert("Invalid username or password");</script>`
+          `<script>window.location.href = "/app/signin/signin.html";alert("Invalid username or password");</script>`
         );
         return;
       }
@@ -164,7 +164,7 @@ async function handleLogin(request, response) {
       if (!collection) {
         response.setHeader("Content-Type", "text/html");
         response.end(
-          `<script>window.location.href = "/pages/login.html";alert("Wrong username");</script>`
+          `<script>window.location.href = "/app/login/login.html";alert("Wrong username");</script>`
         );
         return;
       }
@@ -176,7 +176,7 @@ async function handleLogin(request, response) {
       if (!existingUser) {
         response.setHeader("Content-Type", "text/html");
         response.end(
-          `<script>window.location.href = "/pages/login.html";alert("Wrong username");</script>`
+          `<script>window.location.href = "/app/login/login.html";alert("Wrong username");</script>`
         );
         return;
       }
@@ -189,7 +189,7 @@ async function handleLogin(request, response) {
       if (parsedData.password != decodedToken.password) {
         response.setHeader("Content-Type", "text/html");
         response.end(
-          `<script>window.location.href = "/pages/login.html";alert("Wrong username or password");</script>`
+          `<script>window.location.href = "/app/login/login.html";alert("Wrong username or password");</script>`
         );
         return;
       }
