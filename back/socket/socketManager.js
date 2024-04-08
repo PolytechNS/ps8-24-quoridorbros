@@ -96,8 +96,8 @@ class SocketManager {
             console.log(`challengeFriend: ${socket.id}`);
         });
 
-        socket.on("checkFriendConnectionStatus", (username) => {
-            const userId = getIdOfUser(username);
+        socket.on("checkFriendConnectionStatus", async (username) => {
+            const userId = await getIdOfUser(username);
             console.log(`checkFriendConnectionStatus: ${socket.id} checks for ${userId}`);
             SocketMapper.mapper.forEach((value, key) => {
                 if (key === userId) {
