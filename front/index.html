@@ -18,17 +18,23 @@
     <div class="popupBox" id="profileEditorPopup" style="display: none">
         <div id="profile-editor-container"></div>
     </div>
+    <div class="popupBox" id="eloPopup" style="display: none">
+        <div id="elo-container">
+            <div id="elos">
+                <div id="elos-world"></div>
+                <div id="elos-friends"></div>
+            </div>
+        </div>
+    </div>
+        <div class="popupBox" id="achievementsPopup" style="display: none">
+            <div id="achievements-container">
+                <div id="achievements"></div>
+            </div>
+        </div>
     <a href="#" id="popupClose" class="close">&times;</a>
 </div>
-
-
 <div class="panel" id="leftPanel">
     <div style="display: none;" id="friend-container"></div>
-</div>
-<div id="achievements"></div>
-<div id="elos">
-    <div id="elos-world"></div>
-    <div id="elos-friends"></div>
 </div>
 <div class="panel" id="midPanel">
     <button id="playButton" class="mainButtonClass">Play</button>
@@ -37,12 +43,15 @@
     <button id="playLocalButton" class="mainButtonClass" onclick="window.location.href='./app/localGame/localGame.html'" style="display: none;">Play locally</button>
     <button id="loginButton" class="mainButtonClass" onclick="window.location.href='./app/login/login.html'">Log in</button>
     <button id="signinButton" class="mainButtonClass" onclick="window.location.href='./app/signin/signin.html'">Sign in</button>
+    <button id="notificationsButton" class="mainButtonClass" style="display: none;">Notifications</button>
+    <button id="profileEditorButton" class="mainButtonClass" style="display: none;">Edit Profile</button>
     <button id="backButton" class="mainButtonClass" onclick="window.location.href='../../index.html'" style="display: none">Back</button>
 </div>
 <div class="panel" id="rightPanel">
     <div id="profile-container"></div>
-    <button id="notificationsButton" class="mainButtonClass" style="display: none;">Notifications</button>
-    <button id="profileEditorButton" class="mainButtonClass" style="display: none;">Edit Profile</button>
+
+    <button id="eloButton" class="mainButtonClass" style="display: none;">Leaderboard</button>
+    <button id="achievementsButton" class="mainButtonClass" style="display: none;">Achievements</button>
     <button id="logoutButton" class="mainButtonClass" style="display: none;">Logout</button>
 </div>
 
