@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game</title>
+    <link rel="stylesheet" type="text/css" href="../../index.css">
+    <link rel="stylesheet" type="text/css" href="../clientBoard/clientBoard.css">
+</head>
+<body>
+<div class="panel" id="leftPanel">
+    <button id="saveButton" class="mainButtonClass" style="display: none;">Save  & Quit</button>
+    <button class="mainButtonClass" id="loadGame" >Load game</button>
+    <button class="mainButtonClass" id="newGame" >New game</button>
+</div>
+<div class="panel" id="midPanel">
+    <p id="text-your-turn"></p>
+    <p id="texte-chrono"></p>
+    <div id="gameBoard" class="gameBoard"></div>
+</div>
+<div class="panel" id="rightPanel"></div>
+    <script type="text/javascript" src="../sockets/socket.io.js"></script>
+    <script type="text/javascript" src="../../utils/utils.js"></script>
+    <script type="text/javascript" src="../clientBoard/clientBoard.js"></script>
+    <script type="text/javascript" src="../../utils/cookieManager.js"></script>
+    <script type="text/javascript" src="../sockets/ioManager.js"></script>
+    <script type="text/javascript" src="../sockets/aiEvents.js"></script>
+    <script type="text/javascript" src="../sockets/gameEvents.js"></script>
+
+
+
+    <script>
+        
+        let loadGameButton = document.getElementById('loadGame');
+        let newGameButton = document.getElementById('newGame');
+        let saveButton = document.getElementById('saveButton');
+
+        saveButton.addEventListener('click', function() {
+            let connectedCookieValue = getCookie('connected');
+            if (connectedCookieValue !== undefined) {
+                let connected = JSON.parse(connectedCookieValue);
+                saveGame(connected.token);
+                window.location.href = "../../index.html";
+            }
+
+        });
+
+
+        loadGameButton.addEventListener('click', function() {
+            let connectedCookieValue = getCookie('connected');
+            if (connectedCookieValue !== undefined) {
+                let connected = JSON.parse(connectedCookieValue);
+                loadGame(connected.token);
+                loadGameButton.style.display = "none";
+                newGameButton.style.display = "none";
+                saveButton.style.display = "inline";
+                
+            }
+        });
+
+        
+        newGameButton.addEventListener('click', function() {
+            createGame();
+            loadGameButton.style.display = "none";
+            newGameButton.style.display = "none";
+            saveButton.style.display = "inline";
+        });
+
+    </script>
+</body>
+</html>

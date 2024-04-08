@@ -38,6 +38,9 @@ const server = http
   .listen(8000);
 
 const { Server } = require("socket.io");
+const {RoomManager} = require("./logic/matchMaking/roomManager");
 const io = new Server(server);
 
 let socketManager = new SocketManager(io);
+RoomManager.initialize(io);
+

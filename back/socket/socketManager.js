@@ -1,51 +1,108 @@
-const { GameManager } = require("../logic/gameManager.js");
+const {
+  GameManagerFactory,
+} = require("../logic/gameManagers/gameManagerFactory.js");
+
+const {
+  configureAiGameEvents,
+  configureOneVOneOnlineGameEvents,
+} = require("./gameEvents.js");
+
+const { SocketMapper } = require("./socketMapper.js");
+const { getIdOfUser } = require("../mongoDB/mongoManager.js");
+const { SocketSender } = require("./socketSender.js");
+const {
+  GameManagerMapper,
+} = require("../logic/gameManagers/gameManagerMapper.js");
+const {RoomManager} = require("../logic/matchMaking/roomManager");
 
 class SocketManager {
   constructor(io) {
     this.io = io;
-    this.gameManager = null;
+    this.aiGameManager = null;
     this.setupListeners();
   }
 
   setupListeners() {
     this.io.on("connection", (socket) => {
-      console.log(`New connection: ${socket.id}`);
+      //console.log(`connection: ${socket.id}`);
 
-      socket.on("create game", (msg) => {
-        console.log(`Create game: ${socket.id}`);
-        this.attachGameManager(new GameManager(this));
+      socket.emit("getCookie");
+
+      socket.on("cookie", async (cookie) => {
+        const userId = await getIdOfUser(cookie.user);
+        SocketMapper.updateSocket(userId, socket);
+
+
+        //si le user était déjà en partie
+        let aiGameManagerameManager =
+          GameManagerMapper.getAiGameManagerByUserId(userId);
+        let onlineGameInfo =
+          GameManagerMapper.getOnlineGameInfoByUserId(userId);
+
+        if (aiGameManagerameManager) {
+          console.log(`déjà en aiGameManagerameManager: ${aiGameManagerameManager}`);
+          configureAiGameEvents(socket, aiGameManagerameManager);
+        } else if (onlineGameInfo) {
+          console.log(`déjà en onlineGameInfo: ${socket.id}`);
+          configureOneVOneOnlineGameEvents(
+            socket,
+            onlineGameInfo.gameManager,
+            onlineGameInfo.playerNumber
+          );
+        }
+
+        SocketSender.resendAllPending(userId);
+
       });
 
-      socket.on("load-game", (token) => {
+
+
+
+      //Local game
+      socket.on("create game", () => {
+        console.log(`create game: ${socket.id}`);
+        const userId = SocketMapper.getUserIdBySocketId(socket.id);
+        const aiGameManager = GameManagerFactory.createAiGameManager(userId);
+        configureAiGameEvents(socket, aiGameManager);
+      });
+
+      socket.on("load-game", () => {
         console.log(`load-game: ${socket.id}`);
-        this.attachGameManager(new GameManager(this, token));
+
+        const userId = SocketMapper.getUserIdBySocketId(socket.id);
+        const aiGameManager = GameManagerFactory.createAiGameManager(
+          userId,
+          true
+        );
+        configureAiGameEvents(socket, aiGameManager);
       });
 
-      socket.on("newMove", (move) => {
-        this.gameManager.movePlayer1(move);
+      //Online game
+
+      socket.on("quitMatchMaking", () => {
+        const userId = SocketMapper.getUserIdBySocketId(socket.id);
+
+        //console.log(`quit matchmaking: ${socket.id}`);
+        RoomManager.quitMatchmaking(userId);
       });
 
-      socket.on("save-game", (token) => {
-        console.log(`save-game: ${socket.id}`);
-        this.gameManager.saveGame(token);
-      });
+        socket.on("challengeFriend", (username) => {
+            const userId = SocketMapper.getUserIdBySocketId(socket.id);
+            console.log(`challengeFriend: ${socket.id}`);
+        });
+
+        socket.on("checkFriendConnectionStatus", async (username) => {
+            const userId = await getIdOfUser(username);
+            console.log(`checkFriendConnectionStatus: ${socket.id} checks for ${userId}`);
+            SocketMapper.mapper.forEach((value, key) => {
+                if (key === userId) {
+                  console.log(`friendConnected: ${username}`);
+                    socket.emit("friendConnected", username);
+                }
+            }
+            );
+        });
     });
-  }
-
-  attachGameManager(gameManager) {
-    this.gameManager = gameManager;
-  }
-
-  updateClientBoard(gameState) {
-    this.io.emit("updatedBoard", gameState);
-  }
-
-  initClientBoard(gameState) {
-    this.io.emit("initBoard", gameState);
-  }
-
-  playerWon(playerNumber) {
-    this.io.emit("winner", playerNumber);
   }
 }
 

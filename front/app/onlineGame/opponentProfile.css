@@ -1,0 +1,33 @@
+/*Une classe aurait été meilleur certes, mais si n<3, n étant la répétition de code, alors une abstraction n'est pas nécessaire.
+Puis ça permet des petites différences entre gauche et droite si besoin est.*/
+
+#opponent-profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+}
+
+#opponentProfilePhoto {
+    max-width: 75%;
+    width: auto;
+    height: auto;
+    margin-bottom: 20px;
+    border: 2px solid #0f0;
+}
+
+#opponentProfileUsername {
+    display: inline-block;
+    font-size: 2em;
+    font-weight: bold;
+    padding: 5px 10px;
+    border: 1px solid #fff;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+    margin-bottom: 20px;
+}
+
+#opponentProfileElo {
+    margin-bottom: 20px;
+}

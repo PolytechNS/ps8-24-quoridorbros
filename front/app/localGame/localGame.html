@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game</title>
+    <link rel="stylesheet" type="text/css" href="../../index.css">
+    <link rel="stylesheet" type="text/css" href="../clientBoard/clientBoard.css">
+</head>
+<body>
+<div class="panel" id="leftPanel"></div>
+<div class="panel" id="midPanel">
+    <p id="text-your-turn" style="display: none"></p>
+    <p id="texte-chrono" style="display: none"></p>
+    <div id="gameBoard1" class="gameBoard"></div>
+    <div id="gameBoard2" class="gameBoard"></div>
+</div>
+<div class="panel" id="rightPanel"></div>
+    <script type="text/javascript" src="../../utils/utils.js"></script>
+    <script type="text/javascript" src="../../utils/pathfinding.js"></script>
+    <script type="text/javascript" src="../clientBoard/clientBoard.js"></script>
+    <script type="text/javascript" src="../../utils/game.js"></script>
+    <script type="text/javascript" src="./localGameManager.js"></script>
+</body>
+</html>

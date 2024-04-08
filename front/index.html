@@ -1,19 +1,80 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Quoribros</title>
+    <link rel="icon" type="image/png" href="./assets/images/icon.png">
+    <link rel="stylesheet" type="text/css" href="./index.css">
+    <link rel="stylesheet" type="text/css" href="./app/profile/profile.css">
+    <link rel="stylesheet" type="text/css" href="./app/friendlist/friendlist.css">
+    <link rel="stylesheet" type="text/css" href="./app/profile/profileEditor/profileEditor.css">
 </head>
 <body>
-    <button id="playAIButton" onclick="window.location.href='./pages/game.html'" style="display: none;">Play with AI</button>
-    <button id="playLocalButton" onclick="window.location.href='./pages/localGame.html'" style="display: none;">Play localy</button>
-    <button id="loginButton" onclick="window.location.href='./pages/login.html'">Log in</button>
-    <button id="signinButton" onclick="window.location.href='./pages/signin.html'">Sign in</button>
+<div class="background"></div>
+<div class="popup" id="indexPopup">
+    <div class="popupBox" id="notificationsPopup" style="display: none">
+        <div id="notifications-container"></div>
+    </div>
+    <div class="popupBox" id="profileEditorPopup" style="display: none">
+        <div id="profile-editor-container"></div>
+    </div>
+    <div class="popupBox" id="eloPopup" style="display: none">
+        <div id="elo-container">
+            <div id="elos">
+                <div id="elos-world"></div>
+                <div id="elos-friends"></div>
+            </div>
+        </div>
+    </div>
+        <div class="popupBox" id="achievementsPopup" style="display: none">
+            <div id="achievements-container">
+                <div id="achievements"></div>
+            </div>
+        </div>
+    <a href="#" id="popupClose" class="close">&times;</a>
+</div>
+<div class="panel" id="leftPanel">
+    <div style="display: none;" id="friend-container"></div>
+</div>
+<div class="panel" id="midPanel">
+    <h1 class="quoridor-title">
+        <span class="letter Q">Q</span>
+        <span class="letter U">U</span>
+        <span class="letter O">O</span>
+        <span class="letter R">R</span>
+        <span class="letter I">I</span>
+        <span class="letter D">D</span>
+        <span class="letter O">O</span>
+        <span class="letter R">R</span>
+        </br>
+        <span class="letter B">B</span>
+        <span class="letter R">R</span>
+        <span class="letter O">O</span>
+        <span class="letter S">S</span>
+</h1>
+    <button id="playButton" class="mainButtonClass">Play</button>
+    <button id="playOnlineButton" class="mainButtonDisabledClass" onclick="window.location.href='./app/matchmaking/matchmaking.html'" style="display: none;" disabled>Play Online<br><span id="loginNote">(You must log in to play online)</span></button>
+    <button id="playAIButton" class="mainButtonDisabledClass" onclick="window.location.href='./app/aiGame/aiGame.html'" style="display: none;" disabled>Play with AI</button>
+    <button id="playLocalButton" class="mainButtonClass" onclick="window.location.href='./app/localGame/localGame.html'" style="display: none;">Play locally</button>
+    <button id="loginButton" class="mainButtonClass" onclick="window.location.href='./app/login/login.html'">Log in</button>
+    <button id="signinButton" class="mainButtonClass" onclick="window.location.href='./app/signin/signin.html'">Sign in</button>
+    <button id="notificationsButton" class="mainButtonClass" style="display: none;">Notifications</button>
+    <button id="profileEditorButton" class="mainButtonClass" style="display: none;">Edit Profile</button>
+    <button id="backButton" class="mainButtonClass" onclick="window.location.href='../../index.html'" style="display: none">Back</button>
+</div>
+<div class="panel" id="rightPanel">
+    <div id="profile-container"></div>
 
-    <p id="loggedInText" style="display: none;">You are connected</p>
-    <button id="logoutButton" style="display: none;">Logout</button>
-    
-    <script type="text/javascript" src="./js/cookieManager.js"></script>
-    <script type="text/javascript" src="./js/index.js"></script>
+    <button id="eloButton" class="mainButtonClass" style="display: none;">Leaderboard</button>
+    <button id="achievementsButton" class="mainButtonClass" style="display: none;">Achievements</button>
+    <button id="logoutButton" class="mainButtonClass" style="display: none;">Logout</button>
+</div>
+
+    <script type="text/javascript" src="./utils/cookieManager.js"></script>
+    <script type="text/javascript" src="./index.js"></script>
+    <script type="text/javascript" src="./app/profile/profile.js"></script>
+    <script type="text/javascript" src="./app/sockets/socket.io.js"></script>
+    <div id="friendSocketInitAnchor" style="display: none;"></div>
+    <script type="text/javascript" src="./app/profile/profileEditor/profileEditor.js"></script>
 </body>
 </html>

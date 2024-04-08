@@ -1,0 +1,317 @@
+/*Definition du font*/
+@font-face {
+    font-family: 'Spritendo';
+    src: url('./assets/fonts/spritendo.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Mario64';
+    src: url('./assets/fonts/mario.ttf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+html{
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Spritendo', sans-serif;
+}
+
+h1{
+    font-family: 'Mario64', sans-serif;
+    font-size: 6em;
+    color: #ff0000;
+    text-align: center;
+    width: 80%;
+}
+.quoridor-title span {
+    margin-right: -30px;
+}
+.letter.space {
+    margin-right: 40px;
+}
+.letter.Q { color: #FF0000; }
+.letter.U { color: #FFFF00; }
+.letter.O { color: #FF7F00; }
+.letter.R { color: #00FF00; }
+.letter.I { color: #0000FF; }
+.letter.D { color: #8A2BE2; }
+.letter.B { color: #FF69B4; }
+.letter.S { color: #FFFFFF; }
+
+body{
+    min-height: 100%;
+    display: flex;
+    clear: both;
+    flex-direction: row;
+    z-index: 1;
+    margin: 0;
+    padding: 0;
+}
+
+button.mainButtonClass {
+    border: 4px solid #ff8327;
+    outline: none;
+    width: 80%;
+    height: 70px;
+    font-family: inherit;
+    font-size: 2em;
+    color: rgb(255, 255, 255);
+    background-color: #ffb347;
+    cursor: pointer;
+    position: relative;
+    z-index: 0;
+    border-radius: 20px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+button.mainButtonDisabledClass {
+    border: 4px solid #111;
+    outline: none;
+    width: 80%;
+    height: 10%;
+    font-family: inherit;
+    font-size: 2em;
+    color: rgba(30, 30, 30, 0.8);
+    background-color: rgba(240,240,240,0.6);
+    position: relative;
+    z-index: 0;
+    border-radius: 20px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+button.mainButtonClass:before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    background: linear-gradient(
+            45deg,
+            #ff0000,
+            #ff7300,
+            #fffb00,
+            #48ff00,
+            #00ffd5,
+            #002bff,
+            #7a00ff,
+            #ff00c8,
+            #ff0000
+    );
+    background-size: 400%;
+    z-index: -1;
+    filter: blur(10px);
+    -webkit-filter: blur(10px);
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    transition: opacity 0.3s ease-in-out;
+    border-radius: 10px;
+    opacity: 0; /* Initially hide the rainbow effect */
+}
+
+button.mainButtonClass:hover:before {
+    opacity: 1; /* Show the rainbow effect on hover */
+    animation: glowing-button 20s linear infinite;
+}
+
+@keyframes glowing-button {
+    0% {
+        background-position: 0 0;
+    }
+    50% {
+        background-position: 400% 0;
+    }
+    100% {
+        background-position: 0 0;
+    }
+}
+
+button.mainButtonClass:after {
+    z-index: -1;
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    border-radius: 20px;
+}
+
+
+div.panel {
+    display: flex;
+    flex-direction: column;
+    gap : 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+div#leftPanel {
+    width: 25%;
+    height: 100vh;
+    background-color: rgba(150,150,150,0.5);
+}
+div#midPanel {
+    width: 50%;
+    height: 100vh;
+    background-color: rgba(240,240,240,0.2);
+    overflow: visible;
+}
+div#rightPanel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 25%;
+    height: 100vh;
+    background-color: rgba(150,150,150,0.5);
+}
+
+div.panel * {
+    /*Content inside panels was needed before, might need later*/
+}
+
+.clickable-img {
+    cursor: pointer;
+}
+
+div.background {
+    height: 100vh;
+    width: 100vw;
+    background-image: url("assets/images/marco.gif"), url("./assets/images/ground.png"), url("./assets/images/bushes.png"), url("./assets/images/back.png");
+    background-color: #F8E0B0;
+    background-repeat: no-repeat, repeat-x, repeat-x, repeat-x;
+    background-position: left 30% bottom 22px, left 0px bottom 0px, left 0px bottom 22px, left 0px bottom 0px;
+    animation: back 15s infinite linear;
+    position: fixed;
+    z-index: -1;
+}
+
+@keyframes back {
+    0% {
+        background-position: left 30% bottom 22px, left 0px bottom 0px, left 0px bottom 22px, left 0px bottom 0px;
+    }
+    50% {
+        background-position: left 50% bottom 22px, left -816px bottom 0px, left -508px bottom 22px, left -256px bottom 0px;
+    }
+    100% {
+        background-position: left 30% bottom 22px, left -1632px bottom 0px, left -1016px bottom 22px, left -512px bottom 0px;
+    }
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    z-index: 2;
+    align-items: center;
+    justify-content: center;
+}
+
+.popupBox {
+    height: 50vh;
+    width: 50vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 0 10px 5px rgba(0,0,0,0.5);
+    z-index: 3;
+}
+
+input[type="checkbox"]{
+    display: none;
+}
+.label {
+    display: flex;
+}
+
+input[type="checkbox"]:checked + .popup *{
+    display: inline-block;
+}
+
+input[type="checkbox"]:not(:checked) + .popup * {
+    display: none;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #fe0606;
+    font-size: 30px;
+    text-decoration: none;
+}
+
+.close:hover {
+    color: #ff0000;
+}
+
+#loginNote {
+    position: absolute;
+    display: inline;
+    font-size: 8px;
+}
+
+.popupBox {
+    width: 300px; /* Adjust as needed */
+    height: 400px; /* Adjust as needed */
+    overflow: auto; /* Enable scroll bars */
+}
+
+#elos-world {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#elos-world > div {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+#elos-world > .profile-picture {
+    max-height: 100px; /* Maximum height for the image */
+    max-width: 100px; /* Maximum width for the image */
+    margin-right: 10px; /* Adjust spacing between image and text */
+}
+
+.elo-username {
+    margin-left: 10px; /* Adjust left margin for username */
+    margin-right: 10px; /* Adjust right margin for username */
+}
+
+#achievements-container {
+    max-height: 300px; /* Adjust as needed */
+    overflow-y: auto;
+}
+
+.achievement {
+    width: calc(33.33% - 20px); /* 3 achievements per row with margin */
+    margin: 10px;
+    text-align: center;
+    float: left;
+}
+
+/* Clear float every third achievement */
+.achievement:nth-child(3n+1) {
+    clear: left;
+}
+
+.achievement img {
+    width: 100%;
+    height: 100%; /* Ensure the image fills its container */
+    object-fit: contain; /* Maintain aspect ratio */
+}
