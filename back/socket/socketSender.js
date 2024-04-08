@@ -5,8 +5,8 @@ class SocketSender {
   static messageIdCounter = [];
 
   static sendMessage(userId, message, data) {
-    //console.log("voici le user id", userId);
-    //console.log("voici le message envoyé", message);
+    console.log("voici le user id", userId);
+    console.log("voici le message envoyé", message);
 
     if (!this.messageIdCounter[userId]) {
       this.messageIdCounter[userId] = 1;
@@ -29,6 +29,7 @@ class SocketSender {
       //console.log("voici la socket id", socket.id);
       socket.emit(message, { id: messageId, data });
     } else {
+      console.log("socket non trouvée");
       this.pendingMessages[userId].push(messageObject);
     }
   }

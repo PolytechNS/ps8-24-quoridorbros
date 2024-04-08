@@ -7,6 +7,7 @@ paramètres :
 
 const YOUR_TURN_TEXT = "YOUR TURN";
 const NOT_YOUR_TURN_TEXT = "YOUR OPPONENT TURN";
+const TOUR_DURATION = 20;
 
 class ClientBoard {
   constructor(onCellClick, onWallClick, gameState, elementId = "gameBoard") {
@@ -18,6 +19,7 @@ class ClientBoard {
     this.divBoard = [];
     this.turnOf = gameState.turnOf;
     this.playerNumber = gameState.playerNumber;
+    this.timer = new Timer();
     this.initBoard();
   }
 
@@ -76,6 +78,7 @@ class ClientBoard {
   updateBoard(gameState) {
     //Empêche le joueur de cliquer si ce n'est pas son tour
     this.turnOf = gameState.turnOf;
+    this.timer.start();
     if (this.turnOf !== this.playerNumber) {
       this.textYouTurn.textContent = NOT_YOUR_TURN_TEXT;
       this.element.style.pointerEvents = "none";
@@ -146,3 +149,36 @@ class ClientBoard {
     this.element.style.pointerEvents = "none";
   }
 }
+
+class Timer {
+  constructor() {
+    this.timerInterval = null;
+    this.texte = document.getElementById("texte-chrono");
+  }
+
+  start() {
+    this.seconds = TOUR_DURATION;
+    this.timerInterval = setInterval(() => {
+      this.update();
+    }, 1000);
+  }
+
+  stop() {
+    clearInterval(this.timerInterval);
+  }
+
+  reset() {
+    clearInterval(this.timerInterval);
+    this.seconds = 0;
+  }
+
+  update() {
+    this.seconds--;
+    if (this.seconds < 0) {
+      this.stop();
+    } else {
+      this.texte.textContent = this.seconds + " secondes restantes";
+    }
+  }
+}
+

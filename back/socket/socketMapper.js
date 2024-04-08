@@ -7,7 +7,7 @@ class SocketMapper {
       return;
     }
     SocketMapper.mapper.set(id, socket);
-    this.toString();
+    //this.toString();
   }
 
   static getSocketById(id) {
@@ -34,11 +34,11 @@ class SocketMapper {
   }
 
   static toString() {
-    //console.log("Voici le mappe");
+    console.log("Voici le mappe");
     this.mapper.forEach((value, key) => {
-      //console.log(`UserId: ${key}, SocketId: ${value.id}`);
+      console.log(`UserId: ${key}, SocketId: ${value.id}`);
     });
-    //console.log("\n");
+    console.log("\n");
   }
 }
 

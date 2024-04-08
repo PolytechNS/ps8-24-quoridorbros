@@ -116,6 +116,7 @@ class Room {
   }
 
   async createSocketRoom(userProfile1, userProfile2) {
+    SocketMapper.toString();
     SocketSender.sendMessage(this.players[0], "RoomFull", userProfile2);
     SocketSender.sendMessage(this.players[1], "RoomFull", userProfile1);
     SocketMapper.removeSocketById(this.players[0]);

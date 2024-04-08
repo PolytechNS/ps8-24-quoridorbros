@@ -83,6 +83,7 @@ class OneVOneOnlineGameManager {
     this.isGameFinished = true;
     SocketSender.sendMessage(this.idClient1, "winner", winningMessageClient1);
     SocketSender.sendMessage(this.idClient2, "winner", winningMessageClient2);
+    this.game = null;
   }
 
   movePlayer1(move) {
@@ -105,7 +106,6 @@ class OneVOneOnlineGameManager {
   concede(playerNumber) {
     const otherPlayer = (playerNumber == 1)? 2 : 1;
     this.playerWon(otherPlayer);
-    this.game = null;
   }
   
 

@@ -43,7 +43,7 @@ class SocketManager {
           console.log(`déjà en aiGameManagerameManager: ${aiGameManagerameManager}`);
           configureAiGameEvents(socket, aiGameManagerameManager);
         } else if (onlineGameInfo) {
-          console.log(`déjà en onlineGameInfo: ${onlineGameInfo}`);
+          console.log(`déjà en onlineGameInfo: ${socket.id}`);
           configureOneVOneOnlineGameEvents(
             socket,
             onlineGameInfo.gameManager,
