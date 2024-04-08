@@ -6,6 +6,8 @@ let playButton = document.getElementById("playButton");
 let backButton = document.getElementById("backButton");
 let notButton = document.getElementById("notificationsButton");
 let PEButton = document.getElementById("profileEditorButton");
+let eloButton = document.getElementById("eloButton");
+let achButton = document.getElementById("achievementsButton");
 
 window.onload = function () {
   let connectedCookieValue = getCookie("connected");
@@ -20,6 +22,8 @@ window.onload = function () {
     logoutButton.style.display = "block";
     notButton.style.display = "block";
     PEButton.style.display = "block";
+    eloButton.style.display = "block";
+    achButton.style.display = "block";
     document.getElementById("loginButton").style.display = "none";
     document.getElementById("signinButton").style.display = "none";
     document.getElementById("friend-container").style.display = "inline";
@@ -49,6 +53,8 @@ document.getElementById("logoutButton").addEventListener("click", function () {
         logoutButton.style.display = "none";
         notButton.style.display = "none";
         PEButton.style.display = "none";
+        eloButton.style.display = "none";
+        achButton.style.display = "none";
         document.getElementById("loginButton").style.display = "inline";
         document.getElementById("signinButton").style.display = "inline";
         document.getElementById("friend-container").style.display = "none";
@@ -206,15 +212,35 @@ document.getElementById("notificationsButton").addEventListener("click", functio
   document.getElementById("indexPopup").style.display = "flex";
   document.getElementById("notificationsPopup").style.display = "block";
   document.getElementById("profileEditorPopup").style.display = "none";
+  document.getElementById("eloPopup").style.display = "none";
+  document.getElementById("achievementsPopup").style.display = "none";
 });
 document.getElementById("profileEditorButton").addEventListener("click", function () {
   document.getElementById("indexPopup").style.display = "flex";
   document.getElementById("notificationsPopup").style.display = "none";
   document.getElementById("profileEditorPopup").style.display = "block";
+    document.getElementById("eloPopup").style.display = "none";
+    document.getElementById("achievementsPopup").style.display = "none";
+});
+document.getElementById("eloButton").addEventListener("click", function () {
+    document.getElementById("indexPopup").style.display = "flex";
+    document.getElementById("notificationsPopup").style.display = "none";
+    document.getElementById("profileEditorPopup").style.display = "none";
+    document.getElementById("eloPopup").style.display = "block";
+    document.getElementById("achievementsPopup").style.display = "none";
+});
+document.getElementById("achievementsButton").addEventListener("click", function () {
+    document.getElementById("indexPopup").style.display = "flex";
+    document.getElementById("notificationsPopup").style.display = "none";
+    document.getElementById("profileEditorPopup").style.display = "none";
+    document.getElementById("eloPopup").style.display = "none";
+    document.getElementById("achievementsPopup").style.display = "block";
 });
 document.getElementById("popupClose").addEventListener("click", function () {
   document.getElementById("indexPopup").style.display = "none";
     document.getElementById("notificationsPopup").style.display = "none";
     document.getElementById("profileEditorPopup").style.display = "none";
+    document.getElementById("eloPopup").style.display = "none";
+    document.getElementById("achievementsPopup").style.display = "none";
 });
 
