@@ -13,6 +13,7 @@ window.onload = function () {
     document.getElementById("friendSocketInitAnchor").appendChild(document.createElement("script")).src = "/app/sockets/ioManager.js";
     document.getElementById("friendSocketInitAnchor").appendChild(document.createElement("script")).src = "/app/friendlist/friendlist.js";
     document.getElementById("friendSocketInitAnchor").appendChild(document.createElement("script")).src = "/app/sockets/matchmakingEvents.js";
+    document.getElementById("friendSocketInitAnchor").appendChild(document.createElement("script")).src = "/app/notifications/notifications.js";
     /* Désolé */
     document.getElementById("profile-container").style.display = "block";
     logoutButton.style.display = "block";
