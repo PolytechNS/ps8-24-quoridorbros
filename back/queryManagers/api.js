@@ -4,6 +4,7 @@ const { RoomManager } = require("../logic/matchMaking/roomManager");
 const { AchievementsManager } = require("../social/achievements");
 const { getDb, userExists, areFriends, getFriendList,getProfileOf, getIdOfUser,updateProfileImage} = require("../mongoDB/mongoManager.js");
 const url = require('url');
+const {SocketSender} = require("../socket/socketSender");
 
 function setCookie(name, value, daysToLive, response) {
   const stringValue = typeof value === "object" ? JSON.stringify(value) : value;
@@ -219,8 +220,6 @@ async function handleMatchmakingRequest(request, response){
 
   try {
     const userId = await getIdOfUser(userName);
-
-    console.log("userId handle", userId );
     RoomManager.enterMatchmaking(userId);
 
     response.statusCode = 200;

@@ -251,7 +251,6 @@ async function saveElo(userId, newElo) {
         { $set: { elo: newElo } }
     );
 
-    console.log(`Elo updated for user with ID ${userId}`);
   } catch (error) {
     console.error("Error updating Elo:", error);
      throw error;

@@ -3,7 +3,6 @@ const { SocketMapper } = require("./socketMapper.js");
 class SocketSender {
   static pendingMessages = [];
   static messageIdCounter = [];
-  static resetTimeOut = [];
 
   static sendMessage(userId, message, data) {
     //console.log("voici le user id", userId);
@@ -18,44 +17,41 @@ class SocketSender {
       this.pendingMessages[userId] = [];
     }
 
-    if (!this.resetTimeOut[userId]) {
-      this.resetTimeOut[userId] = [];
-    }
-
     const messageObject = {
       id: messageId,
       message,
       data
     };
 
-    this.pendingMessages[userId].push(messageObject);
 
     const socket = SocketMapper.getSocketById(userId);
     if (socket) {
       //console.log("voici la socket id", socket.id);
       socket.emit(message, { id: messageId, data });
-    }
-  }
-
-  static handleAcknowledgement(userId, messageId) {
-    if (this.pendingMessages[userId]) {
-      const index = this.pendingMessages[userId].findIndex(
-        (msg) => msg.id === messageId
-      );
-      if (index !== -1) {
-        this.pendingMessages[userId].splice(index, 1);
-      }
+    } else {
+      this.pendingMessages[userId].push(messageObject);
     }
   }
 
   static resendAllPending(userId) {
     if (this.pendingMessages[userId]) {
       const socket = SocketMapper.getSocketById(userId);
-      this.resetTimeOut[userId].push(true);
       this.pendingMessages[userId].forEach((message) => {
         socket.emit(message.message, { id: message.id, data: message.data });
       });
+      this.pendingMessages[userId] = [];
     }
+  }
+
+  static pendingMessagesLogs(userId) {
+    if(this.pendingMessages[userId]){
+      console.log("messages for", userId);
+
+      this.pendingMessages[userId].forEach((message) => {
+        console.log(message);
+      });
+    }
+
   }
 }
 

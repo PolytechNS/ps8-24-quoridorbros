@@ -35,6 +35,7 @@ class GameManagerMapper {
     const success = GameManagerMapper.aiGameManagerMap.delete(userId);
     if (success) {
       console.log(`AI game manager successfully removed for user ID ${userId}`);
+      this.toString();
     } else {
       console.error(`User ID ${userId} not found in the AI game manager map.`);
     }
@@ -46,6 +47,7 @@ class GameManagerMapper {
       console.log(
         `Online game manager successfully removed for user ID ${userId}`
       );
+      this.toString();
     } else {
       console.error(
         `User ID ${userId} not found in the online game manager map.`

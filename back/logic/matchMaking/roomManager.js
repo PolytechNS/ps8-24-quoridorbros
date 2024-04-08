@@ -86,7 +86,7 @@ class Room {
   constructor(userId, userElo) {
     this.roomId = this.generateRoomId(userId);
     this.elo = userElo;
-    this.deltaElo = 50;
+    this.deltaElo = 500;
     this.players = [];
     this.players.push(userId);
   }

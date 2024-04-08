@@ -4,6 +4,7 @@ const { SocketMapper } = require("../../socket/socketMapper.js");
 const { SocketSender } = require("../../socket/socketSender.js");
 
 const { saveElo } = require("../../mongoDB/mongoManager");
+const {GameManagerMapper} = require("./gameManagerMapper");
 
 
 class OneVOneOnlineGameManager {
@@ -21,13 +22,11 @@ class OneVOneOnlineGameManager {
   }
 
   initBoardPlayer1(gameState) {
-    console.log("idClient1", this.idClient1);
     SocketMapper.removeSocketById(this.idClient1);
     SocketSender.sendMessage(this.idClient1, "initBoard", gameState);
   }
 
   initBoardPlayer2(gameState) {
-    console.log("idClient2", this.idClient2);
     SocketMapper.removeSocketById(this.idClient2);
     SocketSender.sendMessage(this.idClient2, "initBoard", gameState);
   }
@@ -51,6 +50,9 @@ class OneVOneOnlineGameManager {
   }
 
   playerWon(playerNumber) {
+    GameManagerMapper.removeOnlineGameManagerByUserId(this.idClient1);
+    GameManagerMapper.removeOnlineGameManagerByUserId(this.idClient2);
+
     const deltaClient1 = this.calculateRatingChange(
         this.eloClient1,
         this.eloClient2,
