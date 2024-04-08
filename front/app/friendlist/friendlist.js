@@ -25,10 +25,11 @@ function displayFriends(friends) {
   friends.forEach(friend => {
     const friendElement = document.createElement('div');
     friendElement.classList.add('friend');
+    friendElement.id = "friendID-" + friend.username;
 
     const profilePic = document.createElement('img');
     profilePic.src = friend.photo;
-    profilePic.style.maxHeight = '100px';
+    profilePic.style.maxHeight = '80px';
     profilePic.classList.add('profile-picture');
     friendElement.appendChild(profilePic);
 
@@ -39,9 +40,13 @@ function displayFriends(friends) {
     const challengeButton = document.createElement('button');
     challengeButton.textContent = 'Challenge';
     challengeButton.classList.add('challenge-button');
+    challengeButton.setAttribute('data-username', friend.username);
+    challengeButton.addEventListener('click', () => {
+        challenge(friend.username);
+    });
     friendElement.appendChild(challengeButton);
-
     friendListContainer.appendChild(friendElement);
+    checkFriendConnectionStatus(friend.username);
   });
 }
 
@@ -103,6 +108,14 @@ async function sendFriendResquet(event) {
       alert("An error occurred while processing your request.");
       }
   }
+}
+
+function challenge(username) {
+  socket.emit('challengeFriend', username);
+}
+
+function checkFriendConnectionStatus(username) {
+  socket.emit('checkFriendConnectionStatus', username);
 }
 
 loadFriends();
