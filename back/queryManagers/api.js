@@ -2,7 +2,7 @@ const querystring = require("querystring");
 const jwt = require("jsonwebtoken");
 const { RoomManager } = require("../logic/matchMaking/roomManager");
 const { AchievementsManager } = require("../social/achievements");
-const { getDb, userExists, areFriends, getFriendList,getProfileOf, getIdOfUser,updateProfileImage} = require("../mongoDB/mongoManager.js");
+const { getDb, userExists, areFriends, getFriendList,getProfileOf, getIdOfUser,updateProfileImage, getAllProfiles} = require("../mongoDB/mongoManager.js");
 const url = require('url');
 
 function setCookie(name, value, daysToLive, response) {
@@ -72,6 +72,9 @@ function manageRequest(request, response) {
         break;
       case request.url.startsWith("/api/profile"):
         getProfile(request, response);
+        break;
+      case request.url.startsWith("/api/world"):
+        getWorld(request, response);
         break;
       default:
         response.end(`Merci d'avoir appelé ${request.url}`);
@@ -613,6 +616,19 @@ async function handleDeleteNotification(request,response){
     response.writeHead(500, { 'Content-Type': 'application/json' });
     response.end(JSON.stringify({ success: false, message: 'Internal Server Error' }));
   }
+}
+
+async function getWorld(request,response){
+  try {
+    const profiles = await getAllProfiles();
+    response.statusCode = 200;
+    response.end(JSON.stringify({ profiles }));
+  } catch (error) {
+    console.error(error);
+    response.statusCode = 500;
+    response.end(JSON.stringify({ error: 'Internal server error' }));
+  }
+
 }
 
  /* This method is a helper in case you stumble upon CORS problems. It shouldn't be used as-is:
