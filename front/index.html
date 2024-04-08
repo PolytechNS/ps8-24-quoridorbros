@@ -12,11 +12,16 @@
 <body>
 <div class="background"></div>
 <div class="popup" id="indexPopup">
-    <div class="popupBox" id="notificationsPopup">
-        <a href="#" id="notificationClose" class="close">&times;</a>
+    <div class="popupBox" id="notificationsPopup" style="display: none">
         <div id="notifications-container"></div>
     </div>
+    <div class="popupBox" id="profileEditorPopup" style="display: none">
+        <div id="profile-editor-container"></div>
+    </div>
+    <a href="#" id="popupClose" class="close">&times;</a>
 </div>
+
+
 <div class="panel" id="leftPanel">
     <div style="display: none;" id="friend-container"></div>
 </div>
@@ -35,9 +40,9 @@
     <button id="backButton" class="mainButtonClass" onclick="window.location.href='../../index.html'" style="display: none">Back</button>
 </div>
 <div class="panel" id="rightPanel">
-    <div id="profile-editor-container" style="display: none;"></div>
     <div id="profile-container"></div>
     <button id="notificationsButton" class="mainButtonClass" style="display: none;">Notifications</button>
+    <button id="profileEditorButton" class="mainButtonClass" style="display: none;">Edit Profile</button>
     <button id="logoutButton" class="mainButtonClass" style="display: none;">Logout</button>
 </div>
 
