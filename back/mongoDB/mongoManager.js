@@ -1,4 +1,5 @@
-const { MongoClient, ObjectId } = require("mongodb");
+const { MongoClient, ObjectId} = require("mongodb");
+const { AchievementsManager } = require("../social/achievements");
 
 const url = "mongodb://mongodb:27017";
 const dbName = "QuoribrosB";
@@ -148,8 +149,12 @@ async function getFriendList(username) {
       .toArray();
 
     const friendListWithProfiles = [];
+    await AchievementsManager.reinitializeAchievement(userProfileCollection,user._id,"ach1");
+    await AchievementsManager.reinitializeAchievement(userProfileCollection,user._id,"ach2");
     for (const friend of friends) {
       const friendProfile = await getProfileOf(friend.username);
+      await AchievementsManager.updateAchievement(userProfileCollection,user._id,"ach1");
+      await AchievementsManager.updateAchievement(userProfileCollection,user._id,"ach2");
       if (!friendProfile) {
         throw new Error(`Profile not found for user '${friend.username}'.`);
       }

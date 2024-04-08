@@ -34,6 +34,7 @@ function manageRequest(request, response) {
         handleMatchmakingRequest(request, response);
         break;
       case "/api/friend":
+        console.log("friendRequest");
         handleFriendRequest(request, response);
         break;
       case "/api/versus":
@@ -56,6 +57,9 @@ function manageRequest(request, response) {
     switch (true) {
       case request.url.startsWith("/api/notifications/friends"):
         getFriendRequests(request, response);
+        break;
+      case request.url.startsWith("/api/notification"):
+        getNotifications(request, response);
         break;
       case request.url.startsWith("/api/friends"):
         getFriends(request, response);
@@ -81,6 +85,7 @@ async function handleSignIn(request, response) {
       const db = getDb();
       const userCollection = db.collection("users");
       const userProfileCollection = db.collection("user_profile");
+      const notificationsCollection = db.collection("notifications");
 
       const tokenPayload = {
         username: parsedData.username,
@@ -116,6 +121,8 @@ async function handleSignIn(request, response) {
         photo: '',
         achievements: []
       };
+
+      await notificationsCollection.insertOne({user_id:parsedData.username,notifications:[]});
 
       await userProfileCollection.insertOne(userProfileData);
       await AchievementsManager.updateAchievementsList(userProfileCollection,insertedId);
@@ -184,7 +191,12 @@ async function handleLogin(request, response) {
         response
       );
       const userProfileCollection = db.collection("user_profile");
+      const notificationsCollection = db.collection("notifications");
       await AchievementsManager.updateAchievementsList(userProfileCollection,existingUser._id);
+      let achievementNotifications = await AchievementsManager.getNotifiedAchievements(userProfileCollection,notificationsCollection,existingUser);
+
+      console.log(achievementNotifications);
+      
       response.setHeader("Content-Type", "text/html");
       response.end(
         `<script>window.location.href = "/index.html";alert("Connexion success");</script>`
@@ -237,6 +249,7 @@ async function handleFriendRequest(request, response){
 
   const sender = queryParameters.sender;
   const receiver = queryParameters.receiver;
+  console.log("Friend request");
 
   try {
     const receiverExists = await userExists(receiver);
@@ -265,23 +278,29 @@ async function handleFriendRequest(request, response){
     });
 
     if (existingNotification) {
+      console.log("Dejà existant");
       response.statusCode = 400;
       response.end(JSON.stringify({ error: 'Friend request already sent' }));
       return;
     }
+
+    const currentDateTime = new Date();
+    const notificationId = `fr_${currentDateTime.getTime()}`;
 
     await collection.updateOne(
       { user_id: receiver },
       { 
         $push: {
           notifications: {
-            $each: [{ type: "friendrequest", sender: sender, readed: false }],
+            $each: [{ _id:notificationId,type: "friendrequest", message:`${sender} wants to become your friend!`,sender: sender, readed: false }],
             $slice: -50
           }
         }
       },
       { upsert: true }
     );
+
+    console.log("updateOne OK");
 
     response.statusCode = 200;
     response.end(JSON.stringify({ message: 'Friend request handled successfully' }));
@@ -302,8 +321,8 @@ async function getFriendRequests(request, response) {
     const db = getDb();
     const collection = db.collection("notifications");
     const friendRequests = await collection.findOne(
-      { user_id: user },
-      { notifications: { $elemMatch: { type: "friendrequest" } } }
+      { user_id: user, "notifications.type": "friendrequest" },
+      { "notifications.$": 1 }
     );
 
     if (!friendRequests || !friendRequests.notifications) {
@@ -333,6 +352,8 @@ async function getNotifications(request, response) {
     const notifications = await collection.findOne(
       { user_id: user }
     );
+
+    console.log(notifications);
 
     if (!notifications || !notifications.notifications) {
       response.statusCode = 200;
@@ -433,12 +454,15 @@ async function handleVersus(request, response){
       return;
     }
 
+    const currentDateTime = new Date();
+    const notificationId = `ve_${currentDateTime.getTime()}`;
+
     await collection.updateOne(
       { user_id: receiver },
       { 
         $push: {
           notifications: {
-            $each: [{ type: "versus", sender: sender, readed: false }],
+            $each: [{ _id:notificationId,type: "versus", message:`${sender} challenges you!`,sender: sender, readed: false }],
             $slice: -50
           }
         }
