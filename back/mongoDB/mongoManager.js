@@ -185,7 +185,8 @@ async function getProfileOf(username) {
         return {
           photo: photoPath,
           username: user.username,
-          elo: userProfile.elo
+          elo: userProfile.elo,
+          achievements : userProfile.achievements
       };
     }
     else {

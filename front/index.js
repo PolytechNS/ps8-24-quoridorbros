@@ -35,3 +35,50 @@ document.getElementById("logoutButton").addEventListener("click", function () {
     .catch((error) => console.error("Error:", error));
 });
 
+async function getAchievements(){
+  try {
+    let connectedCookieValue = getCookie("connected");
+    if (connectedCookieValue) {
+        connectedCookieValue = JSON.parse(connectedCookieValue);
+        const sender = connectedCookieValue.user;
+        const response = await fetch(`/api/achievements?of=${sender}`);
+        if (response.status !== 200) {
+            throw new Error('Failed to fetch profile');
+        }
+        
+        const data = await response.json();
+        return data.achievements;
+    }
+} catch (error) {
+    console.error(error);
+}
+}
+
+async function displayAchievements() {
+  try {
+    let achievements = await getAchievements();
+    const achievementsDiv = document.getElementById('achievements');
+    console.log(achievements);
+
+    for (let achievementId in achievements) {
+      const achievement = achievements[achievementId];
+
+      const achievementElement = document.createElement('div');
+      achievementElement.classList.add('achievement');
+
+      const imageElement = document.createElement('img');
+      imageElement.src = `./assets/images/achievements/${achievement.id}.png`;
+      imageElement.style.filter = achievement.progression < achievement.out ? 'grayscale(100%)' : 'none';
+      achievementElement.appendChild(imageElement);
+
+      const descriptionElement = document.createElement('p');
+      descriptionElement.textContent = achievement.description;
+      achievementElement.appendChild(descriptionElement);
+
+      achievementsDiv.appendChild(achievementElement);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+//displayAchievements();

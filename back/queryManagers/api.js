@@ -67,6 +67,9 @@ function manageRequest(request, response) {
       case request.url.startsWith("/api/friends"):
         getFriends(request, response);
         break;
+      case request.url.startsWith("/api/achievements"):
+        getAchievements(request, response);
+        break;
       case request.url.startsWith("/api/profile"):
         getProfile(request, response);
         break;
@@ -371,6 +374,26 @@ async function getNotifications(request, response) {
     response.statusCode = 500;
     response.end(JSON.stringify({ error: 'Internal server error' }));
   }
+}
+
+async function getAchievements(request,response){
+  const parsedUrl = url.parse(request.url, true);
+  const queryParameters = parsedUrl.query;
+
+  const fromUsername = queryParameters.of;
+
+  try {
+    const profile = await getProfileOf(fromUsername);
+    let achievements = profile.achievements;
+    console.log(achievements);
+    response.statusCode = 200;
+    response.end(JSON.stringify({ achievements }));
+  } catch (error) {
+    console.error(error);
+    response.statusCode = 500;
+    response.end(JSON.stringify({ error: 'Internal server error' }));
+  }
+
 }
 
 
