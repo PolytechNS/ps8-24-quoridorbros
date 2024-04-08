@@ -23,6 +23,7 @@ const {
   updateBoard,
 } = require("../ai/quoridorbros.js");
 const { SocketSender } = require("../../socket/socketSender.js");
+const {GameManagerMapper} = require("./gameManagerMapper");
 
 class AiGameManager {
   constructor(userId, loadGame = false) {
@@ -60,6 +61,8 @@ class AiGameManager {
   }
   playerWon(playerNumber) {
     this.isGameFinished = true;
+    GameManagerMapper.removeAiGameManagerByUserId(this.userId);
+    this.game = null;
     SocketSender.sendMessage(this.userId, "winner", playerNumber);
   }
 

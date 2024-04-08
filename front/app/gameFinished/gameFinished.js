@@ -5,22 +5,25 @@ let gameResultsString =  localStorage.getItem("gameResultsString");
 let gameResults =  JSON.parse(gameResultsString);
 
 const eloText = document.createElement("p");
-eloText.textContent = "Elo: " + profile.elo + "(" + gameResults.deltaElo + ") => " + gameResults.newElo;
+eloText.textContent = "Elo: " + profile.elo + " + (" + gameResults.deltaElo + ") -> " + gameResults.elo;
+eloText.id = "elo-text"
+let resultsContainer = document.getElementById("results-container");
+resultsContainer.appendChild(eloText);
 
-profile.elo = newElo;
+
+
+
+//update the elo of the profile in the local Storage
+profile.elo = gameResults.elo;
 profileString = JSON.stringify(profile);
 localStorage.setItem("profileString", profileString);
 
-let profilePhoto = document.getElementById("profilePhoto");
-profilePhoto.src = profile.photo;
-
-
 let background = document.getElementById("background");
 
-if(gameResults.result === 1) {
-    background.style.backgroundImage = "url('../../assets/images/win.png')";
+if(gameResults.result) {
+    background.style.backgroundImage = 'url("../../assets/images/win.png")';
 } else {
-    background.style.backgroundImage = "url('../../assets/images/game-over.png')";
+    background.style.backgroundImage = 'url("../../assets/images/game-over.png")';
 }
 
 

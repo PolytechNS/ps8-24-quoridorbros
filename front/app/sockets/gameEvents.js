@@ -14,8 +14,11 @@ socket.on("updatedBoard", (msg) => {
 
 socket.on("winner", (msg) => {
   socket.emit("Acknowledgement", msg.id);
-  const winningMessage = msg.data;
-  console.log(winningMessage);
+  const gameResults = msg.data;
+  console.log(gameResults);
+  let gameResultsString = JSON.stringify(gameResults);
+  localStorage.setItem("gameResultsString", gameResultsString);
+  window.location.href = "../gameFinished/gameFinished.html"
 });
 
 function onCellClick(x, y) {
@@ -24,4 +27,8 @@ function onCellClick(x, y) {
 
 function onWallClick(x, y) {
   socket.emit("newMove", { x: x, y: y });
+}
+
+function concede() {
+  socket.emit("concede");
 }
