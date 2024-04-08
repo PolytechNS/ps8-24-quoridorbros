@@ -139,7 +139,7 @@ async function handleSignIn(request, response) {
 
       response.setHeader("Content-Type", "text/html");
       response.end(
-        `<script>window.location.href = "/index.html";alert("Sign in successful");</script>`
+        `<script>window.location.href = "/index.html";</script>`
       );
     } catch (error) {
       console.error("Error while inserting data", error);
@@ -209,7 +209,7 @@ async function handleLogin(request, response) {
       
       response.setHeader("Content-Type", "text/html");
       response.end(
-        `<script>window.location.href = "/index.html";alert("Connexion success");</script>`
+        `<script>window.location.href = "/index.html";</script>`
       );
     } catch (error) {
       console.error("Erreur lors de la recherche de l'utilisateur", error);
@@ -224,7 +224,7 @@ function handleLogout(request, response) {
     setCookie("connected", "", -1, response);
     response.setHeader("Content-Type", "text/html");
     response.end(
-      `<script>window.location.href = "/index.html";alert("You have been logged out successfully.");</script>`
+      `<script>window.location.href = "/index.html";</script>`
     );
   } catch (error) {
     console.error("Erreur lors de la déconnexion", error);

@@ -20,6 +20,7 @@ async function selectImage(profile, imageSrc) {
             throw new Error('Failed to select image');
         }
         console.log('Image selected successfully');
+        window.location.href="/index.html"
     } catch (error) {
         console.error('Error selecting image:', error);
     }
