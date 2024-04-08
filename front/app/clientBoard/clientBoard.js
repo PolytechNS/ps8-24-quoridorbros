@@ -7,7 +7,7 @@ paramètres :
 
 const YOUR_TURN_TEXT = "YOUR TURN";
 const NOT_YOUR_TURN_TEXT = "YOUR OPPONENT TURN";
-const TOUR_DURATION = 20;
+const TOUR_DURATION = 30;
 
 class ClientBoard {
   constructor(onCellClick, onWallClick, gameState, elementId = "gameBoard") {
@@ -78,6 +78,7 @@ class ClientBoard {
   updateBoard(gameState) {
     //Empêche le joueur de cliquer si ce n'est pas son tour
     this.turnOf = gameState.turnOf;
+    this.timer.reset();
     this.timer.start();
     if (this.turnOf !== this.playerNumber) {
       this.textYouTurn.textContent = NOT_YOUR_TURN_TEXT;
