@@ -85,6 +85,23 @@ class SocketManager {
         //console.log(`quit matchmaking: ${socket.id}`);
         RoomManager.quitMatchmaking(userId);
       });
+
+        socket.on("challengeFriend", (username) => {
+            const userId = SocketMapper.getUserIdBySocketId(socket.id);
+            console.log(`challengeFriend: ${socket.id}`);
+        });
+
+        socket.on("checkFriendConnectionStatus", async (username) => {
+            const userId = await getIdOfUser(username);
+            console.log(`checkFriendConnectionStatus: ${socket.id} checks for ${userId}`);
+            SocketMapper.mapper.forEach((value, key) => {
+                if (key === userId) {
+                  console.log(`friendConnected: ${username}`);
+                    socket.emit("friendConnected", username);
+                }
+            }
+            );
+        });
     });
   }
 }

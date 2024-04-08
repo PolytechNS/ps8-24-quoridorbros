@@ -1,33 +1,45 @@
 const achievements = {
     ach1: {
+        id:'ach1',
         description: "Have 1 friend",
         progression: 0,
-        out: 1
+        out: 1,
+        notify: false
     },
     ach2: {
+        id:'ach2',
         description: "Have 10 friends",
         progression: 0,
-        out: 10
+        out: 10,
+        notify: false
     },
     ach3: {
+        id:'ach3',
         description: "Place a wall",
         progression: 0,
-        out: 1
+        out: 1,
+        notify: false
     },
     ach4: {
+        id:'ach4',
         description: "Place all wall",
         progression: 0,
-        out: 10
+        out: 10,
+        notify: false
     },
     ach5: {
+        id:'ach5',
         description: "Win a game",
         progression: 0,
-        out: 1
+        out: 1,
+        notify: false
     },
     ach6: {
+        id:'ach6',
         description: "Lose a game",
         progression: 0,
-        out: 1
+        out: 1,
+        notify: false
     }
 }
 
@@ -39,7 +51,6 @@ class AchievementsManager {
                 { _id: userId },
                 { $set: { achievements: achievements } }
             );
-            console.log("Achievements initialized for user with ID:", userId);
         } catch (error) {
             console.error("Error initializing achievements:", error);
         }
@@ -66,10 +77,8 @@ class AchievementsManager {
                     { _id: userId },
                     { $set: { [`achievements.${achievementId}.progression`]: updatedProgression } }
                 );
-                console.log("Achievement updated for user with ID:", userId);
                 return updatedProgression;
             } else {
-                console.log("Achievement is already complete, skipping update.");
                 return currentProgression;
             }
         } catch (error) {
@@ -103,15 +112,14 @@ class AchievementsManager {
                 console.error("Achievement not found for this user");
                 return null;
             }
-            if (achievement.progression === achievement.out) {
+    
+            if (achievement.progression < achievement.out) {
                 await userProfileCollection.updateOne(
                     { _id: userId },
                     { $set: { [`achievements.${achievementId}.progression`]: 0 } }
                 );
-                console.log("Achievement reinitialized for user with ID:", userId);
                 return 0;
             } else {
-                console.log("Achievement is not completed, skipping reinitialization.");
                 return null;
             }
         } catch (error) {
@@ -119,6 +127,7 @@ class AchievementsManager {
             return null;
         }
     }
+    
     
 
     static async updateAchievementsList(userProfileCollection, userId) {
@@ -134,17 +143,73 @@ class AchievementsManager {
     
             for (const achievementId in achievements) {
                 if (!existingAchievements.hasOwnProperty(achievementId)) {
-                    updatedAchievements[achievementId] = {description: achievements[achievementId].description, progression: 0,out: achievements[achievementId].out };
+                    updatedAchievements[achievementId] = {id: achievements[achievementId].id,description: achievements[achievementId].description, progression: 0,out: achievements[achievementId].out, notify: achievements[achievementId].notify};
                 }
             }
             await userProfileCollection.updateOne(
                 { _id: userId },
                 { $set: { achievements: updatedAchievements } }
             );
-            console.log("Achievements list updated for user with ID:", userId);
             return updatedAchievements;
         } catch (error) {
             console.error("Error updating achievements list:", error);
+            return null;
+        }
+    }
+
+    static async getNotifiedAchievements(userProfileCollection,notificationsCollection, userId) {
+        try {
+            const userProfile = await userProfileCollection.findOne({ _id: userId._id });
+            if (!userProfile) {
+                console.error("User profile not found");
+                return null;
+            }
+    
+            const achievements = userProfile.achievements || {};
+            const notifiedAchievements = [];
+    
+            for (const achievementId in achievements) {
+                const achievement = achievements[achievementId];
+                if (achievement.progression === achievement.out && !achievement.notify) {
+                    notifiedAchievements.push(achievement);
+                }
+            }
+            console.log(userId.username);
+            console.log(notifiedAchievements);
+            for (const achievement of notifiedAchievements) {
+                const existingNotification = await notificationsCollection.findOne({ 
+                    user_id: userId.username,
+                    'notifications.type': 'achievement',
+                    message: `Congratulations! You have completed the achievement: ${achievement.description}` });
+                    console.log(existingNotification);
+
+                    const currentDateTime = new Date();
+                    const notificationId = `ac_${currentDateTime.getTime()}`;
+    
+                    if (!existingNotification) {
+                        await notificationsCollection.updateOne(
+                            { user_id: userId.username },
+                            { 
+                              $push: {
+                                notifications: {
+                                  $each: [{ _id: notificationId,type: 'achievement',message: `Congratulations! You have completed the achievement: ${achievement.description}`,
+                                  sender: 'SYSTEM', readed: false }],
+                                  $slice: -50
+                                }
+                              }
+                            },
+                            { upsert: true }
+                          );
+                          await userProfileCollection.updateOne(
+                            { _id: userId._id },
+                            { $set: { [`achievements.${achievement.id}.notify`]: true } }
+                        );
+                        
+                    }
+            }
+            return notifiedAchievements;
+        } catch (error) {
+            console.error("Error getting notified achievements:", error);
             return null;
         }
     }

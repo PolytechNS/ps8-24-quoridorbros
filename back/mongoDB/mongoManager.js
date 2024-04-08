@@ -1,4 +1,5 @@
-const { MongoClient, ObjectId } = require("mongodb");
+const { MongoClient, ObjectId} = require("mongodb");
+const { AchievementsManager } = require("../social/achievements");
 
 const url = "mongodb://mongodb:27017";
 const dbName = "QuoribrosB";
@@ -148,8 +149,12 @@ async function getFriendList(username) {
       .toArray();
 
     const friendListWithProfiles = [];
+    await AchievementsManager.reinitializeAchievement(userProfileCollection,user._id,"ach1");
+    await AchievementsManager.reinitializeAchievement(userProfileCollection,user._id,"ach2");
     for (const friend of friends) {
       const friendProfile = await getProfileOf(friend.username);
+      await AchievementsManager.updateAchievement(userProfileCollection,user._id,"ach1");
+      await AchievementsManager.updateAchievement(userProfileCollection,user._id,"ach2");
       if (!friendProfile) {
         throw new Error(`Profile not found for user '${friend.username}'.`);
       }
@@ -180,7 +185,8 @@ async function getProfileOf(username) {
         return {
           photo: photoPath,
           username: user.username,
-          elo: userProfile.elo
+          elo: userProfile.elo,
+          achievements : userProfile.achievements
       };
     }
     else {
@@ -284,4 +290,35 @@ async function updateProfileImage(username, img){
   }
 }
 
-module.exports = { connect, getDb, saveGameState, loadGameState, userExists,areFriends, getFriendList, getProfileOf,getIdOfUser, updateProfileImage, getUserById, getProfileByUserId, saveElo};
+async function getAllProfiles() {
+  try {
+    const db = await getDb();
+    const userCollection = db.collection("users");
+    const userProfileCollection = db.collection("user_profile");
+
+    const users = await userCollection.find().toArray();
+    const profiles = [];
+
+    for (const user of users) {
+      const userProfile = await userProfileCollection.findOne({ _id: user._id });
+      if (userProfile) {
+        let photoPath;
+        if (userProfile.photo === '') {
+          photoPath = `./assets/images/profile/img1.webp`;
+        } else {
+          photoPath = `./assets/images/profile/${userProfile.photo}`;
+        }
+        profiles.push({
+          photo: photoPath,
+          username: user.username,
+          elo: userProfile.elo
+        });
+      }
+    }
+    return profiles;
+  } catch (error) {
+    console.error("Error getting all profiles:", error);
+    throw error;
+  }
+}
+module.exports = { connect, getDb, saveGameState, loadGameState, userExists,areFriends, getFriendList, getProfileOf,getIdOfUser, updateProfileImage, getUserById, getProfileByUserId, getAllProfiles, saveElo};
