@@ -4,6 +4,7 @@ const { SocketMapper } = require("../../socket/socketMapper.js");
 const { SocketSender } = require("../../socket/socketSender.js");
 
 const { saveElo } = require("../../mongoDB/mongoManager");
+const {GameManagerMapper} = require("./gameManagerMapper");
 
 
 class OneVOneOnlineGameManager {
@@ -21,13 +22,11 @@ class OneVOneOnlineGameManager {
   }
 
   initBoardPlayer1(gameState) {
-    console.log("idClient1", this.idClient1);
     SocketMapper.removeSocketById(this.idClient1);
     SocketSender.sendMessage(this.idClient1, "initBoard", gameState);
   }
 
   initBoardPlayer2(gameState) {
-    console.log("idClient2", this.idClient2);
     SocketMapper.removeSocketById(this.idClient2);
     SocketSender.sendMessage(this.idClient2, "initBoard", gameState);
   }
@@ -51,6 +50,9 @@ class OneVOneOnlineGameManager {
   }
 
   playerWon(playerNumber) {
+    GameManagerMapper.removeOnlineGameManagerByUserId(this.idClient1);
+    GameManagerMapper.removeOnlineGameManagerByUserId(this.idClient2);
+
     const deltaClient1 = this.calculateRatingChange(
         this.eloClient1,
         this.eloClient2,
@@ -67,13 +69,13 @@ class OneVOneOnlineGameManager {
     saveElo(this.idClient2, this.eloClient2 + deltaClient2);
 
     const winningMessageClient1 = {
-      playerNumber,
+      result:(playerNumber === 1) ? true : false,
       elo: this.eloClient1 + deltaClient1,
       deltaElo: deltaClient1
     }
 
     const winningMessageClient2 = {
-      playerNumber,
+      result:(playerNumber === 2) ? true : false,
       elo: this.eloClient2 + deltaClient2,
       deltaElo: deltaClient2
     }
@@ -81,6 +83,7 @@ class OneVOneOnlineGameManager {
     this.isGameFinished = true;
     SocketSender.sendMessage(this.idClient1, "winner", winningMessageClient1);
     SocketSender.sendMessage(this.idClient2, "winner", winningMessageClient2);
+    this.game = null;
   }
 
   movePlayer1(move) {
@@ -100,13 +103,20 @@ class OneVOneOnlineGameManager {
     }
   }
 
+  concede(playerNumber) {
+    const otherPlayer = (playerNumber == 1)? 2 : 1;
+    this.playerWon(otherPlayer);
+  }
+  
+
+
   calculateWinProbability(playerRating, opponentRating) {
     return 1 / (1 + Math.pow(10, (opponentRating - playerRating) / 400));
   }
 
   calculateRatingChange(playerRating, opponentRating, gameResult, kFactor) {
     const expectedScore = this.calculateWinProbability(playerRating, opponentRating);
-    return kFactor * (gameResult - expectedScore);
+    return parseInt(kFactor * (gameResult - expectedScore));
   }
 }
 

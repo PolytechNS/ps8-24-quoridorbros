@@ -140,6 +140,8 @@ class GameBoard {
 class Game {
   constructor(gameManager, savedGame) {
     this.gameManager = gameManager;
+    this.playerConcede = undefined;
+    this.turn = 1;
     if (savedGame) {
       console.log("game: ", savedGame);
       this.gameBoard = new GameBoard(savedGame.board);
@@ -184,6 +186,11 @@ class Game {
 
     this.gameManager.initBoardPlayer1(gameStatePlayer1);
     this.gameManager.initBoardPlayer2(gameStatePlayer2);
+
+    const currentTurn = this.turn;
+    setTimeout(() => {
+      this.turnExpired(currentTurn);
+    }, 10000);
   }
 
   onCellClick(x, y) {
@@ -269,6 +276,7 @@ class Game {
     } else {
       this.currentPlayer = this.getOtherPlayer(this.currentPlayer);
       this.turnOf = this.currentPlayer.playerNumber;
+      this.turn++;
       console.log(`\nTOUR DU JOUEUR ${this.currentPlayer.playerNumber}`);
     }
 
@@ -293,10 +301,18 @@ class Game {
       } else {
         this.gameManager.updateGameStatePlayer1(gameStatePlayer1);
         this.gameManager.updateGameStatePlayer2(gameStatePlayer2);
+        const currentTurn = this.turn;
+        setTimeout(() => {
+          this.turnExpired(currentTurn);
+        }, 10000);
       }
     } else {
       this.gameManager.updateGameStatePlayer1(gameStatePlayer1);
       this.gameManager.updateGameStatePlayer2(gameStatePlayer2);
+      const currentTurn = this.turn;
+      setTimeout(() => {
+        this.turnExpired(currentTurn);
+      }, 10000);
     }
   }
 
@@ -440,6 +456,15 @@ class Game {
   }
 
   loadSavedGame() {}
+
+  turnExpired(turn) {
+
+
+    if(this.turn === turn) {
+      const otherPlayer = this.getOtherPlayer(this.currentPlayer);
+      this.gameManager.playerWon(otherPlayer.playerNumber);
+    }
+  }
 }
 
 if (typeof exports === "object" && exports) {

@@ -24,7 +24,7 @@ class SocketManager {
 
   setupListeners() {
     this.io.on("connection", (socket) => {
-      console.log(`connection: ${socket.id}`);
+      //console.log(`connection: ${socket.id}`);
 
       socket.emit("getCookie");
 
@@ -43,7 +43,7 @@ class SocketManager {
           console.log(`déjà en aiGameManagerameManager: ${aiGameManagerameManager}`);
           configureAiGameEvents(socket, aiGameManagerameManager);
         } else if (onlineGameInfo) {
-          console.log(`déjà en onlineGameInfo: ${onlineGameInfo}`);
+          console.log(`déjà en onlineGameInfo: ${socket.id}`);
           configureOneVOneOnlineGameEvents(
             socket,
             onlineGameInfo.gameManager,
@@ -55,13 +55,8 @@ class SocketManager {
 
       });
 
-      socket.on("Acknowledgement", (messageId) => {
-        const userId = SocketMapper.getUserIdBySocketId(socket.id);
-        //console.log(`Acknowledgement socketid: ${socket.id}`);
-        //console.log(`Acknowledgement userid: ${userId}`);
-        //console.log(`id   message: ${messageId}`);
-        SocketSender.handleAcknowledgement(userId, messageId);
-      });
+
+
 
       //Local game
       socket.on("create game", () => {
@@ -87,7 +82,7 @@ class SocketManager {
       socket.on("quitMatchMaking", () => {
         const userId = SocketMapper.getUserIdBySocketId(socket.id);
 
-        console.log(`quit matchmaking: ${socket.id}`);
+        //console.log(`quit matchmaking: ${socket.id}`);
         RoomManager.quitMatchmaking(userId);
       });
     });

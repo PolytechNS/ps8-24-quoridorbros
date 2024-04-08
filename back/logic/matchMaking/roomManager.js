@@ -86,7 +86,7 @@ class Room {
   constructor(userId, userElo) {
     this.roomId = this.generateRoomId(userId);
     this.elo = userElo;
-    this.deltaElo = 50;
+    this.deltaElo = 500;
     this.players = [];
     this.players.push(userId);
   }
@@ -116,6 +116,7 @@ class Room {
   }
 
   async createSocketRoom(userProfile1, userProfile2) {
+    SocketMapper.toString();
     SocketSender.sendMessage(this.players[0], "RoomFull", userProfile2);
     SocketSender.sendMessage(this.players[1], "RoomFull", userProfile1);
     SocketMapper.removeSocketById(this.players[0]);

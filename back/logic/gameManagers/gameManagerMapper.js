@@ -20,7 +20,7 @@ class GameManagerMapper {
       playerNumber,
       gameManager,
     });
-    this.toString();
+    //this.toString();
   }
 
   static getAiGameManagerByUserId(userId) {
@@ -35,6 +35,7 @@ class GameManagerMapper {
     const success = GameManagerMapper.aiGameManagerMap.delete(userId);
     if (success) {
       console.log(`AI game manager successfully removed for user ID ${userId}`);
+      this.toString();
     } else {
       console.error(`User ID ${userId} not found in the AI game manager map.`);
     }
@@ -43,9 +44,10 @@ class GameManagerMapper {
   static removeOnlineGameManagerByUserId(userId) {
     const success = GameManagerMapper.onlineGameManagerMap.delete(userId);
     if (success) {
-      console.log(
+      /*console.log(
         `Online game manager successfully removed for user ID ${userId}`
-      );
+      );*/
+      //this.toString();
     } else {
       console.error(
         `User ID ${userId} not found in the online game manager map.`

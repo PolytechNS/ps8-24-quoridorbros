@@ -12,6 +12,9 @@ function updateWaitingTimer() {
 waitingTimerInterval = setInterval(updateWaitingTimer, 500);
 
 async function enterMatchMaking() {
+    if (localStorage.getItem("profileOpponentString")) {
+        localStorage.removeItem("profileOpponentString");
+    }
 
     const requestURL = `/api/matchmaking?userName=${encodeURIComponent(cookie.user)}`;
 

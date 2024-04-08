@@ -1,0 +1,16 @@
+#concede {
+    width: 200px;
+    height: 60px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 20px;
+    font-family: 'Spritendo', sans-serif;
+    border: 4px solid black;
+    border-radius: 12px;
+}
+
+#concede img {
+    width: 40px;
+    object-fit: cover;
+}
