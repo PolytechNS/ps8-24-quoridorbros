@@ -178,8 +178,11 @@ class AchievementsManager {
                 const existingNotification = await notificationsCollection.findOne({ 
                     user_id: userId.username,
                     'notifications.type': 'achievement',
-                    achievementId: achievement });
+                    message: `Congratulations! You have completed the achievement: ${achievement.description}` });
                     console.log(existingNotification);
+
+                    const currentDateTime = new Date();
+                    const notificationId = `ac_${currentDateTime.getTime()}`;
     
                     if (!existingNotification) {
                         await notificationsCollection.updateOne(
@@ -187,8 +190,8 @@ class AchievementsManager {
                             { 
                               $push: {
                                 notifications: {
-                                  $each: [{ type: 'achievement',message: `Congratulations! You have completed the achievement: ${achievement.description}`,
-                                  achievementId: achievement, readed: false }],
+                                  $each: [{ _id: notificationId,type: 'achievement',message: `Congratulations! You have completed the achievement: ${achievement.description}`,
+                                  sender: 'SYSTEM', readed: false }],
                                   $slice: -50
                                 }
                               }

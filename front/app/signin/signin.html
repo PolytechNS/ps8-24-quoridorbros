@@ -14,7 +14,7 @@
         <h2>Sign in</h2>
         <form id="signinForm" action="/api/signin" method="post">
             <div class="user-box">
-                <input type="text" id="username" name="username">
+                <input type="text" id="username" name="username" pattern="[A-Za-z0-9_]+">
                 <label for="username">Username:</label>
             </div>
             <div class="user-box">

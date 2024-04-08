@@ -281,12 +281,15 @@ async function handleFriendRequest(request, response){
       return;
     }
 
+    const currentDateTime = new Date();
+    const notificationId = `fr_${currentDateTime.getTime()}`;
+
     await collection.updateOne(
       { user_id: receiver },
       { 
         $push: {
           notifications: {
-            $each: [{ type: "friendrequest", sender: sender, readed: false }],
+            $each: [{ _id:notificationId,type: "friendrequest", message:`${sender} wants to become your friend!`,sender: sender, readed: false }],
             $slice: -50
           }
         }
@@ -446,12 +449,15 @@ async function handleVersus(request, response){
       return;
     }
 
+    const currentDateTime = new Date();
+    const notificationId = `ve_${currentDateTime.getTime()}`;
+
     await collection.updateOne(
       { user_id: receiver },
       { 
         $push: {
           notifications: {
-            $each: [{ type: "versus", sender: sender, readed: false }],
+            $each: [{ _id:notificationId,type: "versus", message:`${sender} challenges you!`,sender: sender, readed: false }],
             $slice: -50
           }
         }
