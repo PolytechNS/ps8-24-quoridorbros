@@ -543,6 +543,14 @@ async function getFriends(request, response){
     const friendList = await getFriendList(fromUsername);
     response.statusCode = 200;
     response.end(JSON.stringify({ friendList }));
+    const db = getDb();
+    const userProfileCollection = db.collection("user_profile");
+    const collection = db.collection("users");
+    const existingUser = await collection.findOne(
+      { username: fromUsername });
+    const notificationsCollection = db.collection("notifications");
+    await AchievementsManager.updateAchievementsList(userProfileCollection,existingUser._id);
+    await AchievementsManager.getNotifiedAchievements(userProfileCollection,notificationsCollection,existingUser);
   } catch (error) {
     console.error(error);
     response.statusCode = 500;
