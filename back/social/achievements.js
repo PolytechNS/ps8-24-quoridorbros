@@ -112,7 +112,8 @@ class AchievementsManager {
                 console.error("Achievement not found for this user");
                 return null;
             }
-            if (achievement.progression === achievement.out) {
+    
+            if (achievement.progression < achievement.out) {
                 await userProfileCollection.updateOne(
                     { _id: userId },
                     { $set: { [`achievements.${achievementId}.progression`]: 0 } }
@@ -126,6 +127,7 @@ class AchievementsManager {
             return null;
         }
     }
+    
     
 
     static async updateAchievementsList(userProfileCollection, userId) {
@@ -141,7 +143,7 @@ class AchievementsManager {
     
             for (const achievementId in achievements) {
                 if (!existingAchievements.hasOwnProperty(achievementId)) {
-                    updatedAchievements[achievementId] = {id: achievements[achievementId].id,description: achievements[achievementId].description, progression: 0,out: achievements[achievementId].out };
+                    updatedAchievements[achievementId] = {id: achievements[achievementId].id,description: achievements[achievementId].description, progression: 0,out: achievements[achievementId].out, notify: achievements[achievementId].notify};
                 }
             }
             await userProfileCollection.updateOne(
@@ -199,7 +201,7 @@ class AchievementsManager {
                             { upsert: true }
                           );
                           await userProfileCollection.updateOne(
-                            { _id: userId },
+                            { _id: userId._id },
                             { $set: { [`achievements.${achievement.id}.notify`]: true } }
                         );
                         
