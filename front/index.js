@@ -156,6 +156,7 @@ async function displayEloWorld() {
           connectedCookieValue = JSON.parse(connectedCookieValue);
           
           const achievementsDiv = document.getElementById('elos-world');
+          achievementsDiv.innerHTML = '';
           console.log(elos);
           let profilenumber=1;
 
@@ -179,7 +180,7 @@ async function displayEloWorld() {
             const usernameElement = document.createElement('div');
             console.log(profile.username);
             usernameElement.textContent = profile.username;
-            usernameElement.classList.add('username');
+            usernameElement.classList.add('elo-username');
             profileElement.appendChild(usernameElement);
             
             const eloElement = document.createElement('div');
@@ -228,6 +229,7 @@ document.getElementById("eloButton").addEventListener("click", function () {
     document.getElementById("profileEditorPopup").style.display = "none";
     document.getElementById("eloPopup").style.display = "block";
     document.getElementById("achievementsPopup").style.display = "none";
+    displayEloWorld()
 });
 document.getElementById("achievementsButton").addEventListener("click", function () {
     document.getElementById("indexPopup").style.display = "flex";
@@ -235,6 +237,7 @@ document.getElementById("achievementsButton").addEventListener("click", function
     document.getElementById("profileEditorPopup").style.display = "none";
     document.getElementById("eloPopup").style.display = "none";
     document.getElementById("achievementsPopup").style.display = "block";
+    displayAchievements();
 });
 document.getElementById("popupClose").addEventListener("click", function () {
   document.getElementById("indexPopup").style.display = "none";
