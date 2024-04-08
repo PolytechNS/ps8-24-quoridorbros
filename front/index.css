@@ -6,6 +6,13 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'Mario64';
+    src: url('./assets/fonts/mario.ttf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+}
+
 html{
     height: 100%;
     width: 100%;
@@ -13,6 +20,29 @@ html{
     padding: 0;
     font-family: 'Spritendo', sans-serif;
 }
+
+h1{
+    font-family: 'Mario64', sans-serif;
+    font-size: 6em;
+    color: #ff0000;
+    text-align: center;
+    width: 80%;
+}
+.quoridor-title span {
+    margin-right: -30px;
+}
+.letter.space {
+    margin-right: 40px;
+}
+.letter.Q { color: #FF0000; }
+.letter.U { color: #FFFF00; }
+.letter.O { color: #FF7F00; }
+.letter.R { color: #00FF00; }
+.letter.I { color: #0000FF; }
+.letter.D { color: #8A2BE2; }
+.letter.B { color: #FF69B4; }
+.letter.S { color: #FFFFFF; }
+
 body{
     min-height: 100%;
     display: flex;

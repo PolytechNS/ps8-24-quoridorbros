@@ -52,7 +52,6 @@ function displayFriends(friends) {
 
 function openform() {
   let modal = document.getElementById("friendRequestPopup");
-  console.log("coucou");
   if (modal.style.display === "" || modal.style.display === "none") {
     modal.style.display = "block";
   } else {
@@ -88,7 +87,6 @@ async function sendFriendResquet(event) {
           }
       });
       const responseData = await response.text();
-      console.log(response.status);
       if (response.status === 200) {
           alert("Friend request sent successfully!");
       } else if (response.status === 400) {
@@ -100,7 +98,6 @@ async function sendFriendResquet(event) {
           alert("Unexpected error. Please try again later.");
       }
           document.getElementById("friendRequestForm").reset();
-          console.log("bonjour");
           openform();
 
       } catch (error) {

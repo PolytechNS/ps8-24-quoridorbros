@@ -12,7 +12,6 @@ socket.on("friendConnected", (msg) => {
 });
 
 socket.on("challengeAccepted", (msg) => {
-  console.log("challengeAccepted");
   let profileOpponentDataString = JSON.stringify(msg.data);
   localStorage.setItem("profileOpponentString", profileOpponentDataString);
   opponentFound(msg.data);
