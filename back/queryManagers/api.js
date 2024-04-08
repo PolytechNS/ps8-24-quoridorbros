@@ -58,6 +58,9 @@ function manageRequest(request, response) {
       case request.url.startsWith("/api/notifications/friends"):
         getFriendRequests(request, response);
         break;
+      case request.url.startsWith("/api/notification"):
+        getNotifications(request, response);
+        break;
       case request.url.startsWith("/api/friends"):
         getFriends(request, response);
         break;
@@ -349,6 +352,8 @@ async function getNotifications(request, response) {
     const notifications = await collection.findOne(
       { user_id: user }
     );
+
+    console.log(notifications);
 
     if (!notifications || !notifications.notifications) {
       response.statusCode = 200;

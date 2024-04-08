@@ -6,78 +6,23 @@
     <title>Friend list</title>
 </head>
 <body>
+    <script type="text/javascript" src="./friendlist.js"></script>
     <h2>Friends</h2>
     <img src="../../assets/images/addFriend.png" alt="Clickable Image" class="clickable-img" id="requestopener" onclick="openform()">
     <div id="friendRequestPopup" class="modal" style="display: none;">
         <div id="friendRequest">
-            <form id="friendRequestForm">
-                <label for="receiver">To:</label>
-                <div class="input-group">
-                    <input type="text" id="receiver" name="receiver" required>
-                    <button type="submit">Send Request</button>
-                </div>
-            </form>
+    <form id="friendRequestForm" onsubmit="sendFriendResquet(event)">
+        <label for="receiver">To:</label>
+        <div class="input-group">
+            <input type="text" id="receiver" name="receiver" required>
+            <button type="submit">Send Request</button>
         </div>
+    </form>
+
+</div>
         
-    </div>
+</div>
     <div id="friend-list"></div>
-    <script type="text/javascript" src="./friendlist.js"></script>
-    <script>
-        var modal = document.getElementById("friendRequestPopup");
-      
-        var img = document.getElementById("requestopener");
-        img.onclick = function() {
-            console.log("coucou");
-            modal.style.display = "block";
-        }
-        window.onclick = function(event) {
-          if (event.target == modal) {
-            console.log("hello");
-            modal.style.display = "none";
-          }
-        }
-
-        document.getElementById("friendRequestForm").addEventListener("submit", async function(event) {
-            event.preventDefault();
-            let connectedCookieValue = getCookie("connected");
-            console.log("friendRequestForm");
-            if (connectedCookieValue) {
-                try {
-                connectedCookieValue = JSON.parse(connectedCookieValue);
-
-                const sender = connectedCookieValue.user;
-                const receiver = document.getElementById("receiver").value;
-
-                const requestURL = `/api/friend?sender=${encodeURIComponent(sender)}&receiver=${encodeURIComponent(receiver)}`;
-
-                const response = await fetch(requestURL, {
-                    method: "POST",
-                    headers: {
-                    "Content-Type": "application/json"
-                    }
-                });
-                const responseData = await response.text();
-                console.log(response.status);
-                if (response.status === 200) {
-                    alert("Friend request sent successfully!");
-                } else if (response.status === 400) {
-                    const errorResponse = JSON.parse(responseData);
-                    alert(`Bad request: ${errorResponse.error}`);
-                } else if (response.status === 500) {
-                    alert("Internal Server Error. Please try again later.");
-                } else {
-                    alert("Unexpected error. Please try again later.");
-                }
-                    document.getElementById("friendRequestForm").reset();
-                    //openform();
-
-                } catch (error) {
-                console.error('Error:', error);
-                alert("An error occurred while processing your request.");
-                }
-            }
-        });
-      </script>
 
 </body>
 </html>

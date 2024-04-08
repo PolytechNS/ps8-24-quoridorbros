@@ -9,10 +9,12 @@ async function fetchNotifications() {
         const response = await fetch(`/api/notifications?userId=${sender}`);
         if (response.status !== 200) {
           throw new Error('Failed to fetch notifications');
+          return;
         }
         const notifications = await response.json()
         const notificationsList = document.getElementById("notifications");
         notificationsList.innerHTML = '';
+        console.log(notifications);
         if (notifications) {
         notifications.forEach(notification => {
 

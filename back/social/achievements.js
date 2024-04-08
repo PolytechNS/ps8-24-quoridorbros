@@ -141,7 +141,7 @@ class AchievementsManager {
     
             for (const achievementId in achievements) {
                 if (!existingAchievements.hasOwnProperty(achievementId)) {
-                    updatedAchievements[achievementId] = {description: achievements[achievementId].description, progression: 0,out: achievements[achievementId].out };
+                    updatedAchievements[achievementId] = {id: achievements[achievementId].id,description: achievements[achievementId].description, progression: 0,out: achievements[achievementId].out };
                 }
             }
             await userProfileCollection.updateOne(
@@ -198,6 +198,11 @@ class AchievementsManager {
                             },
                             { upsert: true }
                           );
+                          await userProfileCollection.updateOne(
+                            { _id: userId },
+                            { $set: { [`achievements.${achievement.id}.notify`]: true } }
+                        );
+                        
                     }
             }
             return notifiedAchievements;
