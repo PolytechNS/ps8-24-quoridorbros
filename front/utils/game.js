@@ -140,6 +140,7 @@ class GameBoard {
 class Game {
   constructor(gameManager, savedGame) {
     this.gameManager = gameManager;
+    this.playerConcede = undefined;
     if (savedGame) {
       console.log("game: ", savedGame);
       this.gameBoard = new GameBoard(savedGame.board);

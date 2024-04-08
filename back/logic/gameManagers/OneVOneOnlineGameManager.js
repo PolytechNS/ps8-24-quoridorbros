@@ -100,6 +100,14 @@ class OneVOneOnlineGameManager {
     }
   }
 
+  concede(playerNumber) {
+    const otherPlayer = (playerNumber == 1)? 2 : 1;
+    this.playerWon(otherPlayer);
+    this.game = null;
+  }
+  
+
+
   calculateWinProbability(playerRating, opponentRating) {
     return 1 / (1 + Math.pow(10, (opponentRating - playerRating) / 400));
   }

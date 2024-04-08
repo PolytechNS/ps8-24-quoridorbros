@@ -28,3 +28,7 @@ function onCellClick(x, y) {
 function onWallClick(x, y) {
   socket.emit("newMove", { x: x, y: y });
 }
+
+function concede() {
+  socket.emit("concede");
+}

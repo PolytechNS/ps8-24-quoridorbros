@@ -5,3 +5,4 @@ socket.on("RoomFull", (msg) => {
   localStorage.setItem("profileOpponentString", profileOpponentDataString);
   opponentFound(msg.data);
 });
+
