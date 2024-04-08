@@ -11,6 +11,12 @@
 </head>
 <body>
 <div class="background"></div>
+<div class="popup">
+    <div class="popupBox" id="notificationPopup">
+        <a href="#" class="close">&times;</a>
+        <div id="notifications-container"></div>
+    </div>
+</div>
 <div class="panel" id="leftPanel">
     <div id="friend-container"></div>
 </div>
@@ -21,16 +27,18 @@
     <div id="elos-friends"></div>
 </div>
 <div class="panel" id="midPanel">
-    <button id="playOnlineButton" onclick="window.location.href='./app/matchmaking/matchmaking.html'" style="display: none;">Play Online</button>
-    <button id="playAIButton" onclick="window.location.href='./app/aiGame/aiGame.html'" style="display: none;">Play with AI</button>
-    <button id="playLocalButton" onclick="window.location.href='./app/localGame/localGame.html'" style="display: none;">Play locally</button>
-    <button id="loginButton" onclick="window.location.href='./app/login/login.html'">Log in</button>
-    <button id="signinButton" onclick="window.location.href='./app/signin/signin.html'">Sign in</button>
+    <button id="playButton" class="mainButtonClass">Play</button>
+    <button id="playOnlineButton" class="mainButtonDisabledClass" onclick="window.location.href='./app/matchmaking/matchmaking.html'" style="display: none;" disabled>Play Online<br><span id="loginNote">(You must log in to play online)</span></button>
+    <button id="playAIButton" class="mainButtonClass" onclick="window.location.href='./app/aiGame/aiGame.html'" style="display: none;" disabled>Play with AI</button>
+    <button id="playLocalButton" class="mainButtonClass" onclick="window.location.href='./app/localGame/localGame.html'" style="display: none;">Play locally</button>
+    <button id="loginButton" class="mainButtonClass" onclick="window.location.href='./app/login/login.html'">Log in</button>
+    <button id="signinButton" class="mainButtonClass" onclick="window.location.href='./app/signin/signin.html'">Sign in</button>
+    <button id="backButton" class="mainButtonClass" onclick="window.location.href='../../index.html'" style="display: none">Back</button>
 </div>
 <div class="panel" id="rightPanel">
-    <div id="notifications-container"></div>
+    <div id="profile-editor-container" style="display: none;"></div>
     <div id="profile-container"></div>
-    <button id="logoutButton" style="display: none;">Logout</button>
+    <button id="logoutButton" class="mainButtonClass" style="display: none;">Logout</button>
 </div>
 
     <script type="text/javascript" src="./utils/cookieManager.js"></script>

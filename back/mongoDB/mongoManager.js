@@ -217,7 +217,7 @@ async function getUserById(userId) {
     const userDocument = await collection.findOne({ _id: objectIdUserId });
 
     if (!userDocument) {
-      console.log("No user found for the provided username:", username);
+      console.log("No user found for the provided userId:", userId);
       return null;
     }
 
@@ -243,6 +243,24 @@ async function getIdOfUser(username) {
   } catch (error) {
     console.error("An error occurred while loading user ID:", error);
     return null;
+  }
+}
+
+async function saveElo(userId, newElo) {
+  try {
+    const db = await getDb();
+    const collection = db.collection("user_profile");
+
+    // Mettre à jour le rating Elo de l'utilisateur spécifié
+    await collection.updateOne(
+        { _id: new ObjectId(userId) },
+        { $set: { elo: newElo } }
+    );
+
+    console.log(`Elo updated for user with ID ${userId}`);
+  } catch (error) {
+    console.error("Error updating Elo:", error);
+     throw error;
   }
 }
 
@@ -304,4 +322,4 @@ async function getAllProfiles() {
     throw error;
   }
 }
-module.exports = { connect, getDb, saveGameState, loadGameState, userExists,areFriends, getFriendList, getProfileOf,getIdOfUser, updateProfileImage, getUserById, getProfileByUserId, getAllProfiles};
+module.exports = { connect, getDb, saveGameState, loadGameState, userExists,areFriends, getFriendList, getProfileOf,getIdOfUser, updateProfileImage, getUserById, getProfileByUserId, getAllProfiles, saveElo};

@@ -46,7 +46,7 @@ function displayFriends(friends) {
 }
 
 function openform() {
-  var modal = document.getElementById("friendRequestPopup");
+  let modal = document.getElementById("friendRequestPopup");
   console.log("coucou");
   if (modal.style.display === "" || modal.style.display === "none") {
     modal.style.display = "block";

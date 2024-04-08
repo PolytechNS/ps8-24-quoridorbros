@@ -1,6 +1,6 @@
   .friend {
     display: flex;
-    flex-direction: line;
+    flex-direction: row;
     align-items: center;
     margin-bottom: 10px;
   }

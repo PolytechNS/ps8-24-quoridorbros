@@ -5,15 +5,27 @@
     <title>Game</title>
     <link rel="stylesheet" type="text/css" href="../../index.css">
     <link rel="stylesheet" type="text/css" href="../clientBoard/clientBoard.css">
+    <link rel="stylesheet" type="text/css" href="../profile/profile.css">
+    <link rel="stylesheet" type="text/css" href="./opponentProfile.css">
     <link rel="stylesheet" type="text/css" href="../chat/chat.css">
 
 </head>
 <body>
+<div class="background"></div>
+<div id="leftPanel" class="panel">
+    <div id="profile-container">
+        <div id="profile-info"></div>
+    </div>
+</div>
+<div class="panel" id="midPanel">
     <div id="gameBoard" class="gameBoard"></div>
+</div>
+<div class="panel" id="rightPanel">
+    <div id="opponent-profile-container">
+        <div id="opponent-profile-info"></div>
+    </div>
     <div id="chat-container"></div>
-
-
-
+</div>
     <script type="text/javascript" src="../sockets/socket.io.js"></script>
     <script type="text/javascript" src="../../utils/utils.js"></script>
     <script type="text/javascript" src="../clientBoard/clientBoard.js"></script>
@@ -22,8 +34,6 @@
     <script type="text/javascript" src="../sockets/gameEvents.js"></script>
     <script type="text/javascript" src="./onlineGame.js"></script>
     <script type="text/javascript" src="../chat/chat.js"></script>
-
-
-    
+    <script type="text/javascript" src="./duelProfiles.js"></script>
 </body>
 </html>

@@ -1,4 +1,7 @@
-#profile-container {
+/*Une classe aurait été meilleur certes, mais si n<3, n étant la répétition de code, alors une abstraction n'est pas nécessaire.
+Puis ça permet des petites différences entre gauche et droite si besoin est.*/
+
+#opponent-profile-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -6,15 +9,15 @@
     width: 100%;
 }
 
-#profilePhoto {
+#opponentProfilePhoto {
     max-width: 75%;
     width: auto;
     height: auto;
     margin-bottom: 20px;
-    border: 2px solid #f00;
+    border: 2px solid #0f0;
 }
 
-#profileUsername {
+#opponentProfileUsername {
     display: inline-block;
     font-size: 2em;
     font-weight: bold;
@@ -25,6 +28,6 @@
     margin-bottom: 20px;
 }
 
-#profileElo {
+#opponentProfileElo {
     margin-bottom: 20px;
 }

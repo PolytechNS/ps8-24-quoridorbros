@@ -1,0 +1,39 @@
+#matchmaking-container {
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+}
+
+#waiting-container {
+    height: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.loading-spinner {
+    height: 120px;
+    width: 120px;
+    border: 6px solid;
+    border-radius: 50%;
+    border-color: black transparent transparent transparent;
+    animation: spin 1s ease infinite;
+}
+
+#image-opponent {
+    height: 200px;
+    width: 200px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+
+}
