@@ -43,7 +43,6 @@ async function enterMatchMaking() {
 function quitMatchMaking() {
     socket.emit("quitMatchMaking");
     window.location.href='../../index.html';
-
 }
 
 function opponentFound(opponentProfile) {

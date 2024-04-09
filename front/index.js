@@ -18,7 +18,7 @@ window.onload = function () {
     document.getElementById("friendSocketInitAnchor").appendChild(document.createElement("script")).src = "/app/sockets/matchmakingEvents.js";
     document.getElementById("friendSocketInitAnchor").appendChild(document.createElement("script")).src = "/app/notifications/notifications.js";
     /* Désolé */
-    document.getElementById("profile-container").style.display = "block";
+    document.getElementById("profile-container").style.display = "flex";
     logoutButton.style.display = "block";
     notButton.style.display = "block";
     PEButton.style.display = "block";
