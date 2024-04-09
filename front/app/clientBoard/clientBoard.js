@@ -7,7 +7,7 @@ paramètres :
 
 const YOUR_TURN_TEXT = "YOUR TURN";
 const NOT_YOUR_TURN_TEXT = "YOUR OPPONENT TURN";
-const TOUR_DURATION = 30;
+const TOUR_DURATION = 60;
 
 class ClientBoard {
   constructor(onCellClick, onWallClick, gameState, elementId = "gameBoard") {

@@ -190,7 +190,7 @@ class Game {
     const currentTurn = this.turn;
     setTimeout(() => {
       this.turnExpired(currentTurn);
-    }, 30000);
+    }, 60000);
   }
 
   onCellClick(x, y) {
@@ -304,7 +304,7 @@ class Game {
         const currentTurn = this.turn;
         setTimeout(() => {
           this.turnExpired(currentTurn);
-        }, 30000);
+        }, 60000);
       }
     } else {
       this.gameManager.updateGameStatePlayer1(gameStatePlayer1);
@@ -312,7 +312,7 @@ class Game {
       const currentTurn = this.turn;
       setTimeout(() => {
         this.turnExpired(currentTurn);
-      }, 30000);
+      }, 60000);
     }
   }
 
