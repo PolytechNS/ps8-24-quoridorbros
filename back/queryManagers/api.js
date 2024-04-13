@@ -241,7 +241,7 @@ async function handleMatchmakingRequest(request, response){
 
   try {
     const userId = await getIdOfUser(userName);
-    RoomManager.enterMatchmaking(userId);
+    await RoomManager.enterMatchmaking(userId);
 
     response.statusCode = 200;
     response.end(JSON.stringify({ message: 'Matchmaking request handled successfully' }));
