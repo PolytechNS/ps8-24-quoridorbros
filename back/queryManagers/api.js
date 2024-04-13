@@ -40,9 +40,6 @@ function manageRequest(request, response) {
       case "/api/logout":
         handleLogout(request, response);
         break;
-      case "/api/matchmaking":
-        handleMatchmakingRequest(request, response);
-        break;
       case "/api/friend":
         console.log("friendRequest");
         handleFriendRequest(request, response);
@@ -248,26 +245,6 @@ function handleLogout(request, response) {
   }
 }
 
-async function handleMatchmakingRequest(request, response) {
-  const parsedUrl = url.parse(request.url, true);
-  const queryParameters = parsedUrl.query;
-
-  const userName = queryParameters.userName;
-
-  try {
-    const userId = await getIdOfUser(userName);
-    await RoomManager.enterMatchmaking(userId);
-
-    response.statusCode = 200;
-    response.end(
-      JSON.stringify({ message: "Matchmaking request handled successfully" }),
-    );
-  } catch (error) {
-    console.error(error);
-    response.statusCode = 500;
-    response.end(JSON.stringify({ error: "Internal server error" }));
-  }
-}
 async function handleFriendRequest(request, response) {
   const parsedUrl = url.parse(request.url, true);
   const queryParameters = parsedUrl.query;

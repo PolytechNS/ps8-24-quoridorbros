@@ -2,11 +2,28 @@ let socket = io();
 
 let jsonCookie = getCookie("connected");
 let cookie = JSON.parse(jsonCookie);
+let cookieReceived = false;
 
 socket.on("getCookie", () => {
   socket.emit("cookie", cookie);
 });
 
+socket.on("cookieReceived", () => {
+  cookieReceived = true;
+});
+
 function getSocket() {
-  return socket;
+  return new Promise((resolve, reject) => {
+    // Vérification de l'état du cookie
+    if (cookieReceived) {
+      // Si le cookie a déjà été reçu, résoudre la promesse avec la socket existante
+      resolve(socket);
+    } else {
+      // Si le cookie n'a pas encore été reçu, attendre l'événement "cookieReceived"
+      socket.on("cookieReceived", () => {
+        // Une fois le cookie reçu, résoudre la promesse avec la socket
+        resolve(socket);
+      });
+    }
+  });
 }

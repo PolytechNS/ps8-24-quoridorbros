@@ -24,13 +24,16 @@ class SocketManager {
 
   setupListeners() {
     this.io.on("connection", (socket) => {
-      //console.log(`connection: ${socket.id}`);
+      console.log(`connection: ${socket.id}`);
 
       socket.emit("getCookie");
 
       socket.on("cookie", async (cookie) => {
+        console.log(`cookie receive: ${socket.id}`);
+
         const userId = await getIdOfUser(cookie.user);
         SocketMapper.updateSocket(userId, socket);
+        SocketSender.sendMessage(userId, "cookieReceived");
 
         //si le user était déjà en partie
         let aiGameManagerameManager =
@@ -75,6 +78,11 @@ class SocketManager {
       });
 
       //Online game
+
+      socket.on("startMatchMaking", () => {
+        const userId = SocketMapper.getUserIdBySocketId(socket.id);
+        RoomManager.enterMatchmaking(userId);
+      });
 
       socket.on("quitMatchMaking", () => {
         const userId = SocketMapper.getUserIdBySocketId(socket.id);

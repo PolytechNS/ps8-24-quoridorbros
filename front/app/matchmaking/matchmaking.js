@@ -10,38 +10,6 @@ function updateWaitingTimer() {
 }
 waitingTimerInterval = setInterval(updateWaitingTimer, 500);
 
-async function enterMatchMaking() {
-  if (localStorage.getItem("profileOpponentString")) {
-    localStorage.removeItem("profileOpponentString");
-  }
-
-  const requestURL = `/api/matchmaking?userName=${encodeURIComponent(cookie.user)}`;
-
-  const response = await fetch(requestURL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  const responseData = await response.text();
-
-  if (response.status === 200) {
-    //console.log("Matchmaking request sent successfully!");
-  } else if (response.status === 400) {
-    const errorResponse = JSON.parse(responseData);
-    alert(`Bad request: ${errorResponse.error}`);
-  } else if (response.status === 500) {
-    alert("Internal Server Error. Please try again later.");
-  } else {
-    alert("Unexpected error. Please try again later.");
-  }
-}
-
-function quitMatchMaking() {
-  socket.emit("quitMatchMaking");
-  window.location.href = "../../index.html";
-}
-
 function opponentFound(opponentProfile) {
   clearInterval(waitingTimerInterval); // Stop the waiting timer
 

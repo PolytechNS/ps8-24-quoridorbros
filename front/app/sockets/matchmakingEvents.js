@@ -1,3 +1,23 @@
+function enterMatchMaking() {
+  if (localStorage.getItem("profileOpponentString")) {
+    localStorage.removeItem("profileOpponentString");
+  }
+  getSocket()
+    .then((socket) => {
+      // Une fois que la promesse est résolue (c'est-à-dire que le cookie est reçu),
+      // utilisez la socket ici
+      socket.emit("startMatchMaking");
+    })
+    .catch((error) => {
+      console.error("Impossible de récupérer la socket : ", error);
+    });
+}
+
+function quitMatchMaking() {
+  socket.emit("quitMatchMaking");
+  window.location.href = "../../index.html";
+}
+
 socket.on("RoomFull", (msg) => {
   let profileOpponentDataString = JSON.stringify(msg.data);
   localStorage.setItem("profileOpponentString", profileOpponentDataString);
