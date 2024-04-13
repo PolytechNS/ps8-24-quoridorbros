@@ -1,4 +1,4 @@
-const { MongoClient, ObjectId} = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 const { AchievementsManager } = require("../social/achievements");
 
 const url = "mongodb://mongodb:27017";
@@ -28,7 +28,7 @@ async function saveGameState(userId, gameState) {
     await collection.updateOne(
       { token: userId },
       { $set: save },
-      { upsert: true }
+      { upsert: true },
     );
   } catch (error) {
     console.error("Error saving game state", error);
@@ -59,7 +59,7 @@ async function userExists(userToken) {
     const db = getDb();
     const collection = db.collection("users");
     const userDocument = await collection.findOne({ username: userToken });
-    
+
     if (!userDocument) {
       console.log("No user found for the provided username:", userToken);
       return false;
@@ -100,19 +100,23 @@ async function areFriends(user1, user2) {
       throw new Error(`User ${user2} not found.`);
     }
 
-    const user1Profile = await getUserProfileById(user1Document._id, userProfileCollection);
-    const user2Profile = await getUserProfileById(user2Document._id, userProfileCollection);
+    const user1Profile = await getUserProfileById(
+      user1Document._id,
+      userProfileCollection,
+    );
+    const user2Profile = await getUserProfileById(
+      user2Document._id,
+      userProfileCollection,
+    );
 
     let areFriendsUser1 = false;
-    user1Profile.friends.forEach(e => {
-      if (e.equals(user2Document._id))
-        areFriendsUser1 = true;
+    user1Profile.friends.forEach((e) => {
+      if (e.equals(user2Document._id)) areFriendsUser1 = true;
     });
 
     let areFriendsUser2 = false;
-    user2Profile.friends.forEach(e => {
-      if (e.equals(user1Document._id))
-        areFriendsUser2 = true;
+    user2Profile.friends.forEach((e) => {
+      if (e.equals(user1Document._id)) areFriendsUser2 = true;
     });
 
     return areFriendsUser1 && areFriendsUser2;
@@ -121,9 +125,6 @@ async function areFriends(user1, user2) {
     return false;
   }
 }
-
-
-
 
 async function getFriendList(username) {
   try {
@@ -135,7 +136,7 @@ async function getFriendList(username) {
     if (!user) {
       throw new Error(`User with username '${username}' not found.`);
     }
-    
+
     const userProfile = await userProfileCollection.findOne({ _id: user._id });
     if (!userProfile) {
       throw new Error(`User profile not found for user '${username}'.`);
@@ -144,17 +145,33 @@ async function getFriendList(username) {
     const friends = await userCollection
       .find(
         { _id: { $in: userProfile.friends } },
-        { projection: { _id: 0, username: 1 } }
+        { projection: { _id: 0, username: 1 } },
       )
       .toArray();
 
     const friendListWithProfiles = [];
-    await AchievementsManager.reinitializeAchievement(userProfileCollection,user._id,"ach1");
-    await AchievementsManager.reinitializeAchievement(userProfileCollection,user._id,"ach2");
+    await AchievementsManager.reinitializeAchievement(
+      userProfileCollection,
+      user._id,
+      "ach1",
+    );
+    await AchievementsManager.reinitializeAchievement(
+      userProfileCollection,
+      user._id,
+      "ach2",
+    );
     for (const friend of friends) {
       const friendProfile = await getProfileOf(friend.username);
-      await AchievementsManager.updateAchievement(userProfileCollection,user._id,"ach1");
-      await AchievementsManager.updateAchievement(userProfileCollection,user._id,"ach2");
+      await AchievementsManager.updateAchievement(
+        userProfileCollection,
+        user._id,
+        "ach1",
+      );
+      await AchievementsManager.updateAchievement(
+        userProfileCollection,
+        user._id,
+        "ach2",
+      );
       if (!friendProfile) {
         throw new Error(`Profile not found for user '${friend.username}'.`);
       }
@@ -176,24 +193,20 @@ async function getProfileOf(username) {
 
     const user = await userCollection.findOne({ username: username });
     const userProfile = await userProfileCollection.findOne({ _id: user._id });
-    if (userProfile){
+    if (userProfile) {
       let photoPath;
-      if (userProfile.photo==='')
+      if (userProfile.photo === "")
         photoPath = `./assets/images/profile/img1.webp`;
-      else
-        photoPath = `./assets/images/profile/${userProfile.photo}`;
-        return {
-          photo: photoPath,
-          username: user.username,
-          elo: userProfile.elo,
-          achievements : userProfile.achievements
+      else photoPath = `./assets/images/profile/${userProfile.photo}`;
+      return {
+        photo: photoPath,
+        username: user.username,
+        elo: userProfile.elo,
+        achievements: userProfile.achievements,
       };
-    }
-    else {
+    } else {
       return null;
-  }
-
-    
+    }
   } catch (error) {
     console.error("Error getting friend list:", error);
     throw error;
@@ -202,11 +215,9 @@ async function getProfileOf(username) {
 
 async function getProfileByUserId(userId) {
   const username = await getUserById(userId);
-  const profile =  await getProfileOf(username);
+  const profile = await getProfileOf(username);
   return profile;
-
 }
-
 
 async function getUserById(userId) {
   try {
@@ -253,17 +264,16 @@ async function saveElo(userId, newElo) {
 
     // Mettre à jour le rating Elo de l'utilisateur spécifié
     await collection.updateOne(
-        { _id: new ObjectId(userId) },
-        { $set: { elo: newElo } }
+      { _id: new ObjectId(userId) },
+      { $set: { elo: newElo } },
     );
-
   } catch (error) {
     console.error("Error updating Elo:", error);
-     throw error;
+    throw error;
   }
 }
 
-async function updateProfileImage(username, img){
+async function updateProfileImage(username, img) {
   try {
     const db = await getDb();
     const userCollection = db.collection("users");
@@ -273,7 +283,7 @@ async function updateProfileImage(username, img){
     if (!user) {
       throw new Error(`User with username '${username}' not found.`);
     }
-    
+
     const userProfile = await userProfileCollection.findOne({ _id: user._id });
     if (!userProfile) {
       throw new Error(`User profile not found for user '${username}'.`);
@@ -281,7 +291,7 @@ async function updateProfileImage(username, img){
 
     const modif = await userProfileCollection.updateOne(
       { _id: user._id },
-      { $set: { photo: img } }
+      { $set: { photo: img } },
     );
     return modif;
   } catch (error) {
@@ -300,10 +310,12 @@ async function getAllProfiles() {
     const profiles = [];
 
     for (const user of users) {
-      const userProfile = await userProfileCollection.findOne({ _id: user._id });
+      const userProfile = await userProfileCollection.findOne({
+        _id: user._id,
+      });
       if (userProfile) {
         let photoPath;
-        if (userProfile.photo === '') {
+        if (userProfile.photo === "") {
           photoPath = `./assets/images/profile/img1.webp`;
         } else {
           photoPath = `./assets/images/profile/${userProfile.photo}`;
@@ -311,7 +323,7 @@ async function getAllProfiles() {
         profiles.push({
           photo: photoPath,
           username: user.username,
-          elo: userProfile.elo
+          elo: userProfile.elo,
         });
       }
     }
@@ -321,4 +333,19 @@ async function getAllProfiles() {
     throw error;
   }
 }
-module.exports = { connect, getDb, saveGameState, loadGameState, userExists,areFriends, getFriendList, getProfileOf,getIdOfUser, updateProfileImage, getUserById, getProfileByUserId, getAllProfiles, saveElo};
+module.exports = {
+  connect,
+  getDb,
+  saveGameState,
+  loadGameState,
+  userExists,
+  areFriends,
+  getFriendList,
+  getProfileOf,
+  getIdOfUser,
+  updateProfileImage,
+  getUserById,
+  getProfileByUserId,
+  getAllProfiles,
+  saveElo,
+};

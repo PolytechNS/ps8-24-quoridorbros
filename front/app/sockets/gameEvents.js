@@ -15,7 +15,7 @@ socket.on("winner", (msg) => {
   console.log(gameResults);
   let gameResultsString = JSON.stringify(gameResults);
   localStorage.setItem("gameResultsString", gameResultsString);
-  window.location.href = "../gameFinished/gameFinished.html"
+  window.location.href = "../gameFinished/gameFinished.html";
 });
 
 function onCellClick(x, y) {

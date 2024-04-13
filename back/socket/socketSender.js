@@ -20,9 +20,8 @@ class SocketSender {
     const messageObject = {
       id: messageId,
       message,
-      data
+      data,
     };
-
 
     const socket = SocketMapper.getSocketById(userId);
     if (socket) {
@@ -45,14 +44,13 @@ class SocketSender {
   }
 
   static pendingMessagesLogs(userId) {
-    if(this.pendingMessages[userId]){
+    if (this.pendingMessages[userId]) {
       console.log("messages for", userId);
 
       this.pendingMessages[userId].forEach((message) => {
         console.log(message);
       });
     }
-
   }
 }
 

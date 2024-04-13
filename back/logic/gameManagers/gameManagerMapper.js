@@ -50,7 +50,7 @@ class GameManagerMapper {
       //this.toString();
     } else {
       console.error(
-        `User ID ${userId} not found in the online game manager map.`
+        `User ID ${userId} not found in the online game manager map.`,
       );
     }
   }
@@ -65,7 +65,7 @@ class GameManagerMapper {
     console.log("Online GameManager Map contents:");
     this.onlineGameManagerMap.forEach((value, key) => {
       console.log(
-        `UserID: ${key}, PlayerNumber: ${value.playerNumber}, GameManager: ${value.gameManager}`
+        `UserID: ${key}, PlayerNumber: ${value.playerNumber}, GameManager: ${value.gameManager}`,
       );
     });
     console.log("\n");

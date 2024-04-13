@@ -9,22 +9,27 @@ class GameManagerFactory {
     return aiGameManager;
   }
 
-  static createOneVOneOnlineGameManager(idClient1, idClient2, eloPlayer1, eloPlayer2) {
+  static createOneVOneOnlineGameManager(
+    idClient1,
+    idClient2,
+    eloPlayer1,
+    eloPlayer2,
+  ) {
     const oneVOneOnlineGameManager = new OneVOneOnlineGameManager(
-        idClient1,
-        idClient2,
-        eloPlayer1,
-        eloPlayer2
+      idClient1,
+      idClient2,
+      eloPlayer1,
+      eloPlayer2,
     );
     GameManagerMapper.updateOnlineGameManager(
       idClient1,
       1,
-      oneVOneOnlineGameManager
+      oneVOneOnlineGameManager,
     );
     GameManagerMapper.updateOnlineGameManager(
       idClient2,
       2,
-      oneVOneOnlineGameManager
+      oneVOneOnlineGameManager,
     );
 
     return oneVOneOnlineGameManager;

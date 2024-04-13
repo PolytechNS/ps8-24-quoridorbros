@@ -7,7 +7,9 @@ socket.on("RoomFull", (msg) => {
 socket.on("friendConnected", (msg) => {
   let username = msg;
   console.log("friendConnected" + username);
-  document.getElementById("friendID-"+username).classList.add("friendConnected");
+  document
+    .getElementById("friendID-" + username)
+    .classList.add("friendConnected");
 });
 
 socket.on("challengeAccepted", (msg) => {
@@ -15,4 +17,3 @@ socket.on("challengeAccepted", (msg) => {
   localStorage.setItem("profileOpponentString", profileOpponentDataString);
   opponentFound(msg.data);
 });
-

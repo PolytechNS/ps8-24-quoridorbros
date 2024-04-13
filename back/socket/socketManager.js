@@ -13,7 +13,7 @@ const { SocketSender } = require("./socketSender.js");
 const {
   GameManagerMapper,
 } = require("../logic/gameManagers/gameManagerMapper.js");
-const {RoomManager} = require("../logic/matchMaking/roomManager");
+const { RoomManager } = require("../logic/matchMaking/roomManager");
 
 class SocketManager {
   constructor(io) {
@@ -32,7 +32,6 @@ class SocketManager {
         const userId = await getIdOfUser(cookie.user);
         SocketMapper.updateSocket(userId, socket);
 
-
         //si le user était déjà en partie
         let aiGameManagerameManager =
           GameManagerMapper.getAiGameManagerByUserId(userId);
@@ -40,23 +39,21 @@ class SocketManager {
           GameManagerMapper.getOnlineGameInfoByUserId(userId);
 
         if (aiGameManagerameManager) {
-          console.log(`déjà en aiGameManagerameManager: ${aiGameManagerameManager}`);
+          console.log(
+            `déjà en aiGameManagerameManager: ${aiGameManagerameManager}`,
+          );
           configureAiGameEvents(socket, aiGameManagerameManager);
         } else if (onlineGameInfo) {
           console.log(`déjà en onlineGameInfo: ${socket.id}`);
           configureOneVOneOnlineGameEvents(
             socket,
             onlineGameInfo.gameManager,
-            onlineGameInfo.playerNumber
+            onlineGameInfo.playerNumber,
           );
         }
 
         SocketSender.resendAllPending(userId);
-
       });
-
-
-
 
       //Local game
       socket.on("create game", () => {
@@ -72,7 +69,7 @@ class SocketManager {
         const userId = SocketMapper.getUserIdBySocketId(socket.id);
         const aiGameManager = GameManagerFactory.createAiGameManager(
           userId,
-          true
+          true,
         );
         configureAiGameEvents(socket, aiGameManager);
       });
@@ -86,22 +83,23 @@ class SocketManager {
         RoomManager.quitMatchmaking(userId);
       });
 
-        socket.on("challengeFriend", (username) => {
-            const userId = SocketMapper.getUserIdBySocketId(socket.id);
-            console.log(`challengeFriend: ${socket.id}`);
-        });
+      socket.on("challengeFriend", (username) => {
+        const userId = SocketMapper.getUserIdBySocketId(socket.id);
+        console.log(`challengeFriend: ${socket.id}`);
+      });
 
-        socket.on("checkFriendConnectionStatus", async (username) => {
-            const userId = await getIdOfUser(username);
-            console.log(`checkFriendConnectionStatus: ${socket.id} checks for ${userId}`);
-            SocketMapper.mapper.forEach((value, key) => {
-                if (key === userId) {
-                  console.log(`friendConnected: ${username}`);
-                    socket.emit("friendConnected", username);
-                }
-            }
-            );
+      socket.on("checkFriendConnectionStatus", async (username) => {
+        const userId = await getIdOfUser(username);
+        console.log(
+          `checkFriendConnectionStatus: ${socket.id} checks for ${userId}`,
+        );
+        SocketMapper.mapper.forEach((value, key) => {
+          if (key === userId) {
+            console.log(`friendConnected: ${username}`);
+            socket.emit("friendConnected", username);
+          }
         });
+      });
     });
   }
 }
