@@ -1,7 +1,11 @@
 const { GameManagerFactory } = require("../gameManagers/gameManagerFactory.js");
 const { SocketMapper } = require("../../socket/socketMapper.js");
-const { getProfileOf, getUserById, getProfileByUserId } = require("../../mongoDB/mongoManager.js");
-const {SocketSender} = require("../../socket/socketSender");
+const {
+  getProfileOf,
+  getUserById,
+  getProfileByUserId,
+} = require("../../mongoDB/mongoManager.js");
+const { SocketSender } = require("../../socket/socketSender");
 
 class RoomManager {
   static io;
@@ -57,12 +61,11 @@ class RoomManager {
     const userProfile = await getProfileByUserId(userId);
     const userElo = userProfile.elo;
 
-    const room = RoomManager.rooms.find((room) =>
-        Math.abs(room.elo - userElo) <= room.deltaElo
+    const room = RoomManager.rooms.find(
+      (room) => Math.abs(room.elo - userElo) <= room.deltaElo,
     );
 
-
-    if(!room){
+    if (!room) {
       this.createRoomAndJoin(userId, userElo);
       return;
     }
@@ -72,7 +75,6 @@ class RoomManager {
     await room.createSocketRoom(userProfile1, userProfile2);
     room.initGame(userProfile1.elo, userProfile2.elo);
     RoomManager.removeRoom(room);
-
   }
 
   static removeRoom(room) {
@@ -103,16 +105,13 @@ class Room {
     this.players = this.players.filter((playerId) => playerId !== userId);
   }
 
-
   initGame(eloPlayer1, eloPlayer2) {
-
-
-      GameManagerFactory.createOneVOneOnlineGameManager(
-            this.players[0],
-            this.players[1],
-            eloPlayer1,
-            eloPlayer2
-        );
+    GameManagerFactory.createOneVOneOnlineGameManager(
+      this.players[0],
+      this.players[1],
+      eloPlayer1,
+      eloPlayer2,
+    );
   }
 
   async createSocketRoom(userProfile1, userProfile2) {
@@ -122,9 +121,7 @@ class Room {
     SocketMapper.removeSocketById(this.players[0]);
     SocketMapper.removeSocketById(this.players[1]);
 
-
     //const profilePlayer1 = getProfileById()
-
   }
 }
 

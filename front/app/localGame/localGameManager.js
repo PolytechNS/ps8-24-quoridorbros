@@ -9,7 +9,7 @@ class LocalGameManager {
       this.onCellClick.bind(this),
       this.onWallClick.bind(this),
       gameState,
-      "gameBoard1"
+      "gameBoard1",
     );
   }
   initBoardPlayer2(gameState) {
@@ -17,7 +17,7 @@ class LocalGameManager {
       this.onCellClick.bind(this),
       this.onWallClick.bind(this),
       gameState,
-      "gameBoard2"
+      "gameBoard2",
     );
     this.setBoardsVisibility();
   }
@@ -35,8 +35,8 @@ class LocalGameManager {
   playerWon(playerNumber) {
     this.isGameFinished = true;
     const gameResults = {
-      type: "local"
-    }
+      type: "local",
+    };
     let gameResultsString = JSON.stringify(gameResults);
     localStorage.setItem("gameResultsString", gameResultsString);
     window.location.href = "../gameFinished/gameFinished.html";

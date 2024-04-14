@@ -4,8 +4,7 @@ const { SocketMapper } = require("../../socket/socketMapper.js");
 const { SocketSender } = require("../../socket/socketSender.js");
 
 const { saveElo } = require("../../mongoDB/mongoManager");
-const {GameManagerMapper} = require("./gameManagerMapper");
-
+const { GameManagerMapper } = require("./gameManagerMapper");
 
 class OneVOneOnlineGameManager {
   constructor(idClient1, idClient2, eloClient1, eloClient2) {
@@ -13,9 +12,6 @@ class OneVOneOnlineGameManager {
     this.idClient2 = idClient2;
     this.eloClient1 = eloClient1;
     this.eloClient2 = eloClient2;
-
-
-
 
     this.isGameFinished = false;
     this.game = new Game(this);
@@ -39,13 +35,13 @@ class OneVOneOnlineGameManager {
     SocketSender.sendMessage(this.idClient2, "updatedBoard", gameState);
   }
 
-  sendMessagePlayer1(message){
-    const messageObject = {sender: "player2", content: message};
+  sendMessagePlayer1(message) {
+    const messageObject = { sender: "player2", content: message };
     SocketSender.sendMessage(this.idClient1, "newMessage", messageObject);
   }
 
-  sendMessagePlayer2(message){
-    const messageObject = {sender: "player1", content: message};
+  sendMessagePlayer2(message) {
+    const messageObject = { sender: "player1", content: message };
     SocketSender.sendMessage(this.idClient2, "newMessage", messageObject);
   }
 
@@ -54,33 +50,35 @@ class OneVOneOnlineGameManager {
     GameManagerMapper.removeOnlineGameManagerByUserId(this.idClient2);
 
     const deltaClient1 = this.calculateRatingChange(
-        this.eloClient1,
-        this.eloClient2,
-        (playerNumber === 1) ? 1 : 0,
-        32);
+      this.eloClient1,
+      this.eloClient2,
+      playerNumber === 1 ? 1 : 0,
+      32,
+    );
 
     const deltaClient2 = this.calculateRatingChange(
-        this.eloClient2,
-        this.eloClient1,
-        (playerNumber === 2) ? 1 : 0,
-        32);
+      this.eloClient2,
+      this.eloClient1,
+      playerNumber === 2 ? 1 : 0,
+      32,
+    );
 
     saveElo(this.idClient1, this.eloClient1 + deltaClient1);
     saveElo(this.idClient2, this.eloClient2 + deltaClient2);
 
     const winningMessageClient1 = {
       type: "online",
-      result:(playerNumber === 1) ? true : false,
+      result: playerNumber === 1 ? true : false,
       elo: this.eloClient1 + deltaClient1,
-      deltaElo: deltaClient1
-    }
+      deltaElo: deltaClient1,
+    };
 
     const winningMessageClient2 = {
       type: "online",
-      result:(playerNumber === 2) ? true : false,
+      result: playerNumber === 2 ? true : false,
       elo: this.eloClient2 + deltaClient2,
-      deltaElo: deltaClient2
-    }
+      deltaElo: deltaClient2,
+    };
 
     this.isGameFinished = true;
     SocketSender.sendMessage(this.idClient1, "winner", winningMessageClient1);
@@ -106,18 +104,19 @@ class OneVOneOnlineGameManager {
   }
 
   concede(playerNumber) {
-    const otherPlayer = (playerNumber == 1)? 2 : 1;
+    const otherPlayer = playerNumber == 1 ? 2 : 1;
     this.playerWon(otherPlayer);
   }
-  
-
 
   calculateWinProbability(playerRating, opponentRating) {
     return 1 / (1 + Math.pow(10, (opponentRating - playerRating) / 400));
   }
 
   calculateRatingChange(playerRating, opponentRating, gameResult, kFactor) {
-    const expectedScore = this.calculateWinProbability(playerRating, opponentRating);
+    const expectedScore = this.calculateWinProbability(
+      playerRating,
+      opponentRating,
+    );
     return parseInt(kFactor * (gameResult - expectedScore));
   }
 }

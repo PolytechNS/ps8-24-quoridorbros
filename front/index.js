@@ -13,12 +13,24 @@ window.onload = function () {
   let connectedCookieValue = getCookie("connected");
   if (connectedCookieValue !== null) {
     /* Une hérésie qui nous évite de refactor : */
-    document.getElementById("friendSocketInitAnchor").appendChild(document.createElement("script")).src = "/app/sockets/ioManager.js";
-    document.getElementById("friendSocketInitAnchor").appendChild(document.createElement("script")).src = "/app/friendlist/friendlist.js";
-    document.getElementById("friendSocketInitAnchor").appendChild(document.createElement("script")).src = "/app/sockets/matchmakingEvents.js";
-    document.getElementById("friendSocketInitAnchor").appendChild(document.createElement("script")).src = "/app/notifications/notifications.js";
+    document
+      .getElementById("friendSocketInitAnchor")
+      .appendChild(document.createElement("script")).src =
+      "/app/sockets/ioManager.js";
+    document
+      .getElementById("friendSocketInitAnchor")
+      .appendChild(document.createElement("script")).src =
+      "/app/friendlist/friendlist.js";
+    document
+      .getElementById("friendSocketInitAnchor")
+      .appendChild(document.createElement("script")).src =
+      "/app/sockets/matchmakingEvents.js";
+    document
+      .getElementById("friendSocketInitAnchor")
+      .appendChild(document.createElement("script")).src =
+      "/app/notifications/notifications.js";
     /* Désolé */
-    document.getElementById("profile-container").style.display = "block";
+    document.getElementById("profile-container").style.display = "flex";
     logoutButton.style.display = "block";
     notButton.style.display = "block";
     PEButton.style.display = "block";
@@ -39,7 +51,6 @@ window.onload = function () {
     playWithAIButton.classList.remove("mainButtonDisabledClass");
     playButton.style.display = "inline";
     backButton.style.display = "none";
-
   }
 };
 
@@ -75,44 +86,44 @@ document.getElementById("logoutButton").addEventListener("click", function () {
     .catch((error) => console.error("Error:", error));
 });
 
-
-async function getAchievements(){
+async function getAchievements() {
   try {
     let connectedCookieValue = getCookie("connected");
     if (connectedCookieValue) {
-        connectedCookieValue = JSON.parse(connectedCookieValue);
-        const sender = connectedCookieValue.user;
-        const response = await fetch(`/api/achievements?of=${sender}`);
-        if (response.status !== 200) {
-            throw new Error('Failed to fetch profile');
-        }
-        
-        const data = await response.json();
-        return data.achievements;
+      connectedCookieValue = JSON.parse(connectedCookieValue);
+      const sender = connectedCookieValue.user;
+      const response = await fetch(`/api/achievements?of=${sender}`);
+      if (response.status !== 200) {
+        throw new Error("Failed to fetch profile");
+      }
+
+      const data = await response.json();
+      return data.achievements;
     }
-} catch (error) {
+  } catch (error) {
     console.error(error);
-}
+  }
 }
 
 async function displayAchievements() {
   try {
     let achievements = await getAchievements();
-    const achievementsDiv = document.getElementById('achievements');
+    const achievementsDiv = document.getElementById("achievements");
     console.log(achievements);
 
     for (let achievementId in achievements) {
       const achievement = achievements[achievementId];
 
-      const achievementElement = document.createElement('div');
-      achievementElement.classList.add('achievement');
+      const achievementElement = document.createElement("div");
+      achievementElement.classList.add("achievement");
 
-      const imageElement = document.createElement('img');
+      const imageElement = document.createElement("img");
       imageElement.src = `./assets/images/achievements/${achievement.id}.png`;
-      imageElement.style.filter = achievement.progression < achievement.out ? 'grayscale(100%)' : 'none';
+      imageElement.style.filter =
+        achievement.progression < achievement.out ? "grayscale(100%)" : "none";
       achievementElement.appendChild(imageElement);
 
-      const descriptionElement = document.createElement('p');
+      const descriptionElement = document.createElement("p");
       descriptionElement.textContent = achievement.description;
       achievementElement.appendChild(descriptionElement);
 
@@ -123,81 +134,83 @@ async function displayAchievements() {
   }
 }
 
-
-async function getEloWorld(){
+async function getEloWorld() {
   try {
     let connectedCookieValue = getCookie("connected");
     if (connectedCookieValue) {
-        const response = await fetch(`/api/world`);
-        if (response.status !== 200) {
-            throw new Error('Failed to fetch profile');
-        }
-        
-        const profiles = await response.json();
-        return profiles.profiles;
+      const response = await fetch(`/api/world`);
+      if (response.status !== 200) {
+        throw new Error("Failed to fetch profile");
+      }
+
+      const profiles = await response.json();
+      return profiles.profiles;
     }
-} catch (error) {
+  } catch (error) {
     console.error(error);
-}
+  }
 }
 
 async function displayEloWorld() {
   try {
-      let elos = await getEloWorld();
-      if (elos) {
-          elos.sort((a, b) => {
-              if (a.elo !== b.elo) {
-                  return b.elo - a.elo;
-              } else {
-                  return a.username.localeCompare(b.username);
-              }
-          });
-          let connectedCookieValue = getCookie("connected");
-          connectedCookieValue = JSON.parse(connectedCookieValue);
-          
-          const achievementsDiv = document.getElementById('elos-world');
-          achievementsDiv.innerHTML = '';
-          console.log(elos);
-          let profilenumber=1;
+    let elos = await getEloWorld();
+    if (elos) {
+      elos.sort((a, b) => {
+        if (a.elo !== b.elo) {
+          return b.elo - a.elo;
+        } else {
+          return a.username.localeCompare(b.username);
+        }
+      });
+      let connectedCookieValue = getCookie("connected");
+      connectedCookieValue = JSON.parse(connectedCookieValue);
 
-          elos.forEach(profile => {
-            const profileElement = document.createElement('div');
+      const achievementsDiv = document.getElementById("elos-world");
+      achievementsDiv.innerHTML = "";
+      console.log(elos);
+      let profilenumber = 1;
 
-            if (connectedCookieValue && connectedCookieValue.user === profile.username){
-              profileElement.style.backgroundColor = 'green';
-            }
+      elos.forEach((profile) => {
+        const profileElement = document.createElement("div");
 
-            const num = document.createElement('div');
-            num.textContent = profilenumber;
-            profileElement.appendChild(num);
+        if (
+          connectedCookieValue &&
+          connectedCookieValue.user === profile.username
+        ) {
+          profileElement.style.backgroundColor = "green";
+        }
 
-            const profilePic = document.createElement('img');
-            profilePic.src = profile.photo;
-            profilePic.style.maxHeight = '100px';
-            profilePic.classList.add('profile-picture');
-            profileElement.appendChild(profilePic);
+        const num = document.createElement("div");
+        num.textContent = profilenumber;
+        profileElement.appendChild(num);
 
-            const usernameElement = document.createElement('div');
-            console.log(profile.username);
-            usernameElement.textContent = profile.username;
-            usernameElement.classList.add('elo-username');
-            profileElement.appendChild(usernameElement);
-            
-            const eloElement = document.createElement('div');
-            eloElement.textContent = profile.elo;
-            console.log(profile.elo);
-            eloElement.classList.add('elo');
-            profileElement.appendChild(eloElement);
+        const profilePic = document.createElement("img");
+        profilePic.src = profile.photo;
+        profilePic.style.maxHeight = "100px";
+        profilePic.classList.add("profile-picture");
+        profileElement.appendChild(profilePic);
 
-            achievementsDiv.appendChild(profileElement);
-            profilenumber++;
-        });
-          // Here you can manipulate the DOM to display elos data as needed
-      } else {
-          console.log("User not connected or data not available.");
-      }
+        const usernameElement = document.createElement("div");
+        console.log(profile.username);
+        usernameElement.textContent = profile.username;
+        usernameElement.classList.add("elo-username");
+        profileElement.appendChild(usernameElement);
+
+        const eloElement = document.createElement("div");
+        eloElement.textContent = profile.elo;
+        console.log(profile.elo);
+        eloElement.classList.add("elo");
+        profileElement.appendChild(eloElement);
+
+        achievementsDiv.appendChild(profileElement);
+        profilenumber++;
+      });
+      // Here you can manipulate the DOM to display elos data as needed
+    } else {
+      console.log("User not connected or data not available.");
+    }
   } catch (error) {
-      console.error(error);
+    console.error(error);
   }
 }
 document.getElementById("playButton").addEventListener("click", function () {
@@ -209,41 +222,46 @@ document.getElementById("playButton").addEventListener("click", function () {
   document.getElementById("loginButton").style.display = "none";
   document.getElementById("signinButton").style.display = "none";
 });
-document.getElementById("notificationsButton").addEventListener("click", function () {
-  document.getElementById("indexPopup").style.display = "flex";
-  document.getElementById("notificationsPopup").style.display = "block";
-  document.getElementById("profileEditorPopup").style.display = "none";
-  document.getElementById("eloPopup").style.display = "none";
-  document.getElementById("achievementsPopup").style.display = "none";
-});
-document.getElementById("profileEditorButton").addEventListener("click", function () {
-  document.getElementById("indexPopup").style.display = "flex";
-  document.getElementById("notificationsPopup").style.display = "none";
-  document.getElementById("profileEditorPopup").style.display = "block";
+document
+  .getElementById("notificationsButton")
+  .addEventListener("click", function () {
+    document.getElementById("indexPopup").style.display = "flex";
+    document.getElementById("notificationsPopup").style.display = "block";
+    document.getElementById("profileEditorPopup").style.display = "none";
     document.getElementById("eloPopup").style.display = "none";
     document.getElementById("achievementsPopup").style.display = "none";
-});
-document.getElementById("eloButton").addEventListener("click", function () {
+  });
+document
+  .getElementById("profileEditorButton")
+  .addEventListener("click", function () {
     document.getElementById("indexPopup").style.display = "flex";
     document.getElementById("notificationsPopup").style.display = "none";
-    document.getElementById("profileEditorPopup").style.display = "none";
-    document.getElementById("eloPopup").style.display = "block";
+    document.getElementById("profileEditorPopup").style.display = "block";
+    document.getElementById("eloPopup").style.display = "none";
     document.getElementById("achievementsPopup").style.display = "none";
-    displayEloWorld()
+  });
+document.getElementById("eloButton").addEventListener("click", function () {
+  document.getElementById("indexPopup").style.display = "flex";
+  document.getElementById("notificationsPopup").style.display = "none";
+  document.getElementById("profileEditorPopup").style.display = "none";
+  document.getElementById("eloPopup").style.display = "block";
+  document.getElementById("achievementsPopup").style.display = "none";
+  displayEloWorld();
 });
-document.getElementById("achievementsButton").addEventListener("click", function () {
+document
+  .getElementById("achievementsButton")
+  .addEventListener("click", function () {
     document.getElementById("indexPopup").style.display = "flex";
     document.getElementById("notificationsPopup").style.display = "none";
     document.getElementById("profileEditorPopup").style.display = "none";
     document.getElementById("eloPopup").style.display = "none";
     document.getElementById("achievementsPopup").style.display = "block";
     displayAchievements();
-});
+  });
 document.getElementById("popupClose").addEventListener("click", function () {
   document.getElementById("indexPopup").style.display = "none";
-    document.getElementById("notificationsPopup").style.display = "none";
-    document.getElementById("profileEditorPopup").style.display = "none";
-    document.getElementById("eloPopup").style.display = "none";
-    document.getElementById("achievementsPopup").style.display = "none";
+  document.getElementById("notificationsPopup").style.display = "none";
+  document.getElementById("profileEditorPopup").style.display = "none";
+  document.getElementById("eloPopup").style.display = "none";
+  document.getElementById("achievementsPopup").style.display = "none";
 });
-

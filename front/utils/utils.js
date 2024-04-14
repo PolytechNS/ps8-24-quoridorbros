@@ -81,7 +81,7 @@ class BoardUtils {
     possibleMoves.push({ x: player.x + 2, y: player.y }); // droite
 
     possibleMoves = possibleMoves.filter(
-      (move) => this.isInBoardLimits(move.x) && this.isInBoardLimits(move.y)
+      (move) => this.isInBoardLimits(move.x) && this.isInBoardLimits(move.y),
     );
 
     possibleMoves = possibleMoves.filter((move) => {
@@ -98,14 +98,14 @@ class BoardUtils {
           move.y,
           player.x,
           player.y,
-          board
-        )
+          board,
+        ),
     );
 
     //si l'autre joueur est visible
     if (otherPlayer.x !== null) {
       possibleMoves = possibleMoves.concat(
-        this.getJumpableCells(player, otherPlayer, board)
+        this.getJumpableCells(player, otherPlayer, board),
       );
     }
     return possibleMoves;
@@ -127,7 +127,7 @@ class BoardUtils {
         player.y,
         otherPlayer.x,
         otherPlayer.y,
-        board
+        board,
       )
     ) {
       return jumpableCells;
@@ -173,7 +173,7 @@ class BoardUtils {
       !this.isDemiWallAlreadyPlaced(
         potentialWallDevantX,
         potentialWallDevantY,
-        board
+        board,
       )
     ) {
       jumpableCells.push({ x: cellDevantX, y: cellDevantY });
@@ -219,7 +219,7 @@ class BoardUtils {
     }
 
     const finalWallMoves = wallMoves.filter(([x, y]) =>
-      this.isValidWallMove(x, y, gameState)
+      this.isValidWallMove(x, y, gameState),
     );
 
     return finalWallMoves;

@@ -102,7 +102,7 @@ class GameBoard {
     this.addVisibilityArroundJunction(
       wallJunction.x,
       wallJunction.y,
-      valueToAdd
+      valueToAdd,
     );
   }
 
@@ -190,7 +190,7 @@ class Game {
     const currentTurn = this.turn;
     setTimeout(() => {
       this.turnExpired(currentTurn);
-    }, 30000);
+    }, 60000);
   }
 
   onCellClick(x, y) {
@@ -250,7 +250,7 @@ class Game {
         player.y,
         x,
         y,
-        this.gameBoard.board
+        this.gameBoard.board,
       )
     ) {
       return false;
@@ -265,7 +265,7 @@ class Game {
     this.currentPlayer.y = y;
     this.gameBoard.placePlayer(this.currentPlayer); //placer à la nouvelle position
     console.log(
-      `Joueur ${this.currentPlayer.playerNumber} déplace à ${x}, ${y}`
+      `Joueur ${this.currentPlayer.playerNumber} déplace à ${x}, ${y}`,
     );
   }
 
@@ -292,7 +292,7 @@ class Game {
       this.reachableCells = BoardUtils.getReachableCells(
         gameStateCurrentPlayer.player,
         gameStateCurrentPlayer.otherPlayer,
-        gameStateCurrentPlayer.board
+        gameStateCurrentPlayer.board,
       );
 
       //Si le joueur ne peut rien faire -> passer son tour
@@ -304,7 +304,7 @@ class Game {
         const currentTurn = this.turn;
         setTimeout(() => {
           this.turnExpired(currentTurn);
-        }, 30000);
+        }, 60000);
       }
     } else {
       this.gameManager.updateGameStatePlayer1(gameStatePlayer1);
@@ -312,7 +312,7 @@ class Game {
       const currentTurn = this.turn;
       setTimeout(() => {
         this.turnExpired(currentTurn);
-      }, 30000);
+      }, 60000);
     }
   }
 
@@ -333,7 +333,7 @@ class Game {
     this.currentPlayer.nbWalls--;
 
     console.log(
-      `Joueur ${this.currentPlayer.playerNumber} pose un mur i ${x}, ${y}`
+      `Joueur ${this.currentPlayer.playerNumber} pose un mur i ${x}, ${y}`,
     );
     this.nextTurn();
 
@@ -402,7 +402,7 @@ class Game {
             player.x,
             player.y,
             otherPlayer.x,
-            otherPlayer.y
+            otherPlayer.y,
           ))
       ) {
         resultTab[otherPlayer.y][otherPlayer.x] = otherPlayer.playerNumber;
@@ -420,7 +420,7 @@ class Game {
     const jumpableCells = BoardUtils.getJumpableCells(
       player,
       otherPlayer,
-      this.gameBoard.board
+      this.gameBoard.board,
     );
 
     return jumpableCells.some((cell) => cell.x === x && cell.y === y);
@@ -458,9 +458,7 @@ class Game {
   loadSavedGame() {}
 
   turnExpired(turn) {
-
-
-    if(this.turn === turn) {
+    if (this.turn === turn) {
       const otherPlayer = this.getOtherPlayer(this.currentPlayer);
       this.gameManager.playerWon(otherPlayer.playerNumber);
     }

@@ -12,7 +12,7 @@ function configureAiGameEvents(socket, aiGameManager) {
 function configureOneVOneOnlineGameEvents(
   socket,
   oneVOneOnlineGameManager,
-  playerNumber
+  playerNumber,
 ) {
   if (playerNumber === 1) {
     socket.on("newMove", (move) => {
@@ -20,24 +20,23 @@ function configureOneVOneOnlineGameEvents(
     });
 
     socket.on("newMessage", (message) => {
-      oneVOneOnlineGameManager.sendMessagePlayer2(message)
+      oneVOneOnlineGameManager.sendMessagePlayer2(message);
     });
 
     socket.on("concede", () => {
-      oneVOneOnlineGameManager.concede(1)
+      oneVOneOnlineGameManager.concede(1);
     });
-
   } else if (playerNumber === 2) {
     socket.on("newMove", (move) => {
       oneVOneOnlineGameManager.movePlayer2(move);
     });
 
     socket.on("newMessage", (message) => {
-      oneVOneOnlineGameManager.sendMessagePlayer1(message)
+      oneVOneOnlineGameManager.sendMessagePlayer1(message);
     });
 
     socket.on("concede", () => {
-      oneVOneOnlineGameManager.concede(2)
+      oneVOneOnlineGameManager.concede(2);
     });
   }
 }

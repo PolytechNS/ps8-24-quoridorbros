@@ -7,7 +7,7 @@ paramètres :
 
 const YOUR_TURN_TEXT = "YOUR TURN";
 const NOT_YOUR_TURN_TEXT = "YOUR OPPONENT TURN";
-const TOUR_DURATION = 30;
+const TOUR_DURATION = 60;
 
 class ClientBoard {
   constructor(onCellClick, onWallClick, gameState, elementId = "gameBoard") {
@@ -54,7 +54,7 @@ class ClientBoard {
             div.addEventListener("click", () => this.onWallClick(x, y));
             div.addEventListener("mouseenter", () => this.onWallHover(x, y));
             div.addEventListener("mouseleave", () =>
-              this.onWallRemoveHover(x, y)
+              this.onWallRemoveHover(x, y),
             );
 
             if (y % 2 === 0) {
@@ -182,4 +182,3 @@ class Timer {
     }
   }
 }
-

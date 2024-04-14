@@ -108,11 +108,11 @@ function findPlayer(gameState, lastKnownPosition, movesSinceLastKnownPosition) {
         possiblecells = possiblecells.filter(
           (position) =>
             BoardUtils.isInBoardLimits(position.x) &&
-            BoardUtils.isInBoardLimits(position.y)
+            BoardUtils.isInBoardLimits(position.y),
         );
 
         let selectedCells = possiblecells.filter((position) =>
-          visibilityCorrespond(visibilityBoard, gameState, position)
+          visibilityCorrespond(visibilityBoard, gameState, position),
         );
 
         if (selectedCells.length === 1) {
@@ -126,8 +126,8 @@ function findPlayer(gameState, lastKnownPosition, movesSinceLastKnownPosition) {
           distanceCorrespond(
             position,
             lastKnownPosition,
-            movesSinceLastKnownPosition
-          )
+            movesSinceLastKnownPosition,
+          ),
         );
 
         if (selectedCells.length !== 0) {
@@ -169,7 +169,7 @@ function visibilityCorrespond(visibilityBoard, gameState, position) {
 function distanceCorrespond(
   position,
   lastKnownPosition,
-  movesSinceLastKnownPosition
+  movesSinceLastKnownPosition,
 ) {
   const distanceParCourue =
     (Math.abs(position.x - lastKnownPosition.x) +

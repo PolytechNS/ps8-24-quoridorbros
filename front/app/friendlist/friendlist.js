@@ -1,4 +1,4 @@
-const friendlistcontainer = document.getElementById('friend-container');
+const friendlistcontainer = document.getElementById("friend-container");
 
 async function fetchFriendList() {
   try {
@@ -8,7 +8,7 @@ async function fetchFriendList() {
       const sender = connectedCookieValue.user;
       const response = await fetch(`/api/friends?of=${sender}`);
       if (response.status !== 200) {
-        throw new Error('Failed to fetch friends');
+        throw new Error("Failed to fetch friends");
       }
       const friends = await response.json();
       displayFriends(friends.friendList);
@@ -19,30 +19,30 @@ async function fetchFriendList() {
 }
 
 function displayFriends(friends) {
-  const friendListContainer = document.getElementById('friend-list');
-  friendListContainer.innerHTML = '';
+  const friendListContainer = document.getElementById("friend-list");
+  friendListContainer.innerHTML = "";
 
-  friends.forEach(friend => {
-    const friendElement = document.createElement('div');
-    friendElement.classList.add('friend');
+  friends.forEach((friend) => {
+    const friendElement = document.createElement("div");
+    friendElement.classList.add("friend");
     friendElement.id = "friendID-" + friend.username;
 
-    const profilePic = document.createElement('img');
+    const profilePic = document.createElement("img");
     profilePic.src = friend.photo;
-    profilePic.style.maxHeight = '80px';
-    profilePic.classList.add('profile-picture');
+    profilePic.style.maxHeight = "80px";
+    profilePic.classList.add("profile-picture");
     friendElement.appendChild(profilePic);
 
-    const usernameElement = document.createElement('div');
+    const usernameElement = document.createElement("div");
     usernameElement.textContent = friend.username;
-    usernameElement.classList.add('username');
+    usernameElement.classList.add("username");
     friendElement.appendChild(usernameElement);
-    const challengeButton = document.createElement('button');
-    challengeButton.textContent = 'Challenge';
-    challengeButton.classList.add('challenge-button');
-    challengeButton.setAttribute('data-username', friend.username);
-    challengeButton.addEventListener('click', () => {
-        challenge(friend.username);
+    const challengeButton = document.createElement("button");
+    challengeButton.textContent = "Challenge";
+    challengeButton.classList.add("challenge-button");
+    challengeButton.setAttribute("data-username", friend.username);
+    challengeButton.addEventListener("click", () => {
+      challenge(friend.username);
     });
     friendElement.appendChild(challengeButton);
     friendListContainer.appendChild(friendElement);
@@ -59,12 +59,11 @@ function openform() {
   }
 }
 
-
 async function loadFriends() {
-    const response = await fetch('./app/friendlist/friendlist.html');
-    const html = await response.text();
-    friendlistcontainer.innerHTML = html;
-    await fetchFriendList();
+  const response = await fetch("./app/friendlist/friendlist.html");
+  const html = await response.text();
+  friendlistcontainer.innerHTML = html;
+  await fetchFriendList();
 }
 
 async function sendFriendResquet(event) {
@@ -72,7 +71,7 @@ async function sendFriendResquet(event) {
   let connectedCookieValue = getCookie("connected");
   console.log("friendRequestForm");
   if (connectedCookieValue) {
-      try {
+    try {
       connectedCookieValue = JSON.parse(connectedCookieValue);
 
       const sender = connectedCookieValue.user;
@@ -81,38 +80,37 @@ async function sendFriendResquet(event) {
       const requestURL = `/api/friend?sender=${encodeURIComponent(sender)}&receiver=${encodeURIComponent(receiver)}`;
 
       const response = await fetch(requestURL, {
-          method: "POST",
-          headers: {
-          "Content-Type": "application/json"
-          }
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
       const responseData = await response.text();
       if (response.status === 200) {
-          alert("Friend request sent successfully!");
+        alert("Friend request sent successfully!");
       } else if (response.status === 400) {
-          const errorResponse = JSON.parse(responseData);
-          alert(`Bad request: ${errorResponse.error}`);
+        const errorResponse = JSON.parse(responseData);
+        alert(`Bad request: ${errorResponse.error}`);
       } else if (response.status === 500) {
-          alert("Internal Server Error. Please try again later.");
+        alert("Internal Server Error. Please try again later.");
       } else {
-          alert("Unexpected error. Please try again later.");
+        alert("Unexpected error. Please try again later.");
       }
-          document.getElementById("friendRequestForm").reset();
-          openform();
-
-      } catch (error) {
-      console.error('Error:', error);
+      document.getElementById("friendRequestForm").reset();
+      openform();
+    } catch (error) {
+      console.error("Error:", error);
       alert("An error occurred while processing your request.");
-      }
+    }
   }
 }
 
 function challenge(username) {
-  socket.emit('challengeFriend', username);
+  socket.emit("challengeFriend", username);
 }
 
 function checkFriendConnectionStatus(username) {
-  socket.emit('checkFriendConnectionStatus', username);
+  socket.emit("checkFriendConnectionStatus", username);
 }
 
 loadFriends();
