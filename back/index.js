@@ -7,7 +7,7 @@ const fileQuery = require("./queryManagers/front.js");
 const apiQuery = require("./queryManagers/api.js");
 const { connect } = require("./mongoDB/mongoManager.js");
 
-connect().catch(console.error);
+await connect().catch(console.error);
 /* The http module contains a createServer function, which takes one argument, which is the function that
  ** will be called whenever a new request arrives to the server.
  */
@@ -42,4 +42,3 @@ const { RoomManager } = require("./logic/matchMaking/roomManager");
 const io = new Server(server);
 
 let socketManager = new SocketManager(io);
-RoomManager.initialize(io);

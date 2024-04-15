@@ -7,6 +7,7 @@ class SocketSender {
   static sendMessage(userId, message, data) {
     console.log("voici le user id", userId);
     console.log("voici le message envoyé", message);
+    console.log("");
 
     if (!this.messageIdCounter[userId]) {
       this.messageIdCounter[userId] = 1;
