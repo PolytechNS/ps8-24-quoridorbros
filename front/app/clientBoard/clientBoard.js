@@ -14,12 +14,12 @@ class ClientBoard {
     this.onCellClick = onCellClick;
     this.onWallClick = onWallClick;
     this.element = document.getElementById(elementId);
-    this.textYouTurn = document.getElementById("text-your-turn");
     this.board = gameState.board;
     this.divBoard = [];
     this.turnOf = gameState.turnOf;
     this.playerNumber = gameState.playerNumber;
-    this.timer = new Timer();
+    this.timerPlayer = new Timer("timer-player");
+    this.timerOpponent = new Timer("timer-opponent");
     this.initBoard();
   }
 
@@ -68,24 +68,24 @@ class ClientBoard {
       }
     }
     if (this.turnOf !== this.playerNumber) {
-      this.textYouTurn.textContent = NOT_YOUR_TURN_TEXT;
+      this.timerOpponent.start();
       this.element.style.pointerEvents = "none";
     } else {
-      this.textYouTurn.textContent = YOUR_TURN_TEXT;
+      this.timerPlayer.start();
     }
   }
 
   updateBoard(gameState) {
     //Empêche le joueur de cliquer si ce n'est pas son tour
     this.turnOf = gameState.turnOf;
-    this.timer.reset();
-    this.timer.start();
+    this.timerPlayer.reset();
+    this.timerOpponent.reset();
+
     if (this.turnOf !== this.playerNumber) {
-      this.textYouTurn.textContent = NOT_YOUR_TURN_TEXT;
+      this.timerOpponent.start();
       this.element.style.pointerEvents = "none";
     } else {
-      this.textYouTurn.textContent = YOUR_TURN_TEXT;
-
+      this.timerPlayer.start();
       this.element.style.pointerEvents = "auto";
     }
 
@@ -152,13 +152,14 @@ class ClientBoard {
 }
 
 class Timer {
-  constructor() {
+  constructor(timerId) {
     this.timerInterval = null;
-    this.texte = document.getElementById("texte-chrono");
+    this.texte = document.getElementById(timerId);
   }
 
   start() {
     this.seconds = TOUR_DURATION;
+    this.texte.style.display = "bloc";
     this.timerInterval = setInterval(() => {
       this.update();
     }, 1000);
@@ -169,6 +170,7 @@ class Timer {
   }
 
   reset() {
+    this.texte.style.display = "none";
     clearInterval(this.timerInterval);
     this.seconds = 0;
   }

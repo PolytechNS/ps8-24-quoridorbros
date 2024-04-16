@@ -1,0 +1,77 @@
+*, *:before, *:after {
+    box-sizing: border-box;
+    text-align: center;
+}
+
+
+
+@font-face {
+    font-family: 'Spritendo';
+    src: url('./assets/fonts/spritendo.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Mario64';
+    src: url('./assets/fonts/mario.ttf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+html, body, div, span, h1, h2, h3, h4, h5, h6, p, a, img, ul, ol, li, form, input, button {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font: inherit;
+    vertical-align: baseline;
+    font-family: 'Spritendo', sans-serif;
+}
+
+.btn {
+    margin: 1rem 0;
+    padding: 2rem 3rem;
+    font-size: 1.8rem;
+    border-radius: 20%;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: pointer;
+}
+
+.btn--primary {
+    color: white;
+    border: 1rem solid #ff8327;
+    background-color: #ffb347;
+    touch-action: manipulation;
+}
+
+.btn--secondary {
+    color: white;
+    background-color: black;
+    touch-action: manipulation;
+}
+
+
+div.background {
+    height: 100vh;
+    width: 100vw;
+    background-image: url("assets/images/marco.gif"), url("./assets/images/ground.png"), url("./assets/images/bushes.png"), url("./assets/images/back.png");
+    background-color: #F8E0B0;
+    background-repeat: no-repeat, repeat-x, repeat-x, repeat-x;
+    background-position: left 30% bottom 22px, left 0px bottom 0px, left 0px bottom 22px, left 0px bottom 0px;
+    animation: back 15s infinite linear;
+    position: fixed;
+    z-index: -1;
+}
+
+@keyframes back {
+    0% {
+        background-position: left 30% bottom 22px, left 0px bottom 0px, left 0px bottom 22px, left 0px bottom 0px;
+    }
+    50% {
+        background-position: left 50% bottom 22px, left -816px bottom 0px, left -508px bottom 22px, left -256px bottom 0px;
+    }
+    100% {
+        background-position: left 30% bottom 22px, left -1632px bottom 0px, left -1016px bottom 22px, left -512px bottom 0px;
+    }
+}

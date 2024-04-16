@@ -6,39 +6,39 @@
 }
 
 .cell {
-    width: 50px;
-    height: 50px;
-    background: white;
-    background-image: url("../../assets/images/grass.png");
-    background-size: 50px;
-    border: 2px solid #333;
+    width: 7.5vh;
+    height: 7.5vh;
+    background-image: url("../../assets/images/bloc.png");
+    background-size: 7.5vh;
 }
 
 .wall {
-    width: 10px;
-    height: 10px;
+    width: 1.5vh;
+    height: 1.5vh;
 }
 
 .wall.horizontal {
-    width: 50px;
+    width: 7.5vh;
 }
 
 .wall.vertical {
-    height: 50px;
+    height: 7.5vh;
 }
 
 .wall.horizontal.placed {
-    width: 50px;
+    width: 7.5vh;
     background-size: cover;
     background-position: center;
-    background-image: url("../../assets/images/mur-horizontal.png");
+    background: black;
+    /*background-image: url("../../assets/images/pipe-horizontal.png");*/
 }
 
 .wall.vertical.placed {
-    height: 50px;
+    height: 7.5vh;
     background-size: cover;
     background-position: center;
-    background-image: url("../../assets/images/mur-vertical.png");
+    background: black;
+    /*background-image: url("../../assets/images/pipe-vertical.png");*/
 }
 
 .surbrillance {
@@ -70,9 +70,10 @@
 .gameBoard {
     display: grid;
     grid-template-columns: repeat(17, auto);
-    gap: 2px;
+    gap: 0.3vh;
     justify-content: center;
-    background-image: url("../../assets/images/bloc.png");
-    background-repeat: repeat;
-
+    background-image: url("../../assets/images/water.png");
+    background-size: cover;
+    padding: 1vh;
+    border-radius: 2%;
 }
