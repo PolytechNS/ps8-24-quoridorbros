@@ -1,43 +1,38 @@
 const modalContainer = document.getElementById("modal-container");
 
-document.getElementById("openModalBtn").addEventListener("click", function () {
-  document.getElementById("myModal").style.display = "block";
-});
-
 document
   .getElementsByClassName("close")[0]
   .addEventListener("click", function () {
-    document.getElementById("myModal").style.display = "none";
+    modalContainer.innerHTML = "";
   });
 
 window.addEventListener("click", function (event) {
   if (event.target == document.getElementById("myModal")) {
-    document.getElementById("myModal").style.display = "none";
+    modalContainer.innerHTML = "";
   }
 });
 
-async function getAchievements() {
+async function getAchievements(username) {
   try {
-    let connectedCookieValue = getCookie("connected");
-    if (connectedCookieValue) {
-      connectedCookieValue = JSON.parse(connectedCookieValue);
-      const sender = connectedCookieValue.user;
-      const response = await fetch(`/api/achievements?of=${sender}`);
+    console.log("getAchievements", username);
+
+      const response = await fetch(`/api/achievements?of=${username}`);
       if (response.status !== 200) {
         throw new Error("Failed to fetch profile");
       }
-
       const data = await response.json();
       return data.achievements;
-    }
+
   } catch (error) {
     console.error(error);
   }
 }
 
-async function displayAchievements() {
+async function displayAchievements(username) {
   try {
-    let achievements = await getAchievements();
+    console.log("displayAchievements", username);
+
+    let achievements = await getAchievements(username);
     const achievementsContainer = document.getElementById(
       "achievements-container",
     );
@@ -66,13 +61,11 @@ async function displayAchievements() {
   }
 }
 
-async function displayProfile() {
+async function displayProfileLine(username) {
   try {
-    let connectedCookieValue = getCookie("connected");
-    if (connectedCookieValue) {
-      connectedCookieValue = JSON.parse(connectedCookieValue);
-      const sender = connectedCookieValue.user;
-      const response = await fetch(`/api/profile?of=${sender}`);
+    console.log("displayProfileLine", username);
+
+      const response = await fetch(`/api/profile?of=${username}`);
       if (response.status !== 200) {
         throw new Error("Failed to fetch profile");
       }
@@ -89,18 +82,18 @@ async function displayProfile() {
 
       const profileEloElement = document.getElementById("elo-text");
       profileEloElement.textContent = `${profileData.elo} 🏆`;
-    }
+
   } catch (error) {
     console.error(error);
   }
 }
 
-async function loadModal() {
+async function loadModal(username) {
+  console.log("loadModal", username);
   const response = await fetch("../../app/modal/modal.html");
   const html = await response.text();
   modalContainer.innerHTML = html;
-  displayAchievements();
-  displayProfile();
+  document.getElementById("myModal").style.display = "block";
+  displayAchievements(username);
+  displayProfileLine(username);
 }
-
-loadModal();

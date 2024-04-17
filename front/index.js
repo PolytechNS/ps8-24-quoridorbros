@@ -194,3 +194,7 @@ document.getElementById("eloButton").addEventListener("click", function () {
   document.getElementById("eloPopup").style.display = "block";
   displayEloWorld();
 });
+
+document.getElementById("openModalBtn").addEventListener("click", function () {
+  loadModal("e");
+});
