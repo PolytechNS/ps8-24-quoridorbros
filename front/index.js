@@ -1,4 +1,5 @@
 let playButton = document.getElementById("playButton");
+let profileButton = document.getElementById("profile-button");
 
 let playWithAIButton = document.getElementById("playAIButton");
 let playLocalButton = document.getElementById("playLocalButton");
@@ -30,6 +31,7 @@ window.onload = function () {
 
     /* Désolé */
     leaderBoardButton.style.display = "block";
+    profileButton.style.display = "inline-block";
 
     loginButton.style.display = "none";
     signinButton.style.display = "none";
@@ -59,6 +61,7 @@ function logout() {
         playOnlineButton.style.display = "none";
         playOnlineButton.disabled = true;
         playWithAIButton.disabled = true;
+        profileButton.style.display = "none";
         leaderBoardButton.style.display = "none";
 
         playButton.style.display = "inline";
@@ -175,5 +178,11 @@ leaderBoardButton.addEventListener("click", function () {
 document
   .getElementById("profile-button")
   .addEventListener("click", function () {
-    loadModal("e");
+    let connectedCookieValue = getCookie("connected");
+    if (connectedCookieValue) {
+      connectedCookieValue = JSON.parse(connectedCookieValue);
+      loadModal(connectedCookieValue.user);
+    } else {
+      throw new Error("Failed to fetch profile");
+    }
   });
