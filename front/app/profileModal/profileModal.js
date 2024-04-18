@@ -87,7 +87,7 @@ async function displayProfileLine(username) {
 }
 
 async function loadModal(username) {
-  const response = await fetch("../../app/modal/modal.html");
+  const response = await fetch("../../app/profileModal/profileModal.html");
   const html = await response.text();
   modalContainer.innerHTML = html;
   document.getElementById("myModal").style.display = "block";
