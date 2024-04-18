@@ -1,17 +1,19 @@
+let playButton = document.getElementById("playButton");
+
 let playWithAIButton = document.getElementById("playAIButton");
 let playLocalButton = document.getElementById("playLocalButton");
 let playOnlineButton = document.getElementById("playOnlineButton");
-let logoutButton = document.getElementById("logoutButton");
-let playButton = document.getElementById("playButton");
-let backButton = document.getElementById("backButton");
-let notButton = document.getElementById("notificationsButton");
-let PEButton = document.getElementById("profileEditorButton");
-let eloButton = document.getElementById("eloButton");
+
+let loginButton = document.getElementById("loginButton");
+let signinButton = document.getElementById("signinButton");
+
+let leaderBoardButton = document.getElementById("leaderboard-button");
 
 window.onload = function () {
   let connectedCookieValue = getCookie("connected");
   if (connectedCookieValue !== null) {
     /* Une hérésie qui nous évite de refactor : */
+    /*
     document
       .getElementById("friendSocketInitAnchor")
       .appendChild(document.createElement("script")).src =
@@ -24,22 +26,17 @@ window.onload = function () {
       .getElementById("friendSocketInitAnchor")
       .appendChild(document.createElement("script")).src =
       "/app/sockets/matchmakingEvents.js";
-    document
-      .getElementById("friendSocketInitAnchor")
-      .appendChild(document.createElement("script")).src =
-      "/app/notifications/notifications.js";
+      */
+
     /* Désolé */
-    document.getElementById("profile-container").style.display = "flex";
-    logoutButton.style.display = "block";
-    notButton.style.display = "block";
-    PEButton.style.display = "block";
-    eloButton.style.display = "block";
-    document.getElementById("loginButton").style.display = "none";
-    document.getElementById("signinButton").style.display = "none";
-    document.getElementById("friend-container").style.display = "inline";
+    leaderBoardButton.style.display = "block";
+
+    loginButton.style.display = "none";
+    signinButton.style.display = "none";
     playWithAIButton.style.display = "none";
     playLocalButton.style.display = "none";
     playOnlineButton.style.display = "none";
+
     playOnlineButton.disabled = false;
     playWithAIButton.disabled = false;
     document.getElementById("loginNote").style.display = "none";
@@ -48,40 +45,35 @@ window.onload = function () {
     playWithAIButton.classList.add("mainButtonClass");
     playWithAIButton.classList.remove("mainButtonDisabledClass");
     playButton.style.display = "inline";
-    backButton.style.display = "none";
   }
 };
 
-document.getElementById("logoutButton").addEventListener("click", function () {
+function logout() {
   fetch("/api/logout", {
     method: "POST",
   })
     .then((response) => {
       if (response.ok) {
-        document.getElementById("profile-container").style.display = "none";
-        logoutButton.style.display = "none";
-        notButton.style.display = "none";
-        PEButton.style.display = "none";
-        eloButton.style.display = "none";
-        document.getElementById("loginButton").style.display = "inline";
-        document.getElementById("signinButton").style.display = "inline";
-        document.getElementById("friend-container").style.display = "none";
         playWithAIButton.style.display = "none";
         playLocalButton.style.display = "none";
         playOnlineButton.style.display = "none";
         playOnlineButton.disabled = true;
         playWithAIButton.disabled = true;
+        leaderBoardButton.style.display = "none";
+
+        playButton.style.display = "inline";
+        loginButton.style.display = "inline";
+        signinButton.style.display = "inline";
+
         document.getElementById("loginNote").style.display = "inline";
         playOnlineButton.classList.remove("mainButtonClass");
         playOnlineButton.classList.add("mainButtonDisabledClass");
         playWithAIButton.classList.remove("mainButtonClass");
         playWithAIButton.classList.add("mainButtonDisabledClass");
-        playButton.style.display = "inline";
-        backButton.style.display = "none";
       }
     })
     .catch((error) => console.error("Error:", error));
-});
+}
 
 async function getEloWorld() {
   try {
@@ -162,39 +154,26 @@ async function displayEloWorld() {
     console.error(error);
   }
 }
-document.getElementById("playButton").addEventListener("click", function () {
+
+playButton.addEventListener("click", function () {
+  playButton.style.display = "none";
+  loginButton.style.display = "none";
+  signinButton.style.display = "none";
+
   playWithAIButton.style.display = "inline";
   playLocalButton.style.display = "inline";
   playOnlineButton.style.display = "inline";
-  playButton.style.display = "none";
-  backButton.style.display = "inline";
-  document.getElementById("loginButton").style.display = "none";
-  document.getElementById("signinButton").style.display = "none";
 });
-document
-  .getElementById("notificationsButton")
-  .addEventListener("click", function () {
-    document.getElementById("indexPopup").style.display = "flex";
-    document.getElementById("notificationsPopup").style.display = "block";
-    document.getElementById("profileEditorPopup").style.display = "none";
-    document.getElementById("eloPopup").style.display = "none";
-  });
-document
-  .getElementById("profileEditorButton")
-  .addEventListener("click", function () {
-    document.getElementById("indexPopup").style.display = "flex";
-    document.getElementById("notificationsPopup").style.display = "none";
-    document.getElementById("profileEditorPopup").style.display = "block";
-    document.getElementById("eloPopup").style.display = "none";
-  });
-document.getElementById("eloButton").addEventListener("click", function () {
+
+leaderBoardButton.addEventListener("click", function () {
   document.getElementById("indexPopup").style.display = "flex";
-  document.getElementById("notificationsPopup").style.display = "none";
   document.getElementById("profileEditorPopup").style.display = "none";
   document.getElementById("eloPopup").style.display = "block";
   displayEloWorld();
 });
 
-document.getElementById("openModalBtn").addEventListener("click", function () {
-  loadModal("e");
-});
+document
+  .getElementById("profile-button")
+  .addEventListener("click", function () {
+    loadModal("e");
+  });

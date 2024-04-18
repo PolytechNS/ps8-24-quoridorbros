@@ -1,5 +1,3 @@
-const profileContainer = document.getElementById("profile-container");
-
 async function displayProfile() {
   try {
     let connectedCookieValue = getCookie("connected");

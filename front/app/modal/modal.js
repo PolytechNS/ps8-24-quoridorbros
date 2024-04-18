@@ -14,15 +14,12 @@ window.addEventListener("click", function (event) {
 
 async function getAchievements(username) {
   try {
-    console.log("getAchievements", username);
-
-      const response = await fetch(`/api/achievements?of=${username}`);
-      if (response.status !== 200) {
-        throw new Error("Failed to fetch profile");
-      }
-      const data = await response.json();
-      return data.achievements;
-
+    const response = await fetch(`/api/achievements?of=${username}`);
+    if (response.status !== 200) {
+      throw new Error("Failed to fetch profile");
+    }
+    const data = await response.json();
+    return data.achievements;
   } catch (error) {
     console.error(error);
   }
@@ -30,13 +27,10 @@ async function getAchievements(username) {
 
 async function displayAchievements(username) {
   try {
-    console.log("displayAchievements", username);
-
     let achievements = await getAchievements(username);
     const achievementsContainer = document.getElementById(
       "achievements-container",
     );
-    console.log(achievements);
 
     for (let achievementId in achievements) {
       const achievement = achievements[achievementId];
@@ -63,33 +57,36 @@ async function displayAchievements(username) {
 
 async function displayProfileLine(username) {
   try {
-    console.log("displayProfileLine", username);
+    const response = await fetch(`/api/profile?of=${username}`);
+    if (response.status !== 200) {
+      throw new Error("Failed to fetch profile");
+    }
 
-      const response = await fetch(`/api/profile?of=${username}`);
-      if (response.status !== 200) {
-        throw new Error("Failed to fetch profile");
-      }
+    const data = await response.json();
+    const profileData = data.profile;
 
-      const data = await response.json();
-      const profileData = data.profile;
+    const profilePhotoElement = document.getElementById("profile-photo");
+    profilePhotoElement.src = profileData.photo;
+    profilePhotoElement.alt = "Profile Photo";
 
-      const profilePhotoElement = document.getElementById("profile-photo");
-      profilePhotoElement.src = profileData.photo;
-      profilePhotoElement.alt = "Profile Photo";
+    const profileUsernameElement = document.getElementById("username");
+    profileUsernameElement.textContent = profileData.username;
 
-      const profileUsernameElement = document.getElementById("username");
-      profileUsernameElement.textContent = profileData.username;
+    const profileEloElement = document.getElementById("elo-text");
+    profileEloElement.textContent = `${profileData.elo} 🏆`;
 
-      const profileEloElement = document.getElementById("elo-text");
-      profileEloElement.textContent = `${profileData.elo} 🏆`;
-
+    document
+      .getElementById("logout-button")
+      .addEventListener("click", function () {
+        modalContainer.innerHTML = "";
+        logout();
+      });
   } catch (error) {
     console.error(error);
   }
 }
 
 async function loadModal(username) {
-  console.log("loadModal", username);
   const response = await fetch("../../app/modal/modal.html");
   const html = await response.text();
   modalContainer.innerHTML = html;

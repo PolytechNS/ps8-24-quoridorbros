@@ -39,14 +39,18 @@ html, body, div, span, h1, h2, h3, h4, h5, h6, p, a, img, ul, ol, li, form, inpu
 }
 
 .btn--primary {
+    padding: 0.5rem;
     color: white;
-    border: 1rem solid #ff8327;
+    border: 0.3rem solid #ff8327;
+    border-radius:12px;
     background-color: #ffb347;
     touch-action: manipulation;
 }
 
 .btn--secondary {
+    padding: 0.5rem;
     color: white;
+    border-radius:12px;
     background-color: black;
     touch-action: manipulation;
 }
