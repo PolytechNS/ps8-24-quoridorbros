@@ -155,11 +155,12 @@ class Timer {
   constructor(timerId) {
     this.timerInterval = null;
     this.texte = document.getElementById(timerId);
+    this.texte.style.display = "none";
   }
 
   start() {
     this.seconds = TOUR_DURATION;
-    this.texte.style.display = "bloc";
+    this.texte.style.display = "block";
     this.timerInterval = setInterval(() => {
       this.update();
     }, 1000);
@@ -180,7 +181,7 @@ class Timer {
     if (this.seconds < 0) {
       this.stop();
     } else {
-      this.texte.textContent = this.seconds + " secondes restantes";
+      this.texte.textContent = this.seconds + " sec";
     }
   }
 }

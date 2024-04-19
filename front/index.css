@@ -258,26 +258,3 @@ input[type="checkbox"]:not(:checked) + .popup * {
     margin-left: 10px; /* Adjust left margin for username */
     margin-right: 10px; /* Adjust right margin for username */
 }
-
-#achievements-container {
-    max-height: 300px; /* Adjust as needed */
-    overflow-y: auto;
-}
-
-.achievement {
-    width: calc(33.33% - 20px); /* 3 achievements per row with margin */
-    margin: 10px;
-    text-align: center;
-    float: left;
-}
-
-/* Clear float every third achievement */
-.achievement:nth-child(3n+1) {
-    clear: left;
-}
-
-.achievement img {
-    width: 100%;
-    height: 100%; /* Ensure the image fills its container */
-    object-fit: contain; /* Maintain aspect ratio */
-}
