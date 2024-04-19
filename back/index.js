@@ -43,7 +43,6 @@ async function startServer() {
 
   const io = new Server(server);
   let socketManager = new SocketManager(io);
-  RoomManager.initialize(io);
 }
 
 startServer();
