@@ -73,7 +73,8 @@ function setUpFriendsModalListeners() {
 }
 
 async function displayFriendList() {
-  const friends = await fetchFriendList();
+  const friends = await FriendsService.getFriends(getUsername());
+
   friendListTab.innerHTML = "";
 
   friends.forEach((friend) => {
@@ -105,71 +106,40 @@ async function displayFriendList() {
 }
 async function displayFriendRequests() {
   friendRequestsTab.innerHTML = "";
-  let connectedCookieValue = getCookie("connected");
-  if (connectedCookieValue) {
-    connectedCookieValue = JSON.parse(connectedCookieValue);
-    const friendRequests = await fetchFriendRequests();
-    if (friendRequests.length > 0) {
-      friendRequests.forEach((friendRequest) => {
-        const friendRequestElement = document.createElement("div");
-        friendRequestElement.classList.add("friend-request");
-        const userText = document.createElement("p");
-        userText.textContent = friendRequest.sender;
 
-        const acceptButton = document.createElement("button");
-        acceptButton.classList.add("accept-button");
-        acceptButton.textContent = "Accept";
-        acceptButton.addEventListener("click", async () => {
-          try {
-            const requestURL = `/api/friend/accept?from=${encodeURIComponent(friendRequest.sender)}&to=${encodeURIComponent(connectedCookieValue.user)}`;
-            const response = await fetch(requestURL, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            });
+  const friendRequests = await FriendsService.getFriendRequests(getUsername());
+  if (friendRequests.length > 0) {
+    friendRequests.forEach((friendRequest) => {
+      const friendRequestElement = document.createElement("div");
+      friendRequestElement.classList.add("friend-request");
+      const userText = document.createElement("p");
+      userText.textContent = friendRequest.sender;
 
-            if (response.status === 200) {
-              alert(`Accepted friend request from ${friendRequest.sender}`);
-              friendRequestElement.remove();
-            } else {
-              throw new Error("Failed to accept friend request");
-            }
-          } catch (error) {
-            console.error("Error accepting friend request:", error);
-          }
-        });
-
-        const declineButton = document.createElement("button");
-        declineButton.classList.add("decline-button");
-        declineButton.textContent = "Decline";
-        declineButton.addEventListener("click", async () => {
-          try {
-            const requestURL = `/api/friend/decline?from=${encodeURIComponent(friendRequest.sender)}&to=${encodeURIComponent(connectedCookieValue.user)}`;
-            const response = await fetch(requestURL, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            });
-
-            if (response.status === 200) {
-              alert(`Declined friend request from ${friendRequest.sender}`);
-              friendRequestElement.remove();
-            } else {
-              throw new Error("Failed to decline friend request");
-            }
-          } catch (error) {
-            console.error("Error declining friend request:", error);
-          }
-        });
-
-        friendRequestElement.appendChild(userText);
-        friendRequestElement.appendChild(acceptButton);
-        friendRequestElement.appendChild(declineButton);
-        friendRequestsTab.appendChild(friendRequestElement);
+      const acceptButton = document.createElement("button");
+      acceptButton.classList.add("accept-button");
+      acceptButton.textContent = "Accept";
+      acceptButton.addEventListener("click", async () => {
+        FriendsService.acceptFriendRequest(friendRequest.sender, getUsername());
+        friendRequestElement.remove();
       });
-    }
+
+      const declineButton = document.createElement("button");
+      declineButton.classList.add("decline-button");
+      declineButton.textContent = "Decline";
+      declineButton.addEventListener("click", async () => {
+        FriendsService.declineFriendRequest(
+          friendRequest.sender,
+          getUsername(),
+        );
+
+        friendRequestElement.remove();
+      });
+
+      friendRequestElement.appendChild(userText);
+      friendRequestElement.appendChild(acceptButton);
+      friendRequestElement.appendChild(declineButton);
+      friendRequestsTab.appendChild(friendRequestElement);
+    });
   }
 }
 function displayAddFriend() {}
@@ -182,74 +152,9 @@ function displayTabs() {
 
 async function sendFriendRequest(event) {
   event.preventDefault(); // Prevent the default form submission
-  let connectedCookieValue = getCookie("connected");
-  if (connectedCookieValue) {
-    try {
-      connectedCookieValue = JSON.parse(connectedCookieValue);
-
-      const sender = connectedCookieValue.user;
-      const receiver = document.getElementById("newFriendUsername").value;
-
-      const requestURL = `/api/friend?sender=${encodeURIComponent(sender)}&receiver=${encodeURIComponent(receiver)}`;
-
-      const response = await fetch(requestURL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const responseData = await response.text();
-      if (response.status === 200) {
-        alert("Friend request sent successfully!");
-      } else if (response.status === 400) {
-        const errorResponse = JSON.parse(responseData);
-        alert(`Bad request: ${errorResponse.error}`);
-      } else if (response.status === 500) {
-        alert("Internal Server Error. Please try again later.");
-      } else {
-        alert("Unexpected error. Please try again later.");
-      }
-      document.getElementById("addFriendForm").reset();
-    } catch (error) {
-      console.error("Error:", error);
-      alert("An error occurred while processing your request.");
-    }
-  }
-}
-
-async function fetchFriendList() {
-  try {
-    let connectedCookieValue = getCookie("connected");
-    if (connectedCookieValue) {
-      connectedCookieValue = JSON.parse(connectedCookieValue);
-      const sender = connectedCookieValue.user;
-      const response = await fetch(`/api/friends?of=${sender}`);
-      if (response.status !== 200) {
-        throw new Error("Failed to fetch friends");
-      }
-      return await response.json();
-    }
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-async function fetchFriendRequests() {
-  try {
-    let connectedCookieValue = getCookie("connected");
-    if (connectedCookieValue) {
-      connectedCookieValue = JSON.parse(connectedCookieValue);
-      const sender = connectedCookieValue.user;
-      const response = await fetch(`/api/friendRequests?userId=${sender}`);
-      if (response.status !== 200) {
-        throw new Error("Failed to friend requests");
-        return;
-      }
-      return await response.json();
-    }
-  } catch (error) {
-    console.error(error);
-  }
+  const sender = getUsername();
+  const receiver = document.getElementById("newFriendUsername").value;
+  await FriendsService.sendFriendRequest(sender, receiver);
 }
 
 function checkFriendConnectionStatus(username) {

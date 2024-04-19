@@ -10,3 +10,12 @@ function getCookie(name) {
   }
   return null;
 }
+
+function getUsername() {
+  let connectedCookieValue = getCookie("connected");
+  if (connectedCookieValue) {
+    return JSON.parse(connectedCookieValue).user;
+  } else {
+    throw new Error("Failed to get username");
+  }
+}
