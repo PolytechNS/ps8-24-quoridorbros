@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+
+    <title>Modal Example</title>
+</head>
+<body>
+
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <button class="close">&times;</button>
+        <h2>Profile</h2>
+        <div id="profile-line">
+            <img id="profile-photo" src="../../assets/images/luigi.png">
+            <p id="username" >username</p>
+            <p id="elo-text" >1000 🏆</p>
+            <button id="logout-button">Logout</button>
+            <button id="add-as-friend-button" style="display: none">Add friend</button>
+        </div>
+        <p>Achievements :</p>
+        <div id="achievements-container">
+
+        </div>
+    </div>
+</div>
+
+<script src="profileModal.js"></script>
+</body>
+</html>
