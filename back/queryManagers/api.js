@@ -64,7 +64,7 @@ function manageRequest(request, response) {
     }
   } else if (request.method === "GET") {
     switch (true) {
-      case request.url.startsWith("/api/notifications/friends"):
+      case request.url.startsWith("/api/friendRequests"):
         getFriendRequests(request, response);
         break;
       case request.url.startsWith("/api/notification"):
@@ -555,7 +555,7 @@ async function getFriends(request, response) {
   try {
     const friendList = await getFriendList(fromUsername);
     response.statusCode = 200;
-    response.end(JSON.stringify({ friendList }));
+    response.end(JSON.stringify(friendList));
     const db = getDb();
     const userProfileCollection = db.collection("user_profile");
     const collection = db.collection("users");

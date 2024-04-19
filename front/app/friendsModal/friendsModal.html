@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+
+    <title>Friends Modal</title>
+</head>
+<body>
+
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <button class="close">&times;</button>
+
+        <div id="tab-buttons">
+            <button id="friend-list-button" class="btn--primary">Friends</button>
+            <button id="add-friend-button" class="disabled">Add friend</button>
+            <button id="friend-requests-button" class="disabled">Requests</button>
+        </div>
+
+        <div id="friends-tabs">
+            <div id="friend-list-tab" style="display: none">list</div>
+            <div id="add-friend-tab" style="display: none">
+                <form id="addFriendForm" onsubmit="sendFriendRequest(event)">
+                    <label for="newFriendUsername">Add a new friend :</label>
+                    <input type="text" id="newFriendUsername" name="friendUsername" placeholder="Type username here..." required>
+                    <input type="submit" class="btn--secondary" value="Add friend">
+                </form>
+            </div>
+            <div id="friend-requests-tab" style="display: none">requests</div>
+        </div>
+    </div>
+</div>
+
+<script src="friendsModal.js"></script>
+</body>
+</html>

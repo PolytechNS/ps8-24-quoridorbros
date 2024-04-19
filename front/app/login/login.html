@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Log in</title>
-    <link rel="stylesheet" type="text/css" href="../../index.css">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+
     <link rel="stylesheet" type="text/css" href="./form.css">
 </head>
 <body>
     <div class="background"></div>
-    <div class="panel" id="leftPanel"></div>
-    <div class="panel" id="midPanel">
+    <div id="form-box-container">
         <div class="form-box">
             <h2>Log in</h2>
             <form id="loginForm" action="/api/login" method="post">
@@ -21,12 +21,13 @@
                     <input type="password" id="password" name="password" required>
                     <label for="password">Password:</label>
                 </div>
-                <button class="mainButtonClass" type="submit">Submit</button>
+                <button class="btn--primary" type="submit">Submit</button>
             </form>
         </div>
-        <button class="mainButtonClass" onclick="window.location.href='../../index.html'">Back</button>
+        <button class="btn--secondary" onclick="window.location.href='../../index.html'">Back</button>
     </div>
-    <div class="panel" id="rightPanel"></div>
+
+
 
 </body>
 </html>
