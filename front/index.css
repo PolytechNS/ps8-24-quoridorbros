@@ -26,7 +26,7 @@
     align-items: center;
 }
 
-#profile-button, #leaderboard-button, #home-button {
+#profile-button, #leaderboard-button, #home-button, #friends-button {
     height: 5rem;
     width: 5rem;
     background: #ffb347 no-repeat;
@@ -45,6 +45,15 @@
 
 #home-button {
     background-image: url("./assets/images/home.png");
+}
+
+#friends-button {
+    background-image: url("./assets/images/friends.png");
+}
+
+#round-buttons-line {
+    display: flex;
+    justify-content: space-between;
 }
 
 

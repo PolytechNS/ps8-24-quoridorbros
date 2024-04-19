@@ -9,6 +9,7 @@ let loginButton = document.getElementById("loginButton");
 let signinButton = document.getElementById("signinButton");
 
 let leaderBoardButton = document.getElementById("leaderboard-button");
+let friendsButton = document.getElementById("friends-button");
 
 window.onload = function () {
   let connectedCookieValue = getCookie("connected");
@@ -31,6 +32,7 @@ window.onload = function () {
 
     /* Désolé */
     leaderBoardButton.style.display = "block";
+    friendsButton.style.display = "block";
     profileButton.style.display = "inline-block";
 
     loginButton.style.display = "none";
@@ -63,6 +65,7 @@ function logout() {
         playWithAIButton.disabled = true;
         profileButton.style.display = "none";
         leaderBoardButton.style.display = "none";
+        friendsButton.style.display = "none";
 
         playButton.style.display = "inline";
         loginButton.style.display = "inline";
@@ -175,14 +178,16 @@ leaderBoardButton.addEventListener("click", function () {
   displayEloWorld();
 });
 
-document
-  .getElementById("profile-button")
-  .addEventListener("click", function () {
-    let connectedCookieValue = getCookie("connected");
-    if (connectedCookieValue) {
-      connectedCookieValue = JSON.parse(connectedCookieValue);
-      loadModal(connectedCookieValue.user);
-    } else {
-      throw new Error("Failed to fetch profile");
-    }
-  });
+friendsButton.addEventListener("click", function (event) {
+  loadFriendsModal();
+});
+
+profileButton.addEventListener("click", function () {
+  let connectedCookieValue = getCookie("connected");
+  if (connectedCookieValue) {
+    connectedCookieValue = JSON.parse(connectedCookieValue);
+    loadProfileModal(connectedCookieValue.user);
+  } else {
+    throw new Error("Failed to fetch profile");
+  }
+});

@@ -39,7 +39,7 @@ html, body, div, span, h1, h2, h3, h4, h5, h6, p, a, img, ul, ol, li, form, inpu
 }
 
 .btn--primary {
-    padding: 0.5rem;
+    padding: 1rem;
     color: white;
     border: 0.3rem solid #ff8327;
     border-radius:12px;
@@ -48,7 +48,7 @@ html, body, div, span, h1, h2, h3, h4, h5, h6, p, a, img, ul, ol, li, form, inpu
 }
 
 .btn--secondary {
-    padding: 0.5rem;
+    padding: 1rem;
     color: white;
     border-radius:12px;
     background-color: black;

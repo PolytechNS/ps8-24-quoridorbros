@@ -1,16 +1,20 @@
-const modalContainer = document.getElementById("modal-container");
+const profileModalContainer = document.getElementById(
+  "profile-modal-container",
+);
 
-document
-  .getElementsByClassName("close")[0]
-  .addEventListener("click", function () {
-    modalContainer.innerHTML = "";
+function setUpProfileModalClosingListeners() {
+  document
+    .getElementsByClassName("close")[0]
+    .addEventListener("click", function () {
+      profileModalContainer.innerHTML = "";
+    });
+
+  window.addEventListener("click", function (event) {
+    if (event.target == document.getElementById("myModal")) {
+      profileModalContainer.innerHTML = "";
+    }
   });
-
-window.addEventListener("click", function (event) {
-  if (event.target == document.getElementById("myModal")) {
-    modalContainer.innerHTML = "";
-  }
-});
+}
 
 async function getAchievements(username) {
   try {
@@ -78,7 +82,7 @@ async function displayProfileLine(username) {
     document
       .getElementById("logout-button")
       .addEventListener("click", function () {
-        modalContainer.innerHTML = "";
+        profileModalContainer.innerHTML = "";
         logout();
       });
   } catch (error) {
@@ -86,11 +90,12 @@ async function displayProfileLine(username) {
   }
 }
 
-async function loadModal(username) {
+async function loadProfileModal(username) {
   const response = await fetch("../../app/profileModal/profileModal.html");
   const html = await response.text();
-  modalContainer.innerHTML = html;
+  profileModalContainer.innerHTML = html;
   document.getElementById("myModal").style.display = "block";
+  setUpProfileModalClosingListeners();
   displayAchievements(username);
   displayProfileLine(username);
 }
