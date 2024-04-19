@@ -12,13 +12,13 @@ class RoomManager {
   static actionInprogress = false;
 
   static async enterMatchmaking(userId) {
-    console.log("enterMatchmaking", userId);
+    //console.log("enterMatchmaking", userId);
     if (RoomManager.playerAlreadyWaiting(userId)) {
       console.log("the player is already in a room");
       return;
     }
     const userProfile = await getProfileByUserId(userId);
-    let player = { userId, userProfile, deltaElo: 500 };
+    let player = { userId, userProfile, deltaElo: 50 };
     RoomManager.players.push(player);
     this.findMatch(player);
   }
@@ -43,10 +43,11 @@ class RoomManager {
 
   static async findMatch(player) {
     await this.waitIfActionInProgress();
+
     this.actionInprogress = true;
 
     //si le joueur a trouvé un opponent
-    if (!this.playerAlreadyWaiting(player)) {
+    if (!this.playerAlreadyWaiting(player.userId)) {
       this.actionInprogress = false;
       return;
     }
@@ -58,11 +59,11 @@ class RoomManager {
     );
 
     if (!otherPlayer) {
-      //player.deltaElo *= 2;
-      //setTimeout(() => this.findMatch(player), 6000);
+      player.deltaElo *= 2;
+      setTimeout(() => this.findMatch(player), 4000);
     } else {
-      this.removePlayer(player);
-      this.removePlayer(otherPlayer);
+      this.removePlayer(player.userId);
+      this.removePlayer(otherPlayer.userId);
       await createRoom(
         player.userId,
         otherPlayer.userId,
@@ -88,7 +89,6 @@ class RoomManager {
 }
 
 async function createRoom(userId1, userId2, userProfile1, userProfile2) {
-  console.log("test");
   SocketSender.sendMessage(userId1, "RoomFull", userProfile2);
   SocketSender.sendMessage(userId2, "RoomFull", userProfile1);
   SocketMapper.removeSocketById(userId1);
