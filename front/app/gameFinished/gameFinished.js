@@ -50,7 +50,20 @@ function loadLocalFinishedPage() {
 }
 
 if (gameResults.result) {
-  background.style.backgroundImage = 'url("../../assets/images/win.png")';
+  switch (gameResults.type) {
+    case "ai":
+      background.style.backgroundImage = 'url("../../assets/images/win-ai.png")';
+      break;
+    case "online":
+      background.style.backgroundImage = 'url("../../assets/images/win.png")';
+      break;
+    case "local":
+      background.style.backgroundImage = 'url("../../assets/images/win.png")';
+      break;
+    default:
+      background.style.backgroundImage = 'url("../../assets/images/win.png")';
+      break;
+  }
 } else {
   background.style.backgroundImage = 'url("../../assets/images/game-over.png")';
 }

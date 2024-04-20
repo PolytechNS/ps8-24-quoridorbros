@@ -14,7 +14,6 @@ let friendsButton = document.getElementById("friends-button");
 window.onload = function () {
   let connectedCookieValue = getCookie("connected");
   if (connectedCookieValue !== null) {
-    /* Une hérésie qui nous évite de refactor : */
     /*
     document
       .getElementById("friendSocketInitAnchor")
@@ -30,7 +29,6 @@ window.onload = function () {
       "/app/sockets/matchmakingEvents.js";
       */
 
-    /* Désolé */
     leaderBoardButton.style.display = "block";
     friendsButton.style.display = "block";
     profileButton.style.display = "inline-block";
