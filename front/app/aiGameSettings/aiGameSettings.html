@@ -5,13 +5,39 @@
     <title>Game</title>
     <link rel="stylesheet" type="text/css" href="../../styles.css">
     <link rel="stylesheet" type="text/css" href="../clientBoard/clientBoard.css">
+    <link rel="stylesheet" type="text/css" href="./aiGameSettings.css">
+
 </head>
 <body>
 
 <div class="background"></div>
 <div id="ai-game-settings-container">
-    <button class="mainButtonClass" id="loadGame" >Load game</button>
-    <button class="mainButtonClass" id="newGame" >New game</button>
+    <div id="create-game-container">
+        <div class="ai-content">
+            <h2>Easy</h2>
+            <img src="../../assets/images/profile/img1.webp">
+            <p>Play random moves</p>
+            <button class="btn--primary" id="easy-ai-button" >Play</button>
+        </div>
+        <div class="ai-content">
+            <h2>Medium</h2>
+            <img src="../../assets/images/profile/img1.webp">
+            <p>Play following shortest path</p>
+            <button class="btn--primary" id="medium-ai-button" >Play</button>
+        </div>
+        <div class="ai-content">
+            <h2>Hard</h2>
+            <img src="../../assets/images/profile/img1.webp">
+            <p>Don't want to tell it's secrets</p>
+            <button class="btn--primary" id="hard-ai-button" >Play</button>
+        </div>
+
+    </div>
+    <div id="load-game-container">
+        <h2>History (coming soon)..</h2>
+        <button class="btn--secondary" id="loadGame" >Load game</button>
+    </div>
+
 </div>
 
 

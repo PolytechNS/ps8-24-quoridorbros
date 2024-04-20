@@ -1,5 +1,5 @@
 let loadGameButton = document.getElementById("loadGame");
-let newGameButton = document.getElementById("newGame");
+let newGameButton = document.getElementById("hard-ai-button");
 
 function storeAiProfile() {
   const profileOpponent = {

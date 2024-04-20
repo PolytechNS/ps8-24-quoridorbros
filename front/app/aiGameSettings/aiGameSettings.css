@@ -1,0 +1,53 @@
+h2 {
+    font-size: 1.4rem;
+    /* font-weight: bold; */
+    /* height: 40vh; */
+    /* width: 10%; */
+}
+
+#ai-game-settings-container{
+    height: 100vh;
+    padding: 2%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+#create-game-container {
+    height: 80%;
+    width: 60%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2%;
+    align-items: center;
+}
+
+.ai-content {
+    height: 100%;
+    width: 32%;
+    padding: 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+
+    background: white;
+    border: orange solid 0.5rem;
+    border-radius: 12px;
+}
+
+.ai-content img{
+    height: 4rem;
+    width: 4rem;
+    border-radius: 50%;
+}
+
+#load-game-container {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 6vh;
+}
