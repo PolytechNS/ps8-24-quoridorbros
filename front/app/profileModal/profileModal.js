@@ -43,7 +43,7 @@ async function displayAchievements(username) {
       achievementElement.classList.add("achievement");
 
       const imageElement = document.createElement("img");
-      imageElement.src = `./assets/images/achievements/${achievement.id}.png`;
+      imageElement.src = `../../assets/images/achievements/${achievement.id}.png`;
       imageElement.style.filter =
         achievement.progression < achievement.out ? "grayscale(100%)" : "none";
       achievementElement.appendChild(imageElement);
@@ -70,7 +70,7 @@ async function displayProfileLine(username) {
     const profileData = data.profile;
 
     const profilePhotoElement = document.getElementById("profile-photo");
-    profilePhotoElement.src = profileData.photo;
+    profilePhotoElement.src = "../../" + profileData.photo;
     profilePhotoElement.alt = "Profile Photo";
 
     const profileUsernameElement = document.getElementById("username");

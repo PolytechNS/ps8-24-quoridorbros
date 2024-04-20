@@ -54,7 +54,7 @@
     object-fit: cover;
 }
 
-#timer-player {
+#timer-player, #timer-opponent {
     color: white;
     width: 80%;
     padding: 10px;
