@@ -22,14 +22,23 @@ async function saveGameState(userId, gameState) {
     token: userId,
     game: gameState,
   };
+  console.log("saveGameState");
+  console.log("userId", userId);
+  console.log("gameState", gameState);
+
   try {
     const db = getDb();
     const collection = db.collection("gameStates");
+    const collectionBefore = await collection.find({}).toArray();
+    console.log("collectionBefore", collectionBefore);
     await collection.updateOne(
       { token: userId },
       { $set: save },
       { upsert: true },
     );
+
+    const collectionAfter = await collection.find({}).toArray();
+    console.log("collectionAfter", collectionAfter);
   } catch (error) {
     console.error("Error saving game state", error);
   }

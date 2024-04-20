@@ -24,26 +24,29 @@ const {
 } = require("../ai/quoridorbros.js");
 const { SocketSender } = require("../../socket/socketSender.js");
 const { GameManagerMapper } = require("./gameManagerMapper");
+const { SocketMapper } = require("../../socket/socketMapper");
 
 class AiGameManager {
   constructor(userId, loadGame = false) {
     this.userId = userId;
     this.isGameFinished = false;
+    this.isFirstTurn = true;
     const initializeGame = async () => {
       if (loadGame) {
         let gameState = await loadGameState(userId);
         this.game = new Game(this, gameState);
+        this.isFirstTurn = false;
       } else {
         this.game = new Game(this);
       }
     };
-    this.isFirstTurn = true;
 
     // Call the async function
     initializeGame();
   }
 
   initBoardPlayer1(gameState) {
+    SocketMapper.removeSocketById(this.userId);
     SocketSender.sendMessage(this.userId, "initBoard", gameState);
   }
   initBoardPlayer2(gameState) {}
@@ -151,9 +154,10 @@ class AiGameManager {
     return ourMove;
   }
 
-  async saveGame(userId) {
+  async saveGame() {
     const gameState = this.game.generateGameState();
-    saveGameState(userId, gameState);
+    await saveGameState(this.userId, gameState);
+    GameManagerMapper.removeAiGameManagerByUserId(this.userId);
   }
 }
 

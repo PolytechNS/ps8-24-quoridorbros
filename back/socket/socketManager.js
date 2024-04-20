@@ -58,7 +58,7 @@ class SocketManager {
         SocketSender.resendAllPending(userId);
       });
 
-      //Local game
+      //Ai game
       socket.on("create game", () => {
         console.log(`create game: ${socket.id}`);
         const userId = SocketMapper.getUserIdBySocketId(socket.id);

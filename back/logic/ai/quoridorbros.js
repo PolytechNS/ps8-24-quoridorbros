@@ -26,9 +26,6 @@ let movesSinceLastKnownPosition = null;
 let otherPlayerPreviousNbWalls = 10;
 const defaultMove = { action: "move", value: "58" };
 
-let goal_line;
-let gameState = null;
-
 function getInitialMove() {
   let position;
   if (numPlayer === 1) {
