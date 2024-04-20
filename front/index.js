@@ -47,6 +47,19 @@ window.onload = function () {
     playWithAIButton.classList.add("mainButtonClass");
     playWithAIButton.classList.remove("mainButtonDisabledClass");
     playButton.style.display = "inline";
+
+    const storeProfile = async () => {
+      const response = await fetch(`/api/profile?of=${getUsername()}`);
+      if (response.status !== 200) {
+        throw new Error("Failed to fetch profile");
+      }
+
+      const data = await response.json();
+      const profileData = data.profile;
+      let profileDataString = JSON.stringify(profileData);
+      localStorage.setItem("profileString", profileDataString);
+    };
+    storeProfile();
   }
 };
 

@@ -39,7 +39,7 @@ function loadOnlineFinishedPage() {
 
 function loadAiFinishedPage() {
   newGameButton.addEventListener("click", function () {
-    window.location.href = "../aiGame/aiGame.html";
+    window.location.href = "../aiGameSettings/aiGameSettings.html";
   });
 }
 
