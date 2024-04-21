@@ -16,29 +16,45 @@ const {
   deltaWallsHeuristic,
 } = require("../ai/heuristics.js");
 
-const {
-  setup,
-  nextMove,
-  correction,
-  updateBoard,
-} = require("../ai/quoridorbros.js");
 const { SocketSender } = require("../../socket/socketSender.js");
 const { GameManagerMapper } = require("./gameManagerMapper");
 const { SocketMapper } = require("../../socket/socketMapper");
 
 class AiGameManager {
-  constructor(userId, loadGame = false) {
+  constructor(userId, level, loadGame = false) {
     this.userId = userId;
     this.isGameFinished = false;
     this.isFirstTurn = true;
+    this.level = level;
+
     const initializeGame = async () => {
       if (loadGame) {
-        let gameState = await loadGameState(userId);
-        this.game = new Game(this, gameState);
+        let save = await loadGameState(userId);
+        this.level = save.level;
+        this.game = new Game(this, save.game);
         this.isFirstTurn = false;
       } else {
         this.game = new Game(this);
       }
+
+      let aiFunctions;
+      switch (this.level) {
+        case 0:
+          aiFunctions = require("../ai/randomQuoridorbros");
+          break;
+        case 1:
+          aiFunctions = require("../ai/shortestPathQuoridorbros");
+          break;
+        case 2:
+          aiFunctions = require("../ai/quoridorbros");
+          break;
+        default:
+          // Default to beginner level if the specified level is invalid
+          aiFunctions = require("../ai/quoridorbros");
+          break;
+      }
+      this.setup = aiFunctions.setup;
+      this.nextMove = aiFunctions.nextMove;
     };
 
     // Call the async function
@@ -91,7 +107,7 @@ class AiGameManager {
     if (this.isFirstTurn) {
       this.isFirstTurn = false;
       const startTime = Date.now();
-      const vellaMove = await setup(2);
+      const vellaMove = await this.setup(2);
       const endTime = Date.now();
       console.log("time ");
       console.log(endTime - startTime);
@@ -99,7 +115,7 @@ class AiGameManager {
       this.game.onCellClick(ourMove.x, ourMove.y);
     } else {
       const startTime = Date.now();
-      const vellaMove = await nextMove(vellaGameState);
+      const vellaMove = await this.nextMove(vellaGameState);
       const endTime = Date.now();
       console.log("time ");
       console.log(endTime - startTime);
@@ -156,7 +172,7 @@ class AiGameManager {
 
   async saveGame() {
     const gameState = this.game.generateGameState();
-    await saveGameState(this.userId, gameState);
+    await saveGameState(this.userId, gameState, this.level);
     GameManagerMapper.removeAiGameManagerByUserId(this.userId);
   }
 }

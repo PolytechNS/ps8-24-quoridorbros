@@ -59,10 +59,13 @@ class SocketManager {
       });
 
       //Ai game
-      socket.on("create game", () => {
+      socket.on("create game", (level) => {
         console.log(`create game: ${socket.id}`);
         const userId = SocketMapper.getUserIdBySocketId(socket.id);
-        const aiGameManager = GameManagerFactory.createAiGameManager(userId);
+        const aiGameManager = GameManagerFactory.createAiGameManager(
+          userId,
+          level,
+        );
         configureAiGameEvents(socket, aiGameManager);
       });
 
@@ -72,6 +75,7 @@ class SocketManager {
         const userId = SocketMapper.getUserIdBySocketId(socket.id);
         const aiGameManager = GameManagerFactory.createAiGameManager(
           userId,
+          0,
           true,
         );
         configureAiGameEvents(socket, aiGameManager);

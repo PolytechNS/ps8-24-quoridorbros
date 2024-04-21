@@ -1,11 +1,12 @@
-function createGame() {
-  socket.emit("create game");
+function createGame(level) {
+  console.log("createGame", level);
+  socket.emit("create game", level);
 }
 
-function saveGame(token) {
-  socket.emit("save-game", token);
+function saveGame() {
+  socket.emit("save-game");
 }
 
-function loadGame(token) {
-  socket.emit("load-game", token);
+function loadGame() {
+  socket.emit("load-game");
 }
