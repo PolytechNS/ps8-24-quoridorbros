@@ -19,18 +19,13 @@ function loadOnlineFinishedPage() {
   let profileString = localStorage.getItem("profileString");
   let profile = JSON.parse(profileString);
 
-  const eloText = document.createElement("p");
-  eloText.textContent =
-    "Elo: " +
-    profile.elo +
-    " + (" +
-    gameResults.deltaElo +
-    ") -> " +
-    gameResults.elo;
+  document.getElementById("results-container");
+  const eloText = document.createElement("h2");
   eloText.id = "elo-text";
+  eloText.textContent = profile.elo;
   let resultsContainer = document.getElementById("results-container");
   resultsContainer.appendChild(eloText);
-
+  incNbrRec(profile.elo, gameResults.elo, eloText, 100)
   //update the elo of the profile in the local Storage
   profile.elo = gameResults.elo;
   profileString = JSON.stringify(profile);
@@ -50,6 +45,7 @@ function loadLocalFinishedPage() {
 }
 
 if (gameResults.result) {
+  document.getElementById("results-container").style.justifyContent = "flex-start";
   switch (gameResults.type) {
     case "ai":
       background.style.backgroundImage = 'url("../../assets/images/win-ai.png")';
@@ -59,6 +55,9 @@ if (gameResults.result) {
       break;
     case "local":
       background.style.backgroundImage = 'url("../../assets/images/win.png")';
+      const winnerName = document.createElement("h2");
+        winnerName.textContent = gameResults.result+" won!";
+      document.getElementById("results-container").appendChild(winnerName);
       break;
     default:
       background.style.backgroundImage = 'url("../../assets/images/win.png")';
@@ -66,4 +65,21 @@ if (gameResults.result) {
   }
 } else {
   background.style.backgroundImage = 'url("../../assets/images/game-over.png")';
+}
+
+function incNbrRec(currentNumber, endNumber, element, speed) {
+  if (currentNumber < endNumber-1) {
+    element.style.color = "green"
+    element.innerHTML = currentNumber
+    setTimeout(function() {
+      incNbrRec(currentNumber + 1, endNumber, element, speed)
+    }, speed)
+  }
+  if (currentNumber > endNumber+1) {
+    element.style.color = "red"
+    element.innerHTML = currentNumber
+    setTimeout(function() {
+      incNbrRec(currentNumber - 1, endNumber, element, speed)
+    }, speed)
+  }
 }

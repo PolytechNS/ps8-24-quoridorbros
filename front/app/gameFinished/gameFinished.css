@@ -42,9 +42,11 @@
     align-items: center;
 }
 
-#elo-text {
+#results-container > *{
     padding: 20px;
-    background: white;
-    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 20px;
     border: #111 solid 4px;
+    font-family: 'Mario64', sans-serif;
+    font-size: 3rem;
 }

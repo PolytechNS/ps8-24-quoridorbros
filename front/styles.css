@@ -96,7 +96,7 @@ button.mainButtonClass {
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
-    white-space: nowrap;
+    white-space: normal;
 }
 
 button.mainButtonDisabledClass {
