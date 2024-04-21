@@ -25,7 +25,7 @@ function loadOnlineFinishedPage() {
   eloText.textContent = profile.elo;
   let resultsContainer = document.getElementById("results-container");
   resultsContainer.appendChild(eloText);
-  incNbrRec(profile.elo, gameResults.elo, eloText, 100)
+  incNbrRec(profile.elo, gameResults.elo, eloText, 100);
   //update the elo of the profile in the local Storage
   profile.elo = gameResults.elo;
   profileString = JSON.stringify(profile);
@@ -68,18 +68,21 @@ if (gameResults.result) {
 }
 
 function incNbrRec(currentNumber, endNumber, element, speed) {
-  if (currentNumber < endNumber-1) {
+  element.innerHTML = currentNumber
+  if (currentNumber < endNumber) {
     element.style.color = "green"
-    element.innerHTML = currentNumber
     setTimeout(function() {
       incNbrRec(currentNumber + 1, endNumber, element, speed)
     }, speed)
   }
-  if (currentNumber > endNumber+1) {
+  if (currentNumber > endNumber) {
     element.style.color = "red"
-    element.innerHTML = currentNumber
     setTimeout(function() {
       incNbrRec(currentNumber - 1, endNumber, element, speed)
     }, speed)
+  }
+  if (currentNumber === endNumber) {
+    element.style.color = "black"
+    element.innerHTML = "New Elo : "+endNumber;
   }
 }
