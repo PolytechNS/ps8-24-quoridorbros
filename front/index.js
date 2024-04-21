@@ -14,19 +14,21 @@ let friendsButton = document.getElementById("friends-button");
 window.onload = function () {
   let connectedCookieValue = getCookie("connected");
   if (connectedCookieValue !== null) {
-    /*
+
     document
       .getElementById("friendSocketInitAnchor")
       .appendChild(document.createElement("script")).src =
       "/app/sockets/ioManager.js";
     document
-      .getElementById("friendSocketInitAnchor")
-      .appendChild(document.createElement("script")).src =
-      "/app/friendlist/friendlist.js";
+        .getElementById("friendSocketInitAnchor")
+        .appendChild(document.createElement("script")).src =
+        "/app/sockets/matchmakingEvents.js";
+    /*
     document
       .getElementById("friendSocketInitAnchor")
       .appendChild(document.createElement("script")).src =
-      "/app/sockets/matchmakingEvents.js";
+      "/app/friendlist/friendlist.js";
+
       */
 
     leaderBoardButton.style.display = "block";

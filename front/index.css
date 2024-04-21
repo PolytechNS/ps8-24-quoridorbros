@@ -7,7 +7,10 @@
 #index-container h1{
     height: 30%;
     margin: 0 auto;
-    font-size: 6rem;
+    font-size: 8vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 #top-line {
     height: 10%;
@@ -26,9 +29,17 @@
     align-items: center;
 }
 
-#profile-button, #leaderboard-button, #home-button, #friends-button, #challenge-button {
+#profile-button, #leaderboard-button, #home-button, #friends-button {
     height: 5rem;
     width: 5rem;
+    background: #ffb347 no-repeat;
+    background-size: contain;
+    border: 0.3rem solid #ff8327;
+    border-radius: 50%;
+}
+.challenge-button {
+    height: 100%;
+    width: 11%;
     background: #ffb347 no-repeat;
     background-size: contain;
     border: 0.3rem solid #ff8327;
@@ -51,7 +62,7 @@
     background-image: url("./assets/images/friends.png");
 }
 
-#challenge-button {
+.challenge-button {
     background-image: url("./assets/images/challenge.png");
 }
 
