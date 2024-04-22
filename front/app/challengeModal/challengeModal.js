@@ -64,7 +64,7 @@ function displayChallenger(profileOpponent) {
 async function loadChallengeModal(profileOpponent) {
   const response = await fetch("../../app/challengeModal/challengeModal.html");
   const html = await response.text();
-  leaderboardModalContainer.innerHTML = html;
+  challengeModalContainer.innerHTML = html;
   setUpChallengeModalClosingListeners();
   displayChallenger(profileOpponent);
   document.getElementById("challengeModal").style.display = "block";

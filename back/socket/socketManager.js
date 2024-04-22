@@ -21,6 +21,7 @@ class SocketManager {
     this.io = io;
     this.aiGameManager = null;
     this.setupListeners();
+
   }
 
   setupListeners() {
@@ -98,6 +99,8 @@ class SocketManager {
         const challengerProfile = await getProfileByUserId(challengerId);
         console.log(`${challengerProfile} challenges ${challengedUsername}`);
         SocketMapper.getSocketById(challengedId).emit("receiveChallenge", challengerProfile);
+
+
       });
 
       socket.on("checkFriendConnectionStatus", async (username) => {

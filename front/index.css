@@ -64,6 +64,7 @@
 
 .challenge-button {
     background-image: url("./assets/images/challenge.png");
+    min-width: 6rem;
 }
 
 #round-buttons-line {

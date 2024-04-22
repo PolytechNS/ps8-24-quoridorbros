@@ -128,12 +128,28 @@ profileButton.addEventListener("click", function () {
   }
 });
 
+function closeAllModals() {
+  document.getElementById("leaderboard-modal-container").innerHTML = "";
+  document.getElementById("friends-modal-container").innerHTML = "";
+  document.getElementById("profile-modal-container").innerHTML = "";
+  document.getElementById("challenge-modal-container").innerHTML = "";
+}
+
 async function challengeCheck(param) {
-  while (localStorage.getItem("pendingChallenge") === null) {
-    await new Promise((resolve) => setTimeout(resolve, param));
+  while (true) {
+    try {
+      while (localStorage.getItem("pendingChallenge") === null) {
+        await new Promise((resolve) => setTimeout(resolve, param));
+      }
+
+      closeAllModals();
+      let profileOpponentData = localStorage.getItem("pendingChallenge");
+      let profileOpponent = JSON.parse(profileOpponentData);
+      localStorage.removeItem("pendingChallenge");
+      loadChallengeModal(profileOpponent);
+    } catch (error) {
+      console.error("Error:", error);
+      break;
+    }
   }
-    let profileOpponentData = localStorage.getItem("pendingChallenge");
-    let profileOpponent = JSON.parse(profileOpponentData);
-    localStorage.removeItem("pendingChallenge");
-    loadChallengeModal(profileOpponent);
 }
