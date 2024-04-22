@@ -8,6 +8,7 @@ const apiQuery = require("./queryManagers/api.js");
 const { connect } = require("./mongoDB/mongoManager.js");
 const { Server } = require("socket.io");
 const { RoomManager } = require("./logic/matchMaking/roomManager");
+const { clearMessageCollection } = require("./mongoDB/mongoManager");
 async function startServer() {
   await connect().catch(console.error);
   /* The http module contains a createServer function, which takes one argument, which is the function that
