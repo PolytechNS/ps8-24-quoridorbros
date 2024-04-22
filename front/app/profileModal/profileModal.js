@@ -78,13 +78,22 @@ async function displayProfileLine(username) {
 
     const profileEloElement = document.getElementById("elo-text");
     profileEloElement.textContent = `${profileData.elo} 🏆`;
-
-    document
-      .getElementById("logout-button")
-      .addEventListener("click", function () {
-        profileModalContainer.innerHTML = "";
-        logout();
-      });
+    if (getUsername() == profileData.username) {
+      document
+        .getElementById("logout-button")
+        .addEventListener("click", function () {
+          profileModalContainer.innerHTML = "";
+          logout();
+        });
+      document.getElementById("add-as-friend-button").style.display = "none";
+    } else {
+      document
+        .getElementById("add-as-friend-button")
+        .addEventListener("click", function () {
+          FriendsService.sendFriendRequest(getUsername(), profileData.username);
+        });
+      document.getElementById("logout-button").style.display = "none";
+    }
   } catch (error) {
     console.error(error);
   }

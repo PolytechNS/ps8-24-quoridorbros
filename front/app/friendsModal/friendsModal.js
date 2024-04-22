@@ -89,12 +89,15 @@ async function displayFriendList() {
 
     const usernameElement = document.createElement("div");
     usernameElement.textContent = friend.username;
+    usernameElement.addEventListener("click", () => {
+      friendsModalContainer.innerHTML = "";
+      loadProfileModal(friend.username);
+    });
     usernameElement.classList.add("username");
     friendElement.appendChild(usernameElement);
 
     const messageElement = document.createElement("button");
-    messageElement.textContent = "message";
-    messageElement.classList.add("message");
+    messageElement.classList.add("message-button");
     messageElement.addEventListener("click", () => {
       friendsModalContainer.innerHTML = "";
       loadMessagesModal(friend.username);

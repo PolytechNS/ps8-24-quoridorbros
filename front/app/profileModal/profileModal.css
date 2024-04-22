@@ -102,3 +102,13 @@
     height: 100%; /* Ensure the image fills its container */
     object-fit: contain; /* Maintain aspect ratio */
 }
+
+#add-as-friend-button {
+    height: 9vh;
+    width: 9vh;
+    border: 0.5rem white solid;
+    background-size: contain;
+    border-radius: 50%;
+    background-repeat: no-repeat;
+    background-image: url("../../assets/images/addfriend.png");
+}
