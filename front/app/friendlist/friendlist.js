@@ -9,9 +9,6 @@ function openform() {
   }
 }
 
-function challenge(username) {
-  socket.emit("challengeFriend", username);
-}
 
 async function loadFriends() {
   const response = await fetch("./app/friendlist/friendlist.html");

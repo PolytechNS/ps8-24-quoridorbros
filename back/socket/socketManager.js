@@ -14,6 +14,7 @@ const {
   GameManagerMapper,
 } = require("../logic/gameManagers/gameManagerMapper.js");
 const { RoomManager } = require("../logic/matchMaking/roomManager");
+const {getProfileOf, getProfileByUserId} = require("../mongoDB/mongoManager");
 
 class SocketManager {
   constructor(io) {
@@ -91,9 +92,12 @@ class SocketManager {
         RoomManager.quitMatchmaking(userId);
       });
 
-      socket.on("challengeFriend", (username) => {
-        const userId = SocketMapper.getUserIdBySocketId(socket.id);
-        console.log(`challengeFriend: ${socket.id}`);
+      socket.on("challengeFriend", async (challengedUsername) => {
+        const challengedId = await getIdOfUser(challengedUsername);
+        const challengerId = SocketMapper.getUserIdBySocketId(socket.id);
+        const challengerProfile = await getProfileByUserId(challengerId);
+        console.log(`${challengerProfile} challenges ${challengedUsername}`);
+        SocketMapper.getSocketById(challengedId).emit("receiveChallenge", challengerProfile);
       });
 
       socket.on("checkFriendConnectionStatus", async (username) => {
@@ -108,6 +112,7 @@ class SocketManager {
           }
         });
       });
+
     });
   }
 }

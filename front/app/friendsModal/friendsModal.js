@@ -96,7 +96,7 @@ async function displayFriendList() {
     challengeButton.classList.add("challenge-button");
     challengeButton.setAttribute("data-username", friend.username);
     challengeButton.addEventListener("click", () => {
-      challenge(friend.username);
+      sendChallenge(friend.username);
     });
     friendElement.appendChild(challengeButton);
     friendListTab.appendChild(friendElement);
@@ -159,6 +159,10 @@ async function sendFriendRequest(event) {
 function checkFriendConnectionStatus(username) {
   socket.emit("checkFriendConnectionStatus", username);
   console.log("checkFriendConnectionStatus" + username);
+}
+
+function sendChallenge(username) {
+  socket.emit("challengeFriend", username);
 }
 
 async function loadFriendsModal() {
