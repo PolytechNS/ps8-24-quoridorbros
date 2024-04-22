@@ -334,6 +334,87 @@ async function getAllProfiles() {
     throw error;
   }
 }
+
+async function winAGameAchievement(userId){
+
+  try {
+    const db = await getDb();
+    const userProfileCollection = db.collection("user_profile");
+
+    const objectIdUserId = new ObjectId(userId);
+
+    const user = await userProfileCollection.findOne({ _id: objectIdUserId });
+    if (!user) {
+      throw new Error(`User not found.`);
+    }
+
+    await AchievementsManager.updateAchievement(
+      userProfileCollection,
+      objectIdUserId,
+      "ach5",
+    );
+    
+  } catch (error) {
+    console.error("Error Updating achievement:", error);
+    throw error;
+  }
+}
+
+async function loseAGameAchievement(userId){
+
+  try {
+    const db = await getDb();
+    const userProfileCollection = db.collection("user_profile");
+
+    const objectIdUserId = new ObjectId(userId);
+
+    const user = await userProfileCollection.findOne({ _id: objectIdUserId });
+    if (!user) {
+      throw new Error(`User not found.`);
+    }
+
+    await AchievementsManager.updateAchievement(
+      userProfileCollection,
+      objectIdUserId,
+      "ach6",
+    );
+    
+  } catch (error) {
+    console.error("Error Updating achievement:", error);
+    throw error;
+  }
+}
+
+async function placeAWallAchievement(userId){
+
+  try {
+    const db = await getDb();
+    const userProfileCollection = db.collection("user_profile");
+
+    const user = await userProfileCollection.findOne({ _id: userId });
+    if (!user) {
+      throw new Error(`User not found.`);
+    }
+
+    await AchievementsManager.updateAchievement(
+      userProfileCollection,
+      userId,
+      "ach3",
+    );
+
+    await AchievementsManager.updateAchievement(
+      userProfileCollection,
+      userId,
+      "ach4",
+    );
+    
+  } catch (error) {
+    console.error("Error Updating achievement:", error);
+    throw error;
+  }
+}
+
+
 module.exports = {
   connect,
   getDb,
@@ -349,4 +430,6 @@ module.exports = {
   getProfileByUserId,
   getAllProfiles,
   saveElo,
+  winAGameAchievement,
+  loseAGameAchievement
 };
