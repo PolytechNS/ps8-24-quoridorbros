@@ -69,6 +69,10 @@ btn.enabled {
     gap: 2rem;
 }
 
+.username {
+    border-bottom: black 2px solid;
+}
+
 #newFriendUsername{
     font-size: 0.8rem;
     padding: 0.6rem;
@@ -123,4 +127,14 @@ btn.enabled {
     border-radius: 50px;
     color: white;
     background: #FF5722;
+}
+
+.message-button {
+    height: 9vh;
+    width: 9vh;
+    border: 0.5rem white solid;
+    background-size: contain;
+    border-radius: 50%;
+    background-repeat: no-repeat;
+    background-image: url("../../assets/images/bulles-de-chat.png");
 }
