@@ -15,13 +15,13 @@ const {
 } = require("../logic/gameManagers/gameManagerMapper.js");
 const { RoomManager } = require("../logic/matchMaking/roomManager");
 const {getProfileOf, getProfileByUserId} = require("../mongoDB/mongoManager");
+const { configureMessagesEvents } = require("./messagesEvents");
 
 class SocketManager {
   constructor(io) {
     this.io = io;
     this.aiGameManager = null;
     this.setupListeners();
-
   }
 
   setupListeners() {
@@ -36,6 +36,8 @@ class SocketManager {
         const userId = await getIdOfUser(cookie.user);
         SocketMapper.updateSocket(userId, socket);
         SocketSender.sendMessage(userId, "cookieReceived");
+
+        configureMessagesEvents(socket);
 
         //si le user était déjà en partie
         let aiGameManagerameManager =
@@ -119,7 +121,6 @@ class SocketManager {
           }
         });
       });
-
     });
   }
 }

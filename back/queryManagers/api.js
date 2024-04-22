@@ -262,6 +262,12 @@ async function handleFriendRequest(request, response) {
       return;
     }
 
+    if (sender===receiver) {
+      response.statusCode = 400;
+      response.end(JSON.stringify({ error: "You are already your own friend !" }));
+      return;
+    }
+
     const alreadyFriends = await areFriends(sender, receiver);
     if (alreadyFriends) {
       response.statusCode = 400;
@@ -273,9 +279,18 @@ async function handleFriendRequest(request, response) {
     const collection = db.collection("notifications");
 
     const existingNotification = await collection.findOne({
-      user_id: receiver,
-      "notifications.sender": sender,
-      "notifications.type": "friendrequest",
+      $or: [
+        {
+          user_id: receiver,
+          "notifications.sender": sender,
+          "notifications.type": "friendrequest",
+        },
+        {
+          user_id: sender,
+          "notifications.sender": receiver,
+          "notifications.type": "friendrequest",
+        }
+      ]
     });
 
     if (existingNotification) {

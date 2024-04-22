@@ -1,16 +1,18 @@
-let socket = io();
-
 let jsonCookie = getCookie("connected");
 let cookie = JSON.parse(jsonCookie);
 let cookieReceived = false;
+let socket;
 
-socket.on("getCookie", () => {
-  socket.emit("cookie", cookie);
-});
+if (cookie) {
+  socket = io();
+  socket.on("getCookie", () => {
+    socket.emit("cookie", cookie);
+  });
 
-socket.on("cookieReceived", () => {
-  cookieReceived = true;
-});
+  socket.on("cookieReceived", () => {
+    cookieReceived = true;
+  });
+}
 
 socket.on("receiveChallenge", (msg) => {
     let profileOpponentData = JSON.stringify(msg);
@@ -25,7 +27,7 @@ function getSocket() {
     if (cookieReceived) {
       // Si le cookie a déjà été reçu, résoudre la promesse avec la socket existante
       resolve(socket);
-    } else {
+    } else if (cookie) {
       // Si le cookie n'a pas encore été reçu, attendre l'événement "cookieReceived"
       socket.on("cookieReceived", () => {
         // Une fois le cookie reçu, résoudre la promesse avec la socket

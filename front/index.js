@@ -10,6 +10,7 @@ let signinButton = document.getElementById("signinButton");
 
 let leaderBoardButton = document.getElementById("leaderboard-button");
 let friendsButton = document.getElementById("friends-button");
+let notifsButton = document.getElementById("notifs-button");
 
 window.onload = function () {
   let connectedCookieValue = getCookie("connected");
@@ -34,6 +35,7 @@ window.onload = function () {
     leaderBoardButton.style.display = "block";
     friendsButton.style.display = "block";
     profileButton.style.display = "inline-block";
+    notifsButton.style.display = "block";
 
     loginButton.style.display = "none";
     signinButton.style.display = "none";
@@ -80,6 +82,7 @@ function logout() {
         profileButton.style.display = "none";
         leaderBoardButton.style.display = "none";
         friendsButton.style.display = "none";
+        notifsButton.style.display = "none";
 
         playButton.style.display = "inline";
         loginButton.style.display = "inline";
@@ -126,6 +129,10 @@ profileButton.addEventListener("click", function () {
   } else {
     throw new Error("Failed to fetch profile");
   }
+});
+
+notifsButton.addEventListener("click", function () {
+    loadNotifications();
 });
 
 function closeAllModals() {

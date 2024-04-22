@@ -334,6 +334,245 @@ async function getAllProfiles() {
     throw error;
   }
 }
+
+async function winAGameAchievement(userId){
+
+  try {
+    const db = await getDb();
+    const userProfileCollection = db.collection("user_profile");
+
+    const objectIdUserId = new ObjectId(userId);
+
+    const user = await userProfileCollection.findOne({ _id: objectIdUserId });
+    if (!user) {
+      throw new Error(`User not found.`);
+    }
+
+    await AchievementsManager.updateAchievement(
+      userProfileCollection,
+      objectIdUserId,
+      "ach5",
+    );
+    
+  } catch (error) {
+    console.error("Error Updating achievement:", error);
+    throw error;
+  }
+}
+
+async function loseAGameAchievement(userId){
+
+  try {
+    const db = await getDb();
+    const userProfileCollection = db.collection("user_profile");
+
+    const objectIdUserId = new ObjectId(userId);
+
+    const user = await userProfileCollection.findOne({ _id: objectIdUserId });
+    if (!user) {
+      throw new Error(`User not found.`);
+    }
+
+    await AchievementsManager.updateAchievement(
+      userProfileCollection,
+      objectIdUserId,
+      "ach6",
+    );
+    
+  } catch (error) {
+    console.error("Error Updating achievement:", error);
+    throw error;
+  }
+}
+
+async function placeAWallAchievement(userId,nbWalls){
+
+  try {
+    const db = await getDb();
+    const userProfileCollection = db.collection("user_profile");
+
+    const objectIdUserId = new ObjectId(userId);
+
+    const user = await userProfileCollection.findOne({ _id: objectIdUserId });
+    if (!user) {
+      throw new Error(`User not found.`);
+    }
+
+    await AchievementsManager.reinitializeAchievement(
+      userProfileCollection,
+      objectIdUserId,
+      "ach3",
+    );
+
+    for (let i=0; i<nbWalls; i++){
+      await AchievementsManager.updateAchievement(
+        userProfileCollection,
+        objectIdUserId,
+        "ach3",
+      );
+
+    }
+
+    await AchievementsManager.reinitializeAchievement(
+      userProfileCollection,
+      objectIdUserId,
+      "ach4",
+    );
+
+    for (let i=0; i<nbWalls; i++){
+      await AchievementsManager.updateAchievement(
+        userProfileCollection,
+        objectIdUserId,
+        "ach4",
+      );
+
+    }
+    
+  } catch (error) {
+    console.error("Error Updating achievement:", error);
+    throw error;
+  }
+}
+async function sendMessage(senderId, receiverId, content) {
+  try {
+    const db = getDb();
+    const collection = db.collection("messages");
+    const message = {
+      sender: senderId,
+      receiver: receiverId,
+      content: content,
+      timestamp: new Date(),
+      read: false, // Marquer le message comme non lu lors de l'envoi
+    };
+    await collection.insertOne(message);
+    console.log("Message sent successfully.");
+    const allMessages = await collection.find().toArray();
+    console.log("All messages in the collection:", allMessages);
+    return true;
+  } catch (error) {
+    console.error("Error sending message:", error);
+    return false;
+  }
+}
+
+async function getMessagesBetweenUsers(userId, otherUserId) {
+  try {
+    const db = getDb();
+    const collection = db.collection("messages");
+
+    // Récupère tous les messages échangés entre les deux utilisateurs
+    const messages = await collection
+      .find({
+        $or: [
+          { sender: userId, receiver: otherUserId },
+          { sender: otherUserId, receiver: userId },
+        ],
+      })
+      .toArray();
+
+    // Marque les messages destinés à l'utilisateur actuel comme lus
+    await collection.updateMany(
+      { receiver: userId, sender: otherUserId, read: false },
+      { $set: { read: true } },
+    );
+
+    // Récupérer les noms d'utilisateur à l'avance
+    const [username1, username2] = await Promise.all([
+      getUserById(userId),
+      getUserById(otherUserId),
+    ]);
+
+    // Convertir les identifiants d'utilisateur en noms d'utilisateur
+    const messagesWithUsernames = messages.map((message) => {
+      if (message.sender == userId) {
+        message.sender = username1;
+        message.receiver = username2;
+      } else {
+        message.sender = username2;
+        message.receiver = username1;
+      }
+      return message;
+    });
+
+    return messagesWithUsernames;
+  } catch (error) {
+    console.error("Error getting messages between users:", error);
+    return [];
+  }
+}
+
+async function getUnreadMessages(userId, otherUserId) {
+  try {
+    const db = getDb();
+    const collection = db.collection("messages");
+
+    const unreadMessages = await collection
+      .find({
+        receiver: userId,
+        sender: otherUserId,
+        read: false,
+      })
+      .toArray();
+
+    // Marque les messages récupérés comme lus
+    await collection.updateMany(
+      { receiver: userId, sender: otherUserId, read: false },
+      { $set: { read: true } }, // Marque les messages comme lus
+    );
+
+    // Récupérer les noms d'utilisateur à l'avance
+    const [username1, username2] = await Promise.all([
+      getUserById(userId),
+      getUserById(otherUserId),
+    ]);
+
+    // Convertir les identifiants d'utilisateur en noms d'utilisateur
+    const unreadMessagesWithUsernames = unreadMessages.map((message) => {
+      message.sender = username2; // L'autre utilisateur est le sender
+      message.receiver = username1;
+      return message;
+    });
+
+    return unreadMessagesWithUsernames;
+  } catch (error) {
+    console.error("Error getting unread messages:", error);
+    return [];
+  }
+}
+
+async function hasUnreadMessages(userId, otherUserId) {
+  try {
+    const db = getDb();
+    const collection = db.collection("messages");
+
+    const unreadMessagesCount = await collection.countDocuments({
+      receiver: userId,
+      sender: otherUserId,
+      read: false,
+    });
+
+    return unreadMessagesCount > 0;
+  } catch (error) {
+    console.error("Error checking unread messages:", error);
+    return false;
+  }
+}
+
+async function clearMessageCollection() {
+  try {
+    const db = getDb();
+    const collection = db.collection("messages");
+
+    // Supprimer tous les documents de la collection
+    const deleteResult = await collection.deleteMany({});
+
+    console.log("Message collection cleared.");
+    return deleteResult.deletedCount; // Retourne le nombre de documents supprimés
+  } catch (error) {
+    console.error("Error clearing message collection:", error);
+    return 0; // Retourne 0 en cas d'erreur
+  }
+}
 module.exports = {
   connect,
   getDb,
@@ -349,4 +588,11 @@ module.exports = {
   getProfileByUserId,
   getAllProfiles,
   saveElo,
+  winAGameAchievement,
+  loseAGameAchievement,
+  sendMessage,
+  getMessagesBetweenUsers,
+  getUnreadMessages,
+  hasUnreadMessages,
+  placeAWallAchievement,
 };
