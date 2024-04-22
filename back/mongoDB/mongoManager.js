@@ -385,28 +385,48 @@ async function loseAGameAchievement(userId){
   }
 }
 
-async function placeAWallAchievement(userId){
+async function placeAWallAchievement(userId,nbWalls){
 
   try {
     const db = await getDb();
     const userProfileCollection = db.collection("user_profile");
 
-    const user = await userProfileCollection.findOne({ _id: userId });
+    const objectIdUserId = new ObjectId(userId);
+
+    const user = await userProfileCollection.findOne({ _id: objectIdUserId });
     if (!user) {
       throw new Error(`User not found.`);
     }
 
-    await AchievementsManager.updateAchievement(
+    await AchievementsManager.reinitializeAchievement(
       userProfileCollection,
-      userId,
+      objectIdUserId,
       "ach3",
     );
 
-    await AchievementsManager.updateAchievement(
+    for (let i=0; i<nbWalls; i++){
+      await AchievementsManager.updateAchievement(
+        userProfileCollection,
+        objectIdUserId,
+        "ach3",
+      );
+
+    }
+
+    await AchievementsManager.reinitializeAchievement(
       userProfileCollection,
-      userId,
+      objectIdUserId,
       "ach4",
     );
+
+    for (let i=0; i<nbWalls; i++){
+      await AchievementsManager.updateAchievement(
+        userProfileCollection,
+        objectIdUserId,
+        "ach4",
+      );
+
+    }
     
   } catch (error) {
     console.error("Error Updating achievement:", error);
@@ -573,5 +593,6 @@ module.exports = {
   sendMessage,
   getMessagesBetweenUsers,
   getUnreadMessages,
-  hasUnreadMessages
+  hasUnreadMessages,
+  placeAWallAchievement,
 };
