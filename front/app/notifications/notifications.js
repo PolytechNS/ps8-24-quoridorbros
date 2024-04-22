@@ -33,6 +33,7 @@ async function loadNotifications() {
     const html = await response.text();
     notificationcontainer.innerHTML = html;
     await fetchNotifications();
+    console.log("Affiche notifs");
 }
 
 function createNotification(user,notification){
@@ -106,7 +107,7 @@ function createFriendNotification(user,notification){
   declineButton.textContent = "Decline";
   declineButton.addEventListener("click", async () => {
     try {
-      const requestURL = `/api/friend/decline?from=${encodeURIComponent(notification.sender)}&to=${encodeURIComponent(sender)}`;
+      const requestURL = `/api/friend/decline?from=${encodeURIComponent(notification.sender)}&to=${encodeURIComponent(user)}`;
       const response = await fetch(requestURL, {
         method: "POST",
         headers: {
@@ -130,5 +131,3 @@ function createFriendNotification(user,notification){
   return listItem;
   
 }
-
-loadNotifications();

@@ -18,6 +18,7 @@
 <div class="background"></div>
 <div id="profile-modal-container"></div>
 <div id="friends-modal-container"></div>
+<div id="notifications-container"></div>
 
 
 <div class="popup" id="indexPopup">
@@ -71,6 +72,7 @@
         <div id="round-buttons-line">
             <button id="leaderboard-button" style="display: none;"></button>
             <button id="friends-button" style="display: none;"></button>
+            <button id="notifs-button" style="display: none;"></button>
         </div>
 
         <button id="logoutButton" class="mainButtonClass logged-element" style="display: none;">Logout</button>
@@ -86,6 +88,7 @@
 
 
     <script type="text/javascript" src="./utils/cookieManager.js"></script>
+    <script type="text/javascript" src="./app/notifications/notifications.js"></script>
     <script type="text/javascript" src="./index.js"></script>
     <script type="text/javascript" src="./app/sockets/socket.io.js"></script>
     <div id="friendSocketInitAnchor" style="display: none;"></div>
