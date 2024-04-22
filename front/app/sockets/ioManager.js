@@ -14,6 +14,13 @@ if (cookie) {
   });
 }
 
+socket.on("receiveChallenge", (msg) => {
+    let profileOpponentData = JSON.stringify(msg);
+    let profileOpponent = JSON.parse(profileOpponentData);
+    console.log(profileOpponent);
+    localStorage.setItem("pendingChallenge", profileOpponentData);
+});// Meilleur placement
+
 function getSocket() {
   return new Promise((resolve, reject) => {
     // Vérification de l'état du cookie
