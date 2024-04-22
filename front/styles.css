@@ -81,36 +81,32 @@ div.background {
 }
 
 button.mainButtonClass {
-    border: 4px solid #ff8327;
-    outline: none;
-    width: 80%;
-    height: 10vh;
-    font-family: inherit;
-    font-size: 2em;
-    color: rgb(255, 255, 255);
+    width: 100%;
+    position: relative;
+    font-size: 16pt;
+    padding: 1rem;
+    color: white;
+    border: 0.3rem solid #ff8327;
+    border-radius:20px;
+    z-index: 0;
     background-color: #ffb347;
     cursor: pointer;
-    position: relative;
-    z-index: 0;
-    border-radius: 20px;
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
-    white-space: normal;
 }
 
 button.mainButtonDisabledClass {
-    border: 4px solid #111;
-    outline: none;
-    width: 80%;
-    height: 10%;
-    font-family: inherit;
-    font-size: 2em;
-    color: rgba(30, 30, 30, 0.8);
-    background-color: rgba(240,240,240,0.6);
+    width: 100%;
     position: relative;
-    z-index: 0;
-    border-radius: 20px;
+    font-size: 16pt;
+    padding: 1rem;
+    position: relative;
+    color: rgba(30, 30, 30, 0.8);
+    border: 0.3rem solid #111111;
+    border-radius:20px;
+    background-color: rgba(240,240,240,0.6);
+    cursor: pointer;
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;

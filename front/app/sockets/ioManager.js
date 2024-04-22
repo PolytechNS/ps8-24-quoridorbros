@@ -12,14 +12,14 @@ if (cookie) {
   socket.on("cookieReceived", () => {
     cookieReceived = true;
   });
-}
 
-socket.on("receiveChallenge", (msg) => {
+  socket.on("receiveChallenge", (msg) => {
     let profileOpponentData = JSON.stringify(msg);
     let profileOpponent = JSON.parse(profileOpponentData);
     console.log(profileOpponent);
     localStorage.setItem("pendingChallenge", profileOpponentData);
-});// Meilleur placement
+  }); // Meilleur placement
+}
 
 function getSocket() {
   return new Promise((resolve, reject) => {
