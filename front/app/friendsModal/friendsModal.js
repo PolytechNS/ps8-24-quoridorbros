@@ -92,6 +92,15 @@ async function displayFriendList() {
     usernameElement.classList.add("username");
     friendElement.appendChild(usernameElement);
 
+    const messageElement = document.createElement("button");
+    messageElement.textContent = "message";
+    messageElement.classList.add("message");
+    messageElement.addEventListener("click", () => {
+      friendsModalContainer.innerHTML = "";
+      loadMessagesModal(friend.username);
+    });
+    friendElement.appendChild(messageElement);
+
     const challengeButton = document.createElement("button");
     challengeButton.textContent = "Challenge";
     challengeButton.classList.add("challenge-button");

@@ -14,6 +14,7 @@ const {
   GameManagerMapper,
 } = require("../logic/gameManagers/gameManagerMapper.js");
 const { RoomManager } = require("../logic/matchMaking/roomManager");
+const { configureMessagesEvents } = require("./messagesEvents");
 
 class SocketManager {
   constructor(io) {
@@ -34,6 +35,8 @@ class SocketManager {
         const userId = await getIdOfUser(cookie.user);
         SocketMapper.updateSocket(userId, socket);
         SocketSender.sendMessage(userId, "cookieReceived");
+
+        configureMessagesEvents(socket);
 
         //si le user était déjà en partie
         let aiGameManagerameManager =
