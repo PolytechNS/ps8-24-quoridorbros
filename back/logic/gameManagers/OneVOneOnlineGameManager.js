@@ -3,8 +3,9 @@ const { Game } = require("../../../front/utils/game.js");
 const { SocketMapper } = require("../../socket/socketMapper.js");
 const { SocketSender } = require("../../socket/socketSender.js");
 
-const { saveElo } = require("../../mongoDB/mongoManager");
+const { saveElo,winAGameAchievement,loseAGameAchievement,placeAWallAchievement } = require("../../mongoDB/mongoManager");
 const { GameManagerMapper } = require("./gameManagerMapper");
+const { AchievementsManager } = require("../../social/achievements");
 
 class OneVOneOnlineGameManager {
   constructor(idClient1, idClient2, eloClient1, eloClient2) {
@@ -65,6 +66,25 @@ class OneVOneOnlineGameManager {
 
     saveElo(this.idClient1, this.eloClient1 + deltaClient1);
     saveElo(this.idClient2, this.eloClient2 + deltaClient2);
+
+    const wallsClient1 = 10 - this.game.players[0].nbWalls;
+    placeAWallAchievement(this.idClient1,wallsClient1);
+
+    
+
+    const wallsClient2 = 10 - this.game.players[1].nbWalls;
+    placeAWallAchievement(this.idClient2,wallsClient2);
+
+    switch (playerNumber){
+      case 1:
+        winAGameAchievement(this.idClient1);
+        loseAGameAchievement(this.idClient2);
+        break;
+      default:
+        winAGameAchievement(this.idClient2);
+        loseAGameAchievement(this.idClient1);
+        break;
+    }
 
     const winningMessageClient1 = {
       type: "online",
