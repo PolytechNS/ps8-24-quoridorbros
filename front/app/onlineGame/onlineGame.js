@@ -2,7 +2,7 @@ document
   .getElementById("opponent-profile-container")
   .addEventListener("click", function () {
     const opponentProfile = JSON.parse(
-      localStorage.getItem("profileOpponentString"),
+      localStorage.getItem("profileOpponentString"), //ee
     );
     loadProfileModal(opponentProfile.username);
   });
