@@ -3,8 +3,8 @@ const { GameManagerMapper } = require("./gameManagerMapper.js");
 const { OneVOneOnlineGameManager } = require("./OneVOneOnlineGameManager.js");
 
 class GameManagerFactory {
-  static createAiGameManager(userId, loadGame = false) {
-    const aiGameManager = new AiGameManager(userId, loadGame);
+  static createAiGameManager(userId, level, loadGame = false) {
+    const aiGameManager = new AiGameManager(userId, level, loadGame);
     GameManagerMapper.updateAiGameManager(userId, aiGameManager);
     return aiGameManager;
   }
