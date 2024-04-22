@@ -29,21 +29,14 @@
     align-items: center;
 }
 
-#profile-button, #leaderboard-button, #home-button, #friends-button, #notifs-button {
+#profile-button, #leaderboard-button, #home-button, #friends-button, .challenge-button, #notifs-button{
     height: 5rem;
     width: 5rem;
-    background: #ffb347 no-repeat;
-    background-size: contain;
     border: 0.3rem solid #ff8327;
     border-radius: 50%;
-}
-.challenge-button {
-    height: 100%;
-    width: 11%;
-    background: #ffb347 no-repeat;
+    background: #ffb347 no-repeat center;
     background-size: contain;
-    border: 0.3rem solid #ff8327;
-    border-radius: 50%;
+    cursor: pointer;
 }
 
 #profile-button {
@@ -184,19 +177,27 @@ input[type="checkbox"]:not(:checked) + .popup * {
     overflow: auto; /* Enable scroll bars */
 }
 
-#elos-world {
+.container-contained {
+    width: 80%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.elos-world {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-#elos-world > div {
+.elos-world > div {
+    width: 60vw;
+    border: 2px solid black;
     margin-bottom: 10px;
     display: flex;
     align-items: center;
 }
 
-#elos-world > .profile-picture {
+.elos-world > .profile-picture {
     max-height: 100px; /* Maximum height for the image */
     max-width: 100px; /* Maximum width for the image */
     margin-right: 10px; /* Adjust spacing between image and text */

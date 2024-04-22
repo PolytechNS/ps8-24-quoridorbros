@@ -15,7 +15,11 @@ let notifsButton = document.getElementById("notifs-button");
 window.onload = function () {
   let connectedCookieValue = getCookie("connected");
   if (connectedCookieValue !== null) {
-
+    document
+        .getElementById("friendSocketInitAnchor")
+        .appendChild(document.createElement("script")).src =
+        "/app/sockets/matchmakingEvents.js";
+/*
     document
       .getElementById("friendSocketInitAnchor")
       .appendChild(document.createElement("script")).src =
@@ -24,7 +28,6 @@ window.onload = function () {
         .getElementById("friendSocketInitAnchor")
         .appendChild(document.createElement("script")).src =
         "/app/sockets/matchmakingEvents.js";
-    /*
     document
       .getElementById("friendSocketInitAnchor")
       .appendChild(document.createElement("script")).src =
@@ -64,7 +67,7 @@ window.onload = function () {
       localStorage.setItem("profileString", profileDataString);
     };
     storeProfile();
-    challengeCheck(5);
+    challengeCheck(1000);
   }
 };
 

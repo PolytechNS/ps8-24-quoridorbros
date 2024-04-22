@@ -36,7 +36,7 @@ class SocketManager {
         const userId = await getIdOfUser(cookie.user);
         SocketMapper.updateSocket(userId, socket);
         SocketSender.sendMessage(userId, "cookieReceived");
-
+        //configureChallengeEvents(socket);
         configureMessagesEvents(socket);
 
         //si le user était déjà en partie
@@ -104,9 +104,7 @@ class SocketManager {
         const challengerId = SocketMapper.getUserIdBySocketId(socket.id);
         const challengerProfile = await getProfileByUserId(challengerId);
         console.log(`${challengerProfile} challenges ${challengedUsername}`);
-        SocketMapper.getSocketById(challengedId).emit("receiveChallenge", challengerProfile);
-
-
+        SocketSender.sendMessage(challengedId, "receiveChallenge", challengerProfile);
       });
 
       socket.on("checkFriendConnectionStatus", async (username) => {
