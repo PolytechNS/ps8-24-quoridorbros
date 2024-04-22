@@ -79,3 +79,91 @@ div.background {
         background-position: left 30% bottom 22px, left -1632px bottom 0px, left -1016px bottom 22px, left -512px bottom 0px;
     }
 }
+
+button.mainButtonClass {
+    width: 100%;
+    position: relative;
+    font-size: 16pt;
+    padding: 1rem;
+    color: white;
+    border: 0.3rem solid #ff8327;
+    border-radius:20px;
+    z-index: 0;
+    background-color: #ffb347;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+button.mainButtonDisabledClass {
+    width: 100%;
+    position: relative;
+    font-size: 16pt;
+    padding: 1rem;
+    position: relative;
+    color: rgba(30, 30, 30, 0.8);
+    border: 0.3rem solid #111111;
+    border-radius:20px;
+    background-color: rgba(240,240,240,0.6);
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+button.mainButtonClass:before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    background: linear-gradient(
+            45deg,
+            #ff0000,
+            #ff7300,
+            #fffb00,
+            #48ff00,
+            #00ffd5,
+            #002bff,
+            #7a00ff,
+            #ff00c8,
+            #ff0000
+    );
+    background-size: 400%;
+    z-index: -1;
+    filter: blur(10px);
+    -webkit-filter: blur(10px);
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    transition: opacity 0.3s ease-in-out;
+    border-radius: 10px;
+    opacity: 0; /* Initially hide the rainbow effect */
+}
+
+button.mainButtonClass:hover:before {
+    opacity: 1; /* Show the rainbow effect on hover */
+    animation: glowing-button 20s linear infinite;
+}
+
+@keyframes glowing-button {
+    0% {
+        background-position: 0 0;
+    }
+    50% {
+        background-position: 400% 0;
+    }
+    100% {
+        background-position: 0 0;
+    }
+}
+
+button.mainButtonClass:after {
+    z-index: -1;
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    border-radius: 20px;
+}

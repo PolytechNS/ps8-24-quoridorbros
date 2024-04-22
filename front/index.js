@@ -10,30 +10,35 @@ let signinButton = document.getElementById("signinButton");
 
 let leaderBoardButton = document.getElementById("leaderboard-button");
 let friendsButton = document.getElementById("friends-button");
+let notifsButton = document.getElementById("notifs-button");
 
 window.onload = function () {
   let connectedCookieValue = getCookie("connected");
   if (connectedCookieValue !== null) {
-    /* Une hérésie qui nous évite de refactor : */
+    document
+      .getElementById("friendSocketInitAnchor")
+      .appendChild(document.createElement("script")).src =
+      "/app/sockets/matchmakingEvents.js";
     /*
     document
       .getElementById("friendSocketInitAnchor")
       .appendChild(document.createElement("script")).src =
       "/app/sockets/ioManager.js";
     document
-      .getElementById("friendSocketInitAnchor")
-      .appendChild(document.createElement("script")).src =
-      "/app/friendlist/friendlist.js";
+        .getElementById("friendSocketInitAnchor")
+        .appendChild(document.createElement("script")).src =
+        "/app/sockets/matchmakingEvents.js";
     document
       .getElementById("friendSocketInitAnchor")
       .appendChild(document.createElement("script")).src =
-      "/app/sockets/matchmakingEvents.js";
+      "/app/friendlist/friendlist.js";
+
       */
 
-    /* Désolé */
     leaderBoardButton.style.display = "block";
     friendsButton.style.display = "block";
     profileButton.style.display = "inline-block";
+    notifsButton.style.display = "block";
 
     loginButton.style.display = "none";
     signinButton.style.display = "none";
@@ -48,7 +53,7 @@ window.onload = function () {
     playOnlineButton.classList.remove("mainButtonDisabledClass");
     playWithAIButton.classList.add("mainButtonClass");
     playWithAIButton.classList.remove("mainButtonDisabledClass");
-    playButton.style.display = "inline";
+    playButton.style.display = "block";
 
     const storeProfile = async () => {
       const response = await fetch(`/api/profile?of=${getUsername()}`);
@@ -62,6 +67,7 @@ window.onload = function () {
       localStorage.setItem("profileString", profileDataString);
     };
     storeProfile();
+    challengeCheck(1000);
   }
 };
 
@@ -79,10 +85,11 @@ function logout() {
         profileButton.style.display = "none";
         leaderBoardButton.style.display = "none";
         friendsButton.style.display = "none";
+        notifsButton.style.display = "none";
 
-        playButton.style.display = "inline";
-        loginButton.style.display = "inline";
-        signinButton.style.display = "inline";
+        playButton.style.display = "block";
+        loginButton.style.display = "block";
+        signinButton.style.display = "block";
 
         document.getElementById("loginNote").style.display = "inline";
         playOnlineButton.classList.remove("mainButtonClass");
@@ -94,101 +101,26 @@ function logout() {
     .catch((error) => console.error("Error:", error));
 }
 
-async function getEloWorld() {
-  try {
-    let connectedCookieValue = getCookie("connected");
-    if (connectedCookieValue) {
-      const response = await fetch(`/api/world`);
-      if (response.status !== 200) {
-        throw new Error("Failed to fetch profile");
-      }
-
-      const profiles = await response.json();
-      return profiles.profiles;
-    }
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-async function displayEloWorld() {
-  try {
-    let elos = await getEloWorld();
-    if (elos) {
-      elos.sort((a, b) => {
-        if (a.elo !== b.elo) {
-          return b.elo - a.elo;
-        } else {
-          return a.username.localeCompare(b.username);
-        }
-      });
-      let connectedCookieValue = getCookie("connected");
-      connectedCookieValue = JSON.parse(connectedCookieValue);
-
-      const achievementsDiv = document.getElementById("elos-world");
-      achievementsDiv.innerHTML = "";
-      console.log(elos);
-      let profilenumber = 1;
-
-      elos.forEach((profile) => {
-        const profileElement = document.createElement("div");
-
-        if (
-          connectedCookieValue &&
-          connectedCookieValue.user === profile.username
-        ) {
-          profileElement.style.backgroundColor = "green";
-        }
-
-        const num = document.createElement("div");
-        num.textContent = profilenumber;
-        profileElement.appendChild(num);
-
-        const profilePic = document.createElement("img");
-        profilePic.src = profile.photo;
-        profilePic.style.maxHeight = "100px";
-        profilePic.classList.add("profile-picture");
-        profileElement.appendChild(profilePic);
-
-        const usernameElement = document.createElement("div");
-        console.log(profile.username);
-        usernameElement.textContent = profile.username;
-        usernameElement.classList.add("elo-username");
-        profileElement.appendChild(usernameElement);
-
-        const eloElement = document.createElement("div");
-        eloElement.textContent = profile.elo;
-        console.log(profile.elo);
-        eloElement.classList.add("elo");
-        profileElement.appendChild(eloElement);
-
-        achievementsDiv.appendChild(profileElement);
-        profilenumber++;
-      });
-      // Here you can manipulate the DOM to display elos data as needed
-    } else {
-      console.log("User not connected or data not available.");
-    }
-  } catch (error) {
-    console.error(error);
-  }
-}
-
 playButton.addEventListener("click", function () {
   playButton.style.display = "none";
   loginButton.style.display = "none";
   signinButton.style.display = "none";
+  leaderBoardButton.style.display = "none";
+  friendsButton.style.display = "none";
+  notifsButton.style.display = "none";
 
-  playWithAIButton.style.display = "inline";
-  playLocalButton.style.display = "inline";
-  playOnlineButton.style.display = "inline";
+  playWithAIButton.style.display = "block";
+  playLocalButton.style.display = "block";
+  playOnlineButton.style.display = "block";
 });
 
 leaderBoardButton.addEventListener("click", function () {
+  loadLeaderboardModal();
+  /*
   document.getElementById("indexPopup").style.display = "flex";
   document.getElementById("profileEditorPopup").style.display = "none";
   document.getElementById("eloPopup").style.display = "block";
-  displayEloWorld();
+  displayEloWorld();*/
 });
 
 friendsButton.addEventListener("click", function (event) {
@@ -204,3 +136,33 @@ profileButton.addEventListener("click", function () {
     throw new Error("Failed to fetch profile");
   }
 });
+
+notifsButton.addEventListener("click", function () {
+  loadNotifications();
+});
+
+function closeAllModals() {
+  document.getElementById("leaderboard-modal-container").innerHTML = "";
+  document.getElementById("friends-modal-container").innerHTML = "";
+  document.getElementById("profile-modal-container").innerHTML = "";
+  document.getElementById("challenge-modal-container").innerHTML = "";
+}
+
+async function challengeCheck(param) {
+  while (true) {
+    try {
+      while (localStorage.getItem("pendingChallenge") === null) {
+        await new Promise((resolve) => setTimeout(resolve, param));
+      }
+
+      closeAllModals();
+      let profileOpponentData = localStorage.getItem("pendingChallenge");
+      let profileOpponent = JSON.parse(profileOpponentData);
+      localStorage.removeItem("pendingChallenge");
+      loadChallengeModal(profileOpponent);
+    } catch (error) {
+      console.error("Error:", error);
+      break;
+    }
+  }
+}

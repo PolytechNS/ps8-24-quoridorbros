@@ -14,6 +14,7 @@ const {
   GameManagerMapper,
 } = require("../logic/gameManagers/gameManagerMapper.js");
 const { RoomManager } = require("../logic/matchMaking/roomManager");
+const {getProfileOf, getProfileByUserId} = require("../mongoDB/mongoManager");
 const { configureMessagesEvents } = require("./messagesEvents");
 
 class SocketManager {
@@ -35,7 +36,7 @@ class SocketManager {
         const userId = await getIdOfUser(cookie.user);
         SocketMapper.updateSocket(userId, socket);
         SocketSender.sendMessage(userId, "cookieReceived");
-
+        //configureChallengeEvents(socket);
         configureMessagesEvents(socket);
 
         //si le user était déjà en partie
@@ -98,9 +99,12 @@ class SocketManager {
         RoomManager.quitMatchmaking(userId);
       });
 
-      socket.on("challengeFriend", (username) => {
-        const userId = SocketMapper.getUserIdBySocketId(socket.id);
-        console.log(`challengeFriend: ${socket.id}`);
+      socket.on("challengeFriend", async (challengedUsername) => {
+        const challengedId = await getIdOfUser(challengedUsername);
+        const challengerId = SocketMapper.getUserIdBySocketId(socket.id);
+        const challengerProfile = await getProfileByUserId(challengerId);
+        console.log(`${challengerProfile} challenges ${challengedUsername}`);
+        SocketSender.sendMessage(challengedId, "receiveChallenge", challengerProfile);
       });
 
       socket.on("checkFriendConnectionStatus", async (username) => {

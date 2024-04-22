@@ -335,6 +335,104 @@ async function getAllProfiles() {
   }
 }
 
+async function winAGameAchievement(userId){
+
+  try {
+    const db = await getDb();
+    const userProfileCollection = db.collection("user_profile");
+
+    const objectIdUserId = new ObjectId(userId);
+
+    const user = await userProfileCollection.findOne({ _id: objectIdUserId });
+    if (!user) {
+      throw new Error(`User not found.`);
+    }
+
+    await AchievementsManager.updateAchievement(
+      userProfileCollection,
+      objectIdUserId,
+      "ach5",
+    );
+    
+  } catch (error) {
+    console.error("Error Updating achievement:", error);
+    throw error;
+  }
+}
+
+async function loseAGameAchievement(userId){
+
+  try {
+    const db = await getDb();
+    const userProfileCollection = db.collection("user_profile");
+
+    const objectIdUserId = new ObjectId(userId);
+
+    const user = await userProfileCollection.findOne({ _id: objectIdUserId });
+    if (!user) {
+      throw new Error(`User not found.`);
+    }
+
+    await AchievementsManager.updateAchievement(
+      userProfileCollection,
+      objectIdUserId,
+      "ach6",
+    );
+    
+  } catch (error) {
+    console.error("Error Updating achievement:", error);
+    throw error;
+  }
+}
+
+async function placeAWallAchievement(userId,nbWalls){
+
+  try {
+    const db = await getDb();
+    const userProfileCollection = db.collection("user_profile");
+
+    const objectIdUserId = new ObjectId(userId);
+
+    const user = await userProfileCollection.findOne({ _id: objectIdUserId });
+    if (!user) {
+      throw new Error(`User not found.`);
+    }
+
+    await AchievementsManager.reinitializeAchievement(
+      userProfileCollection,
+      objectIdUserId,
+      "ach3",
+    );
+
+    for (let i=0; i<nbWalls; i++){
+      await AchievementsManager.updateAchievement(
+        userProfileCollection,
+        objectIdUserId,
+        "ach3",
+      );
+
+    }
+
+    await AchievementsManager.reinitializeAchievement(
+      userProfileCollection,
+      objectIdUserId,
+      "ach4",
+    );
+
+    for (let i=0; i<nbWalls; i++){
+      await AchievementsManager.updateAchievement(
+        userProfileCollection,
+        objectIdUserId,
+        "ach4",
+      );
+
+    }
+    
+  } catch (error) {
+    console.error("Error Updating achievement:", error);
+    throw error;
+  }
+}
 async function sendMessage(senderId, receiverId, content) {
   try {
     const db = getDb();
@@ -475,7 +573,6 @@ async function clearMessageCollection() {
     return 0; // Retourne 0 en cas d'erreur
   }
 }
-
 module.exports = {
   connect,
   getDb,
@@ -491,8 +588,11 @@ module.exports = {
   getProfileByUserId,
   getAllProfiles,
   saveElo,
+  winAGameAchievement,
+  loseAGameAchievement,
   sendMessage,
   getMessagesBetweenUsers,
   getUnreadMessages,
   hasUnreadMessages,
+  placeAWallAchievement,
 };
