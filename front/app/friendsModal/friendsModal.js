@@ -18,7 +18,7 @@ function setUpFriendsModalClosingListeners() {
     });
 
   window.addEventListener("click", function (event) {
-    if (event.target == document.getElementById("myModal")) {
+    if (event.target == document.getElementById("friends-modal")) {
       friendsModalContainer.innerHTML = "";
     }
   });
@@ -102,6 +102,9 @@ async function displayFriendList() {
       friendsModalContainer.innerHTML = "";
       loadMessagesModal(friend.username);
     });
+    const iconeMessages = document.createElement("img");
+    iconeMessages.src = "../../assets/images/bulles-de-chat.png";
+    messageElement.appendChild(iconeMessages);
     friendElement.appendChild(messageElement);
 
     const challengeButton = document.createElement("button");
@@ -110,6 +113,9 @@ async function displayFriendList() {
     challengeButton.addEventListener("click", () => {
       sendChallenge(friend.username);
     });
+    const iconeChallenge = document.createElement("img");
+    iconeChallenge.src = "../../assets/images/challenge.png";
+    challengeButton.appendChild(iconeChallenge);
     friendElement.appendChild(challengeButton);
     friendListTab.appendChild(friendElement);
     checkFriendConnectionStatus(friend.username);
@@ -126,9 +132,11 @@ async function displayFriendRequests() {
       const userText = document.createElement("p");
       userText.textContent = friendRequest.sender;
 
+      const divButtons = document.createElement("div");
+      divButtons.classList.add("friend-requests-buttons");
+
       const acceptButton = document.createElement("button");
       acceptButton.classList.add("accept-button");
-      acceptButton.textContent = "Accept";
       acceptButton.addEventListener("click", async () => {
         FriendsService.acceptFriendRequest(friendRequest.sender, getUsername());
         friendRequestElement.remove();
@@ -136,7 +144,6 @@ async function displayFriendRequests() {
 
       const declineButton = document.createElement("button");
       declineButton.classList.add("decline-button");
-      declineButton.textContent = "Decline";
       declineButton.addEventListener("click", async () => {
         FriendsService.declineFriendRequest(
           friendRequest.sender,
@@ -147,8 +154,9 @@ async function displayFriendRequests() {
       });
 
       friendRequestElement.appendChild(userText);
-      friendRequestElement.appendChild(acceptButton);
-      friendRequestElement.appendChild(declineButton);
+      divButtons.appendChild(acceptButton);
+      divButtons.appendChild(declineButton);
+      friendRequestElement.appendChild(divButtons);
       friendRequestsTab.appendChild(friendRequestElement);
     });
   }
@@ -183,5 +191,5 @@ async function loadFriendsModal() {
   friendsModalContainer.innerHTML = html;
   setUpFriendsModalListeners();
   displayTabs();
-  document.getElementById("myModal").style.display = "block";
+  document.getElementById("friends-modal").style.display = "block";
 }

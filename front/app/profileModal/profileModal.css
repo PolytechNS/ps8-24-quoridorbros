@@ -28,9 +28,10 @@
 .close {
     height: 2rem;
     width: 2rem;
-    position: absolute;
-    right: 0px;
-    top: 0px;
+    position: relative;
+    align-self:flex-end;
+    right: -20px;
+    top:-20px;
     background: white;
 }
 
