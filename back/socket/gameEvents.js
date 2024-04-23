@@ -1,6 +1,10 @@
 const {
   GameManagerMapper,
 } = require("../logic/gameManagers/gameManagerMapper");
+const {getIdOfUser, getProfileByUserId} = require("../mongoDB/mongoManager");
+const {SocketMapper} = require("./socketMapper");
+const {SocketSender} = require("./socketSender");
+const {ChallengeManager} = require("../logic/matchMaking/challengeManager");
 
 function configureAiGameEvents(socket, aiGameManager) {
   socket.on("newMove", (move) => {
@@ -10,6 +14,27 @@ function configureAiGameEvents(socket, aiGameManager) {
   socket.on("save-game", () => {
     console.log(`save-game: ${socket.id}`);
     aiGameManager.saveGame();
+  });
+}
+
+function configureChallengeEvents(socket) {
+  socket.on("challengeFriend", async (challengedUsername) => {
+    const challengerUserId = SocketMapper.getUserIdBySocketId(socket.id);
+    await ChallengeManager.sendChallenge(challengedUsername, challengerUserId);
+  });
+
+  socket.on("acceptChallenge", async (challengerUsername) => {
+    const challengerUserId = await getIdOfUser(challengerUsername);
+    await ChallengeManager.acceptChallenge(challengerUserId);
+  });
+
+  socket.on("declineChallenge", async (challengerUsername) => {
+    const challengerUserId = await getIdOfUser(challengerUsername);
+    await ChallengeManager.declineChallenge(challengerUserId);
+  });
+
+  socket.on("cancelChallenge", async (challengedUsername) => {
+    await ChallengeManager.cancelChallenge(challengedUsername);
   });
 }
 
@@ -47,3 +72,4 @@ function configureOneVOneOnlineGameEvents(
 
 exports.configureAiGameEvents = configureAiGameEvents;
 exports.configureOneVOneOnlineGameEvents = configureOneVOneOnlineGameEvents;
+exports.configureChallengeEvents = configureChallengeEvents;

@@ -154,7 +154,7 @@ async function challengeCheck(param) {
 
       closeAllModals();
       let profileOpponentData = localStorage.getItem("pendingChallenge");
-      let profileOpponent = JSON.parse(profileOpponentData);
+      let profileOpponent = JSON.parse(profileOpponentData).data;
       localStorage.removeItem("pendingChallenge");
       loadChallengeModal(profileOpponent);
     } catch (error) {

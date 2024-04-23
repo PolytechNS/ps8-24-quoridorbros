@@ -19,7 +19,11 @@ socket.on("receiveChallenge", (msg) => {
     let profileOpponent = JSON.parse(profileOpponentData);
     console.log(profileOpponent);
     localStorage.setItem("pendingChallenge", profileOpponentData);
-});// Meilleur placement
+});
+
+socket.on("removeChallenge", () => {
+    localStorage.removeItem("pendingChallenge");
+});
 
 function getSocket() {
   return new Promise((resolve, reject) => {
