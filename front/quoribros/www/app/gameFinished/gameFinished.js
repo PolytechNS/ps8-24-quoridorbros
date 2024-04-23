@@ -45,10 +45,13 @@ function loadLocalFinishedPage() {
 }
 
 if (gameResults.result) {
-  document.getElementById("results-container").style.justifyContent = "flex-start";
+  const resultText = document.getElementById("result-text");
+  resultText.textContent = "You Won";
+
   switch (gameResults.type) {
     case "ai":
-      background.style.backgroundImage = 'url("../../assets/images/win-ai.png")';
+      background.style.backgroundImage =
+        'url("../../assets/images/win-ai.png")';
       break;
     case "online":
       background.style.backgroundImage = 'url("../../assets/images/win.png")';
@@ -56,7 +59,7 @@ if (gameResults.result) {
     case "local":
       background.style.backgroundImage = 'url("../../assets/images/win.png")';
       const winnerName = document.createElement("h2");
-        winnerName.textContent = gameResults.result+" won!";
+      winnerName.textContent = gameResults.result + " won!";
       document.getElementById("results-container").appendChild(winnerName);
       break;
     default:
@@ -64,25 +67,27 @@ if (gameResults.result) {
       break;
   }
 } else {
+  const resultText = document.getElementById("result-text");
+  resultText.textContent = "Game Over";
   background.style.backgroundImage = 'url("../../assets/images/game-over.png")';
 }
 
 function incNbrRec(currentNumber, endNumber, element, speed) {
-  element.innerHTML = currentNumber
+  element.innerHTML = currentNumber;
   if (currentNumber < endNumber) {
-    element.style.color = "green"
-    setTimeout(function() {
-      incNbrRec(currentNumber + 1, endNumber, element, speed)
-    }, speed)
+    element.style.color = "green";
+    setTimeout(function () {
+      incNbrRec(currentNumber + 1, endNumber, element, speed);
+    }, speed);
   }
   if (currentNumber > endNumber) {
-    element.style.color = "red"
-    setTimeout(function() {
-      incNbrRec(currentNumber - 1, endNumber, element, speed)
-    }, speed)
+    element.style.color = "red";
+    setTimeout(function () {
+      incNbrRec(currentNumber - 1, endNumber, element, speed);
+    }, speed);
   }
   if (currentNumber === endNumber) {
-    element.style.color = "black"
-    element.innerHTML = "New Elo : "+endNumber;
+    element.style.color = "black";
+    element.innerHTML = "New Elo : " + endNumber;
   }
 }
