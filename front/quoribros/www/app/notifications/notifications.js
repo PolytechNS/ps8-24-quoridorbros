@@ -6,7 +6,7 @@ async function fetchNotifications() {
       if (connectedCookieValue) {
         connectedCookieValue = JSON.parse(connectedCookieValue);
         const sender = connectedCookieValue.user;
-        const response = await fetch(`/api/notifications?userId=${sender}`);
+        const response = await fetch(endpoint+`/api/notifications?userId=${sender}`);
         if (response.status !== 200) {
           throw new Error('Failed to fetch notifications');
           return;
@@ -55,7 +55,7 @@ function createAchievementNotification(user,notification){
   acceptButton.textContent = "V";
   acceptButton.addEventListener("click", async () => {
     try {
-      const requestURL = `/api/notification/del?notif=${encodeURIComponent(notification._id)}&of=${encodeURIComponent(user)}`;
+      const requestURL = endpoint+`/api/notification/del?notif=${encodeURIComponent(notification._id)}&of=${encodeURIComponent(user)}`;
       const response = await fetch(requestURL, {
         method: "POST",
         headers: {
@@ -84,7 +84,7 @@ function createFriendNotification(user,notification){
   acceptButton.textContent = "Accept";
   acceptButton.addEventListener("click", async () => {
     try {
-      const requestURL = `/api/friend/accept?from=${encodeURIComponent(notification.sender)}&to=${encodeURIComponent(user)}`;
+      const requestURL = endpoint+`/api/friend/accept?from=${encodeURIComponent(notification.sender)}&to=${encodeURIComponent(user)}`;
       const response = await fetch(requestURL, {
         method: "POST",
         headers: {
@@ -107,7 +107,7 @@ function createFriendNotification(user,notification){
   declineButton.textContent = "Decline";
   declineButton.addEventListener("click", async () => {
     try {
-      const requestURL = `/api/friend/decline?from=${encodeURIComponent(notification.sender)}&to=${encodeURIComponent(user)}`;
+      const requestURL = endpoint+`/api/friend/decline?from=${encodeURIComponent(notification.sender)}&to=${encodeURIComponent(user)}`;
       const response = await fetch(requestURL, {
         method: "POST",
         headers: {

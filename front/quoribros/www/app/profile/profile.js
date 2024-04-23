@@ -4,7 +4,7 @@ async function displayProfile() {
     if (connectedCookieValue) {
       connectedCookieValue = JSON.parse(connectedCookieValue);
       const sender = connectedCookieValue.user;
-      const response = await fetch(`/api/profile?of=${sender}`);
+      const response = await fetch(endpoint+`/api/profile?of=${sender}`);
       if (response.status !== 200) {
         throw new Error("Failed to fetch profile");
       }

@@ -56,7 +56,7 @@ window.onload = function () {
     playButton.style.display = "inline";
 
     const storeProfile = async () => {
-      const response = await fetch(`/api/profile?of=${getUsername()}`);
+      const response = await fetch(endpoint+`/api/profile?of=${getUsername()}`);
       if (response.status !== 200) {
         throw new Error("Failed to fetch profile");
       }
@@ -72,7 +72,7 @@ window.onload = function () {
 };
 
 function logout() {
-  fetch("/api/logout", {
+  fetch(endpoint+"/api/logout", {
     method: "POST",
   })
     .then((response) => {

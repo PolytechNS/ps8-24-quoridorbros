@@ -10,7 +10,7 @@ async function selectImage(profile, imageSrc) {
     const imgFileName = imageSrc.split("/").pop();
     
     try {
-        const response = await fetch(`/api/profile?of=${profile}&newimg=${imgFileName}`, {
+        const response = await fetch(endpoint+`/api/profile?of=${profile}&newimg=${imgFileName}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ async function displayImagesFromDirectory() {
             throw new Error('User not authenticated');
         }
         const { user: sender } = JSON.parse(connectedCookieValue);
-        const response = await fetch(`/api/profile?of=${sender}`);
+        const response = await fetch(endpoint+`/api/profile?of=${sender}`);
         if (!response.ok) {
             throw new Error('Failed to fetch profile');
         }
