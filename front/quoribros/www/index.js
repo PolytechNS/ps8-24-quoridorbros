@@ -77,6 +77,7 @@ function logout() {
   })
     .then((response) => {
       if (response.ok) {
+        window.location.href = ".";
         playWithAIButton.style.display = "none";
         playLocalButton.style.display = "none";
         playOnlineButton.style.display = "none";

@@ -29,5 +29,28 @@
     </div>
     <button class="btn--secondary" onclick="window.location.href='../../index.html'">Back</button>
 </div>
+
+<script>
+    document.getElementById("signinForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        var formData = new FormData(this);
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(function(response) {
+            if (response.ok) {
+                window.location.href = "../../index.html";
+            } else {
+                return response.json().then(function(data) {
+                    alert("Erreur: " + data.error);
+                });
+            }
+        })
+        .catch(function(error) {
+            console.error('Une erreur s\'est produite:', error);
+        });
+    });
+</script>
 </body>
 </html>
