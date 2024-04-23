@@ -1,1 +1,1 @@
-const endpoint = "http://quoribros.ps8.academy";
+const endpoint = "";
