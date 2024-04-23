@@ -77,6 +77,7 @@ function logout() {
   })
     .then((response) => {
       if (response.ok) {
+        window.location.href = ".";
         playWithAIButton.style.display = "none";
         playLocalButton.style.display = "none";
         playOnlineButton.style.display = "none";
@@ -157,7 +158,7 @@ async function challengeCheck(param) {
 
       closeAllModals();
       let profileOpponentData = localStorage.getItem("pendingChallenge");
-      let profileOpponent = JSON.parse(profileOpponentData);
+      let profileOpponent = JSON.parse(profileOpponentData).data;
       localStorage.removeItem("pendingChallenge");
       loadChallengeModal(profileOpponent);
     } catch (error) {

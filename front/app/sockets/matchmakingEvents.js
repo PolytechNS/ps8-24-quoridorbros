@@ -17,6 +17,10 @@ function quitMatchMaking() {
   socket.emit("quitMatchMaking");
   window.location.href = "../../index.html";
 }
+function quitChallenging() {
+  socket.emit("cancelChallenge");
+  window.location.href = "../../index.html";
+}
 
 socket.on("RoomFull", (msg) => {
   let profileOpponentDataString = JSON.stringify(msg.data);
@@ -36,4 +40,8 @@ socket.on("challengeAccepted", (msg) => {
   let profileOpponentDataString = JSON.stringify(msg.data);
   localStorage.setItem("profileOpponentString", profileOpponentDataString);
   opponentFound(msg.data);
+});
+
+socket.on("challengeDeclined", (msg) => {
+  quitChallenging();
 });

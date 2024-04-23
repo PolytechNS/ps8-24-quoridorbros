@@ -183,6 +183,7 @@ function checkFriendConnectionStatus(username) {
 
 function sendChallenge(username) {
   socket.emit("challengeFriend", username);
+  window.location.href = "./app/matchmaking/challengeMatchmaking.html";
 }
 
 async function loadFriendsModal() {
