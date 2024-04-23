@@ -101,4 +101,19 @@ async function createRoom(userId1, userId2, userProfile1, userProfile2) {
   );
 }
 
+async function challengeAccepted(userId1, userId2) {
+  const userProfile1 = await getProfileByUserId(userId1);
+  const userProfile2 = await getProfileByUserId(userId2);
+  SocketSender.sendMessage(userId1, "ChallengeBegin", userProfile2);
+  SocketSender.sendMessage(userId2, "ChallengeBegin", userProfile1);
+  SocketMapper.removeSocketById(userId1);
+  SocketMapper.removeSocketById(userId2);
+  GameManagerFactory.createOneVOneOnlineGameManager(
+    userId1,
+    userId2,
+    userProfile1.elo,
+    userProfile2.elo,
+  );
+}
+
 exports.RoomManager = RoomManager;

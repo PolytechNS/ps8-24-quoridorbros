@@ -190,7 +190,7 @@ class Game {
     const currentTurn = this.turn;
     setTimeout(() => {
       this.turnExpired(currentTurn);
-    }, 6000000);
+    }, 60000);
   }
 
   onCellClick(x, y) {
@@ -307,12 +307,12 @@ class Game {
         }, 60000);
       }
     } else {
-      this.gameManager.updateGameStatePlayer1(gameStatePlayer1);
-      this.gameManager.updateGameStatePlayer2(gameStatePlayer2);
       const currentTurn = this.turn;
       setTimeout(() => {
         this.turnExpired(currentTurn);
       }, 60000);
+      this.gameManager.updateGameStatePlayer1(gameStatePlayer1);
+      this.gameManager.updateGameStatePlayer2(gameStatePlayer2);
     }
   }
 
@@ -458,6 +458,7 @@ class Game {
   loadSavedGame() {}
 
   turnExpired(turn) {
+    console.log("this.turn", this.turn, "turn", turn);
     if (this.turn === turn) {
       const otherPlayer = this.getOtherPlayer(this.currentPlayer);
       this.gameManager.playerWon(otherPlayer.playerNumber);

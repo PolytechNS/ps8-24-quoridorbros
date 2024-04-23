@@ -4,35 +4,42 @@
     height: 100vh;
 }
 
-#index-container h1{
-    height: 30%;
-    margin: 0 auto;
-    font-size: 8vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 #top-line {
-    height: 10%;
+    height: 10vh;
     display: flex;
     justify-content: space-between;
 }
 
-#main-content {
-    height: 60%;
-    width: 40%;
+#index-container h1{
+    height: 30vh;
     margin: 0 auto;
-    padding: 5% 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#main-content {
+    height: 60vh;
+    width: 40vw;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
 }
 
-#profile-button, #leaderboard-button, #home-button, #friends-button, .challenge-button, #notifs-button{
-    height: 5rem;
-    width: 5rem;
-    border: 0.3rem solid #ff8327;
+
+#round-buttons-line {
+    display: flex;
+    justify-content: center;
+    gap: 2vw;
+}
+
+#profile-button, #leaderboard-button, #home-button, #friends-button, #notifs-button{
+    height: 10vw;
+    width: 10vw;
+    border: 0.5vw solid #ff8327;
     border-radius: 50%;
     background: #ffb347 no-repeat center;
     background-size: contain;
@@ -59,15 +66,7 @@
     background-image: url("./assets/images/friends.png");
 }
 
-.challenge-button {
-    background-image: url("./assets/images/challenge.png");
-    min-width: 6rem;
-}
 
-#round-buttons-line {
-    display: flex;
-    justify-content: space-between;
-}
 
 
 .quoridor-title span {
@@ -76,6 +75,7 @@
     animation: wave 2s infinite;
 }
 .letter{
+    font-size: 8vw;
     -webkit-text-stroke: 3px black;
 }
 @keyframes wave {
@@ -112,69 +112,10 @@
     cursor: pointer;
 }
 
-.popup {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.6);
-    z-index: 2;
-    align-items: center;
-    justify-content: center;
-}
-
-.popupBox {
-    height: 50vh;
-    width: 50vw;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: white;
-    border-radius: 20px;
-    box-shadow: 0 0 10px 5px rgba(0,0,0,0.5);
-    z-index: 3;
-}
-
-input[type="checkbox"]{
-    display: none;
-}
-.label {
-    display: flex;
-}
-
-input[type="checkbox"]:checked + .popup *{
-    display: inline-block;
-}
-
-input[type="checkbox"]:not(:checked) + .popup * {
-    display: none;
-}
-
-.close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    color: #fe0606;
-    font-size: 30px;
-    text-decoration: none;
-}
-
-.close:hover {
-    color: #ff0000;
-}
-
 #loginNote {
     position: absolute;
     display: inline;
     font-size: 8px;
-}
-
-.popupBox {
-    width: 300px; /* Adjust as needed */
-    height: 400px; /* Adjust as needed */
-    overflow: auto; /* Enable scroll bars */
 }
 
 .container-contained {
@@ -212,4 +153,63 @@ input[type="checkbox"]:not(:checked) + .popup * {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+@media (orientation: portrait) {
+    /*Definition du font*/
+
+    #top-line {
+        height: 10vh;
+    }
+
+    #index-container h1{
+        height: 30vh;
+    }
+
+
+    #main-content {
+        height: 60vh;
+        width: 90vw;
+    }
+
+
+    #round-buttons-line {
+        display: flex;
+        justify-content: center;
+        gap: 2vw;
+    }
+
+    #profile-button, #leaderboard-button, #home-button, #friends-button, #notifs-button{
+        height: 20vw;
+        width: 20vw;
+        border: 1vw solid #ff8327;
+    }
+
+    #profile-button {
+        background-image: url("./assets/images/profile.png");
+    }
+
+    #leaderboard-button {
+        background-image: url("./assets/images/leaderboard.png");
+    }
+
+    #notifs-button {
+        background-image: url("./assets/images/notifications.png");
+    }
+
+    #home-button {
+        background-image: url("./assets/images/home.png");
+    }
+
+    #friends-button {
+        background-image: url("./assets/images/friends.png");
+    }
+
+
+
+
+    .letter{
+        font-size: 10vw;
+        -webkit-text-stroke: 1.4px black;
+    }
 }
