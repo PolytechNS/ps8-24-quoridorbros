@@ -304,7 +304,7 @@ class Game {
         const currentTurn = this.turn;
         setTimeout(() => {
           this.turnExpired(currentTurn);
-        }, 60000);
+        }, 6000000);
       }
     } else {
       this.gameManager.updateGameStatePlayer1(gameStatePlayer1);
@@ -312,7 +312,8 @@ class Game {
       const currentTurn = this.turn;
       setTimeout(() => {
         this.turnExpired(currentTurn);
-      }, 60000);
+      }, 6000000);
+      // TODO : DO NOT PUSH THIS, TEST PURPOSES ONLY
     }
   }
 
