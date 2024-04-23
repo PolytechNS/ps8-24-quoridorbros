@@ -19,11 +19,11 @@ function setUpChallengeModalClosingListeners() {
 
 
 function acceptChallenge(username) {
-  console.log('accepting challenge from', username);
+  socket.emit("acceptChallenge", username);
 }
 
 function declineChallenge(username) {
-    console.log('declining challenge from', username);
+    socket.emit("declineChallenge", username);
 }
 
 function displayChallenger(profileOpponent) {

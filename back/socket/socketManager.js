@@ -5,6 +5,7 @@ const {
 const {
   configureAiGameEvents,
   configureOneVOneOnlineGameEvents,
+  configureChallengeEvents,
 } = require("./gameEvents.js");
 
 const { SocketMapper } = require("./socketMapper.js");
@@ -36,7 +37,7 @@ class SocketManager {
         const userId = await getIdOfUser(cookie.user);
         SocketMapper.updateSocket(userId, socket);
         SocketSender.sendMessage(userId, "cookieReceived");
-        //configureChallengeEvents(socket);
+        configureChallengeEvents(socket);
         configureMessagesEvents(socket);
 
         //si le user était déjà en partie
@@ -97,14 +98,6 @@ class SocketManager {
 
         //console.log(`quit matchmaking: ${socket.id}`);
         RoomManager.quitMatchmaking(userId);
-      });
-
-      socket.on("challengeFriend", async (challengedUsername) => {
-        const challengedId = await getIdOfUser(challengedUsername);
-        const challengerId = SocketMapper.getUserIdBySocketId(socket.id);
-        const challengerProfile = await getProfileByUserId(challengerId);
-        console.log(`${challengerProfile} challenges ${challengedUsername}`);
-        SocketSender.sendMessage(challengedId, "receiveChallenge", challengerProfile);
       });
 
       socket.on("checkFriendConnectionStatus", async (username) => {
