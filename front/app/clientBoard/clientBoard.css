@@ -6,27 +6,27 @@
 }
 
 .cell {
-    width: 7.5vmin;
-    height: 7.5vmin;
+    width: 7.5vh;
+    height: 7.5vh;
     background-image: url("../../assets/images/bloc.png");
-    background-size: 7.5vmin;
+    background-size: 7.5vh;
 }
 
 .wall {
-    width: 1.5vmin;
-    height: 1.5vmin;
+    width: 1.5vh;
+    height: 1.5vh;
 }
 
 .wall.horizontal {
-    width: 7.5vmin;
+    width: 7.5vh;
 }
 
 .wall.vertical {
-    height: 7.5vmin;
+    height: 7.5vh;
 }
 
 .wall.horizontal.placed {
-    width: 7.5vmin;
+    width: 7.5vh;
     background-size: cover;
     background-position: center;
     background: black;
@@ -34,7 +34,7 @@
 }
 
 .wall.vertical.placed {
-    height: 7.5vmin;
+    height: 7.5vh;
     background-size: cover;
     background-position: center;
     background: black;
@@ -70,15 +70,41 @@
 .gameBoard {
     display: grid;
     grid-template-columns: repeat(17, auto);
-    gap: 0.3vmin;
+    gap: 0.3vh;
     justify-content: center;
     background-image: url("../../assets/images/water.png");
     background-size: cover;
-    padding: 1vmin;
+    padding: 1vh;
     border-radius: 2%;
 }
 
-@media screen and (min-aspect-ratio:3/4) and (max-aspect-ratio:4/3) {
+@media (orientation: portrait) {
+    .cell {
+        width: 7.5vw;
+        height: 7.5vw;
+        background-size: 7.5vw;
+    }
+    .wall {
+        width: 1.5vw;
+        height: 1.5vw;
+    }
+
+    .wall.horizontal {
+        width: 7.5vw;
+    }
+
+    .wall.vertical {
+        height: 7.5vw;
+    }
+    .wall.horizontal.placed {
+        width: 7.5vw;
+    }
+    .wall.vertical.placed {
+        height: 7.5vw;
+    }
+}
+
+@media screen and (min-aspect-ratio:9/16) and (max-aspect-ratio:16/9) {
     .cell {
         width: 4vmin;
         height: 4vmin;
@@ -103,3 +129,5 @@
         height: 5vmin;
     }
 }
+
+

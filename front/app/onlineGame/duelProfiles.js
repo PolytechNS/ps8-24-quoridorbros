@@ -1,4 +1,5 @@
 const profileContainer = document.getElementById("profile-container");
+const optionsContainer = document.getElementById("options-container");
 const opponentProfileContainer = document.getElementById(
   "opponent-profile-container",
 );
