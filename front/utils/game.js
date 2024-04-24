@@ -141,7 +141,7 @@ class Game {
   constructor(gameManager, savedGame) {
     this.gameManager = gameManager;
     this.playerConcede = undefined;
-    this.stopTimer = true;
+    this.stopTimer = false;
 
     this.turn = 1;
     if (savedGame) {

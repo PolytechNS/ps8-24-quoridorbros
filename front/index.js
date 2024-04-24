@@ -128,6 +128,25 @@ friendsButton.addEventListener("click", function (event) {
   loadFriendsModal();
 });
 
+playLocalButton.addEventListener("click", function () {
+  const myProfile = {
+    elo: 0,
+    photo: "./assets/images/profile/img1.webp",
+    username: "Player 1",
+  };
+  const profileOpponent = {
+    elo: 0,
+    photo: "./assets/images/profile/img2.webp",
+    username: "Player 2",
+  };
+  const profileString = JSON.stringify(myProfile);
+  const profileOpponentString = JSON.stringify(profileOpponent);
+
+  localStorage.setItem("profileString", profileString);
+  localStorage.setItem("profileOpponentString", profileOpponentString);
+  window.location.href = "./app/localGame/localGame.html";
+});
+
 profileButton.addEventListener("click", function () {
   let connectedCookieValue = getCookie("connected");
   if (connectedCookieValue) {

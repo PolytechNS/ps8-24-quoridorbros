@@ -3,22 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <title>Game</title>
-    <link rel="stylesheet" type="text/css" href="../../index.css">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+    <link rel="stylesheet" type="text/css" href="./localGame.css">
+
     <link rel="stylesheet" type="text/css" href="../clientBoard/clientBoard.css">
+    <link rel="stylesheet" type="text/css" href="../onlineGame/onlineGame.css">
 </head>
 <body>
-<div class="panel" id="leftPanel"></div>
-<div class="panel" id="midPanel">
-    <p id="text-your-turn" style="display: none"></p>
-    <p id="texte-chrono" style="display: none"></p>
-    <div id="gameBoard1" class="gameBoard"></div>
-    <div id="gameBoard2" class="gameBoard"></div>
+
+<div class="background"></div>
+<div id="anti-cheat-local" class="modal"></div>
+
+<div id="local-game-container">
+    <div id="leftPanel" class="panel">
+        <div id="profile-container">
+
+        </div>
+        <p id="timer-player"></p>
+        <button id="concede">
+            <p>
+                Concede
+            </p>
+            <img id="image-flag" src="../../assets/images/flag.png">
+        </button>
+
+    </div>
+
+    <div id="midPanel">
+        <div id="gameBoard1" class="gameBoard"></div>
+        <div id="gameBoard2" class="gameBoard"></div>
+    </div>
+    <div id="rightPanel" class="panel" >
+        <div id="opponent-profile-container">
+        </div>
+        <p id="timer-opponent"></p>
+    </div>
 </div>
-<div class="panel" id="rightPanel"></div>
-    <script type="text/javascript" src="../../utils/utils.js"></script>
-    <script type="text/javascript" src="../../utils/pathfinding.js"></script>
-    <script type="text/javascript" src="../clientBoard/clientBoard.js"></script>
-    <script type="text/javascript" src="../../utils/game.js"></script>
-    <script type="text/javascript" src="./localGameManager.js"></script>
+
+
+
+<script type="text/javascript" src="../../utils/utils.js"></script>
+<script type="text/javascript" src="../../utils/pathfinding.js"></script>
+<script type="text/javascript" src="../clientBoard/clientBoard.js"></script>
+<script type="text/javascript" src="../../utils/game.js"></script>
+<script type="text/javascript" src="../onlineGame/duelProfiles.js"></script>
+<script type="text/javascript" src="./localGameManager.js"></script>
+
+
 </body>
+
 </html>
