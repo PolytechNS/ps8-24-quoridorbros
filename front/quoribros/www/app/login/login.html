@@ -38,9 +38,9 @@
             })
             .then(function(response) {
                 if (response.ok) {
-
                     window.location.href = "../../index.html";
                 } else {
+                    navigator.vibrate(200);
                     return response.json().then(function(data) {
                         alert("Erreur: " + data.error);
                     });

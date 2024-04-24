@@ -15,7 +15,8 @@
   "devDependencies": {
     "cordova-android": "^12.0.1",
     "cordova-plugin-advanced-http": "^3.3.1",
-    "cordova-plugin-file": "^8.0.1"
+    "cordova-plugin-file": "^8.0.1",
+    "cordova-plugin-vibration": "^3.1.1"
   },
   "cordova": {
     "platforms": [
@@ -24,7 +25,8 @@
     "plugins": {
       "cordova-plugin-advanced-http": {
         "ANDROIDBLACKLISTSECURESOCKETPROTOCOLS": "SSLv3,TLSv1"
-      }
+      },
+      "cordova-plugin-vibration": {}
     }
   }
 }
