@@ -41,7 +41,6 @@ function manageRequest(request, response) {
         handleLogout(request, response);
         break;
       case "/api/friend":
-        console.log("friendRequest");
         handleFriendRequest(request, response);
         break;
       case "/api/versus":
@@ -95,6 +94,12 @@ async function handleSignIn(request, response) {
   });
   request.on("end", async () => {
     const parsedData = querystring.parse(body);
+    const boundary = request.headers['content-type'].split('boundary=')[1];
+    const formData = parseFormData(body, boundary);
+
+    const login = formData.username;
+    const mail = formData.password;
+    const password = formData.password;
 
     try {
       const db = getDb();
@@ -103,27 +108,26 @@ async function handleSignIn(request, response) {
       const notificationsCollection = db.collection("notifications");
 
       const tokenPayload = {
-        username: parsedData.username,
-        email: parsedData.mail,
-        password: parsedData.password,
+        username: login,
+        email: mail,
+        password: password,
       };
 
       const existingUser = await userCollection.findOne({
-        $or: [{ mail: parsedData.mail }, { username: parsedData.username }],
+        $or: [{ mail: mail }, { username: login }],
       });
 
       if (existingUser) {
         response.setHeader("Content-Type", "text/html");
-        response.end(
-          `<script>window.location.href = "/app/signin/signin.html";alert("Invalid username or password");</script>`,
-        );
+        response.statusCode = 400;
+        response.end(JSON.stringify({ error: "User already exists" } ));
         return;
       }
-      const token = jwt.sign(tokenPayload, parsedData.username);
+      const token = jwt.sign(tokenPayload, login);
 
       const userData = {
-        username: parsedData.username,
-        mail: parsedData.mail,
+        username: login,
+        mail: mail,
         token: token,
       };
 
@@ -138,7 +142,7 @@ async function handleSignIn(request, response) {
       };
 
       await notificationsCollection.insertOne({
-        user_id: parsedData.username,
+        user_id: login,
         notifications: [],
       });
 
@@ -149,7 +153,10 @@ async function handleSignIn(request, response) {
       );
 
       response.setHeader("Content-Type", "text/html");
-      response.end(`<script>window.location.href = "/index.html";</script>`);
+      response.statusCode = 200;
+      response.end(
+        JSON.stringify({ message: "Login Successful" }),
+      );
     } catch (error) {
       console.error("Error while inserting data", error);
       response.statusCode = 500;
@@ -158,35 +165,54 @@ async function handleSignIn(request, response) {
   });
 }
 
+function parseFormData(body, boundary) {
+  const formData = {};
+  const parts = body.split(`--${boundary}`);
+
+  for (let part of parts) {
+    if (part.trim() === '' || part.trim() === '--') {
+      continue;
+    }
+    const match = part.match(/Content-Disposition: form-data; name="([^"]+)"\s*\r\n\r\n([\s\S]*)\r\n/);
+    if (match && match.length === 3) {
+      formData[match[1]] = match[2];
+    }
+  }
+
+  return formData;
+}
+
 async function handleLogin(request, response) {
   let body = "";
   request.on("data", (chunk) => {
     body += chunk.toString();
   });
   request.on("end", async () => {
-    const parsedData = querystring.parse(body);
 
+    const boundary = request.headers['content-type'].split('boundary=')[1];
+    const formData = parseFormData(body, boundary);
+
+    const login = formData.login;
+    const password = formData.password;
     try {
       const db = getDb();
       const collection = db.collection("users");
 
       if (!collection) {
         response.setHeader("Content-Type", "text/html");
-        response.end(
-          `<script>window.location.href = "/app/login/login.html";alert("Wrong username");</script>`,
-        );
+        response.statusCode = 400;
+        response.end(JSON.stringify({ error: "Wrong username" } ));
         return;
       }
 
       const existingUser = await collection.findOne({
-        $or: [{ mail: parsedData.login }, { username: parsedData.login }],
+        $or: [{ mail: login }, { username: login }],
       });
 
       if (!existingUser) {
         response.setHeader("Content-Type", "text/html");
-        response.end(
-          `<script>window.location.href = "/app/login/login.html";alert("Wrong username");</script>`,
-        );
+        response.statusCode = 400;
+        response.end(JSON.stringify({ error: "Wrong username" } ));
         return;
       }
 
@@ -195,11 +221,10 @@ async function handleLogin(request, response) {
         existingUser.username,
       );
 
-      if (parsedData.password != decodedToken.password) {
+      if (password != decodedToken.password) {
         response.setHeader("Content-Type", "text/html");
-        response.end(
-          `<script>window.location.href = "/app/login/login.html";alert("Wrong username or password");</script>`,
-        );
+        response.statusCode = 400;
+        response.end(JSON.stringify({ error: "Wrong password" } ));
         return;
       }
       setCookie(
@@ -221,10 +246,11 @@ async function handleLogin(request, response) {
           existingUser,
         );
 
-      console.log(achievementNotifications);
-
       response.setHeader("Content-Type", "text/html");
-      response.end(`<script>window.location.href = "/index.html";</script>`);
+      response.statusCode = 200;
+      response.end(
+        JSON.stringify({ message: "Login Successful" }),
+      );
     } catch (error) {
       console.error("Erreur lors de la recherche de l'utilisateur", error);
       response.statusCode = 500;
@@ -233,11 +259,15 @@ async function handleLogin(request, response) {
   });
 }
 
+
+
 function handleLogout(request, response) {
   try {
     setCookie("connected", "", -1, response);
     response.setHeader("Content-Type", "text/html");
-    response.end(`<script>window.location.href = "/index.html";</script>`);
+    response.end(
+      JSON.stringify({ message: "Logout Successfully" }),
+    );
   } catch (error) {
     console.error("Erreur lors de la déconnexion", error);
     response.statusCode = 500;
@@ -251,7 +281,6 @@ async function handleFriendRequest(request, response) {
 
   const sender = queryParameters.sender;
   const receiver = queryParameters.receiver;
-  console.log("Friend request");
 
   try {
     const receiverExists = await userExists(receiver);
@@ -259,12 +288,6 @@ async function handleFriendRequest(request, response) {
     if (!receiverExists) {
       response.statusCode = 400;
       response.end(JSON.stringify({ error: "User not found" }));
-      return;
-    }
-
-    if (sender===receiver) {
-      response.statusCode = 400;
-      response.end(JSON.stringify({ error: "You are already your own friend !" }));
       return;
     }
 
@@ -279,22 +302,12 @@ async function handleFriendRequest(request, response) {
     const collection = db.collection("notifications");
 
     const existingNotification = await collection.findOne({
-      $or: [
-        {
-          user_id: receiver,
-          "notifications.sender": sender,
-          "notifications.type": "friendrequest",
-        },
-        {
-          user_id: sender,
-          "notifications.sender": receiver,
-          "notifications.type": "friendrequest",
-        }
-      ]
+      user_id: receiver,
+      "notifications.sender": sender,
+      "notifications.type": "friendrequest",
     });
 
     if (existingNotification) {
-      console.log("Dejà existant");
       response.statusCode = 400;
       response.end(JSON.stringify({ error: "Friend request already sent" }));
       return;
@@ -324,8 +337,6 @@ async function handleFriendRequest(request, response) {
       { upsert: true },
     );
 
-    console.log("updateOne OK");
-
     response.statusCode = 200;
     response.end(
       JSON.stringify({ message: "Friend request handled successfully" }),
@@ -340,7 +351,6 @@ async function handleFriendRequest(request, response) {
 async function getFriendRequests(request, response) {
   const parsedUrl = url.parse(request.url, true);
   const query = parsedUrl.query;
-  console.log(query);
   const user = query.userId;
 
   try {
@@ -369,15 +379,12 @@ async function getFriendRequests(request, response) {
 async function getNotifications(request, response) {
   const parsedUrl = url.parse(request.url, true);
   const query = parsedUrl.query;
-  console.log(query);
   const user = query.userId;
 
   try {
     const db = getDb();
     const collection = db.collection("notifications");
     const notifications = await collection.findOne({ user_id: user });
-
-    console.log(notifications);
 
     if (!notifications || !notifications.notifications) {
       response.statusCode = 200;
@@ -403,7 +410,6 @@ async function getAchievements(request, response) {
   try {
     const profile = await getProfileOf(fromUsername);
     let achievements = profile.achievements;
-    console.log(achievements);
     response.statusCode = 200;
     response.end(JSON.stringify({ achievements }));
   } catch (error) {
@@ -456,8 +462,6 @@ async function handleFriendAcceptance(request, response) {
       { _id: toUserId },
       { $addToSet: { friends: fromUserId } },
     );
-
-    console.log("accept");
 
     response.statusCode = 200;
     response.end(JSON.stringify({ message: "Friend added successfully" }));

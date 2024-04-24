@@ -191,6 +191,7 @@ class Game {
     setTimeout(() => {
       this.turnExpired(currentTurn);
     }, 6000000);
+      // TODO : Change timeout value
   }
 
   onCellClick(x, y) {
@@ -305,15 +306,16 @@ class Game {
         setTimeout(() => {
           this.turnExpired(currentTurn);
         }, 6000000);
+          // TODO : Change timeout value
       }
     } else {
-      this.gameManager.updateGameStatePlayer1(gameStatePlayer1);
-      this.gameManager.updateGameStatePlayer2(gameStatePlayer2);
       const currentTurn = this.turn;
       setTimeout(() => {
         this.turnExpired(currentTurn);
       }, 6000000);
-      // TODO : DO NOT PUSH THIS, TEST PURPOSES ONLY
+      // TODO : Change timeout value
+    this.gameManager.updateGameStatePlayer1(gameStatePlayer1);
+    this.gameManager.updateGameStatePlayer2(gameStatePlayer2);
     }
   }
 

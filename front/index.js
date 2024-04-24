@@ -16,10 +16,10 @@ window.onload = function () {
   let connectedCookieValue = getCookie("connected");
   if (connectedCookieValue !== null) {
     document
-        .getElementById("friendSocketInitAnchor")
-        .appendChild(document.createElement("script")).src =
-        "/app/sockets/matchmakingEvents.js";
-/*
+      .getElementById("friendSocketInitAnchor")
+      .appendChild(document.createElement("script")).src =
+      "/app/sockets/matchmakingEvents.js";
+    /*
     document
       .getElementById("friendSocketInitAnchor")
       .appendChild(document.createElement("script")).src =
@@ -53,7 +53,7 @@ window.onload = function () {
     playOnlineButton.classList.remove("mainButtonDisabledClass");
     playWithAIButton.classList.add("mainButtonClass");
     playWithAIButton.classList.remove("mainButtonDisabledClass");
-    playButton.style.display = "inline";
+    playButton.style.display = "block";
 
     const storeProfile = async () => {
       const response = await fetch(`/api/profile?of=${getUsername()}`);
@@ -77,6 +77,7 @@ function logout() {
   })
     .then((response) => {
       if (response.ok) {
+        window.location.href = ".";
         playWithAIButton.style.display = "none";
         playLocalButton.style.display = "none";
         playOnlineButton.style.display = "none";
@@ -87,9 +88,9 @@ function logout() {
         friendsButton.style.display = "none";
         notifsButton.style.display = "none";
 
-        playButton.style.display = "inline";
-        loginButton.style.display = "inline";
-        signinButton.style.display = "inline";
+        playButton.style.display = "block";
+        loginButton.style.display = "block";
+        signinButton.style.display = "block";
 
         document.getElementById("loginNote").style.display = "inline";
         playOnlineButton.classList.remove("mainButtonClass");
@@ -105,10 +106,13 @@ playButton.addEventListener("click", function () {
   playButton.style.display = "none";
   loginButton.style.display = "none";
   signinButton.style.display = "none";
+  leaderBoardButton.style.display = "none";
+  friendsButton.style.display = "none";
+  notifsButton.style.display = "none";
 
-  playWithAIButton.style.display = "inline";
-  playLocalButton.style.display = "inline";
-  playOnlineButton.style.display = "inline";
+  playWithAIButton.style.display = "block";
+  playLocalButton.style.display = "block";
+  playOnlineButton.style.display = "block";
 });
 
 leaderBoardButton.addEventListener("click", function () {
@@ -135,7 +139,7 @@ profileButton.addEventListener("click", function () {
 });
 
 notifsButton.addEventListener("click", function () {
-    loadNotifications();
+  loadNotifications();
 });
 
 function closeAllModals() {
