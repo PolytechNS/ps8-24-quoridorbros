@@ -1,0 +1,183 @@
+*, *:before, *:after {
+    box-sizing: border-box;
+    text-align: center;
+}
+
+
+
+@font-face {
+    font-family: 'Spritendo';
+    src: url('./assets/fonts/spritendo.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Mario64';
+    src: url('./assets/fonts/mario.ttf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+html, body, div, span, h1, h2, h3, h4, h5, h6, p, a, img, ul, ol, li, form, input, button {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font: inherit;
+    vertical-align: baseline;
+    font-family: 'Spritendo', sans-serif;
+}
+
+.btn {
+    margin: 1rem 0;
+    padding: 2rem 3rem;
+    font-size: 1.8rem;
+    border-radius: 20%;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: pointer;
+}
+
+.btn--primary {
+    padding: 0.5rem;
+    color: white;
+    border: 0.3rem solid #ff8327;
+    border-radius:12px;
+    background-color: #ffb347;
+    touch-action: manipulation;
+}
+
+.btn--secondary {
+    padding: 0.5rem;
+    color: white;
+    border-radius:12px;
+    background-color: black;
+    touch-action: manipulation;
+}
+
+
+div.background {
+    height: 100vh;
+    width: 100vw;
+    background-image: url("assets/images/marco.gif"), url("./assets/images/ground.png"), url("./assets/images/bushes.png"), url("./assets/images/back.png");
+    background-color: #F8E0B0;
+    background-repeat: no-repeat, repeat-x, repeat-x, repeat-x;
+    background-position: left 30% bottom 22px, left 0px bottom 0px, left 0px bottom 22px, left 0px bottom 0px;
+    animation: back 15s infinite linear;
+    position: fixed;
+    z-index: -1;
+}
+
+@keyframes back {
+    0% {
+        background-position: left 30% bottom 22px, left 0px bottom 0px, left 0px bottom 22px, left 0px bottom 0px;
+    }
+    50% {
+        background-position: left 50% bottom 22px, left -816px bottom 0px, left -508px bottom 22px, left -256px bottom 0px;
+    }
+    100% {
+        background-position: left 30% bottom 22px, left -1632px bottom 0px, left -1016px bottom 22px, left -512px bottom 0px;
+    }
+}
+
+button.mainButtonClass {
+    width: 50vw;
+    position: relative;
+    font-size: 2vw;
+    padding: 1rem;
+    color: white;
+    border: 0.3rem solid #ff8327;
+    border-radius:20px;
+    z-index: 0;
+    background-color: #ffb347;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+button.mainButtonDisabledClass {
+    width: 50vw;
+    position: relative;
+    font-size: 2vw;
+    padding: 1rem;
+    position: relative;
+    color: rgba(30, 30, 30, 0.8);
+    border: 0.3rem solid #111111;
+    border-radius:20px;
+    background-color: rgba(240,240,240,0.6);
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+button.mainButtonClass:before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    background: linear-gradient(
+            45deg,
+            #ff0000,
+            #ff7300,
+            #fffb00,
+            #48ff00,
+            #00ffd5,
+            #002bff,
+            #7a00ff,
+            #ff00c8,
+            #ff0000
+    );
+    background-size: 400%;
+    z-index: -1;
+    filter: blur(10px);
+    -webkit-filter: blur(10px);
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    transition: opacity 0.3s ease-in-out;
+    border-radius: 10px;
+    opacity: 0; /* Initially hide the rainbow effect */
+}
+
+button.mainButtonClass:hover:before {
+    opacity: 1; /* Show the rainbow effect on hover */
+    animation: glowing-button 20s linear infinite;
+}
+
+@keyframes glowing-button {
+    0% {
+        background-position: 0 0;
+    }
+    50% {
+        background-position: 400% 0;
+    }
+    100% {
+        background-position: 0 0;
+    }
+}
+
+button.mainButtonClass:after {
+    z-index: -1;
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    border-radius: 20px;
+}
+
+@media (orientation: portrait) {
+    button.mainButtonClass {
+        width: 90vw;
+        position: relative;
+        font-size: 5vw;
+    }
+
+    button.mainButtonDisabledClass {
+        width: 90vw;
+        font-size: 4vw;
+
+    }
+}

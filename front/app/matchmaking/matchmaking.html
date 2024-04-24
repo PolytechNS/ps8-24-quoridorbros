@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quoribros</title>
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+    <link rel="stylesheet" type="text/css" href="matchmaking.css">
+
+</head>
+<body>
+    <div class="background"></div>
+  
+    <div id="matchmaking-container">
+        <div id="waiting-container">
+            <h2 id="waiting-text">Waiting for a worthy opponent .</h2>
+            <div id="waitingIndicator">
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+        <button id="back" class="btn--primary" onclick="quitMatchMaking()">Back</button>
+    </div>
+
+
+
+
+    <script type="text/javascript" src="../../utils/cookieManager.js"></script>
+    <script type="text/javascript" src="../sockets/socket.io.js"></script>
+    <script type="text/javascript" src="../sockets/ioManager.js"></script>
+    <script type="text/javascript" src="../sockets/matchmakingEvents.js"></script>
+    <script type="text/javascript" src="../matchmaking/matchmaking.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+  .friend {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 2px solid #ddd;
+    justify-content: space-between;
+  }
+
+  .friend:hover {
+    background-color: rgba(255, 255, 255, 1);
+  }
+
+  #friend-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+      width: 90%;
+  }
+  
+  .profile-picture {
+    max-height: 100px;
+  }
+  
+  .username {
+    margin-left: 5px;
+  }
+
+  .friendConnected .challenge-button {
+      display: inline-block;
+  }
+
+  .challenge-button {
+    display: none;
+  }
+  
+  #requestopener {
+    max-height: 100px;
+  }
+
+  #friendRequestForm {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group {
+    display: flex;
+    align-items: center; /* Align items vertically in the center */
+}
+
+.input-group input {
+    margin-right: 10px; /* Adjust the space between input and button */
+}
