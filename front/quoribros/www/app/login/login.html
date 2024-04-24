@@ -38,14 +38,7 @@
             })
             .then(function(response) {
                 if (response.ok) {
-                    console.log(response.headers);
-                    console.log(response.headers.get('Set-Cookie'));
-                    var cookies = response.headers.get('Set-Cookie');
-                    if (cookies) {
-                        alert("Cookies: " + cookies);
-                    } else {
-                        alert("No cookies received.");
-                    }
+
                     window.location.href = "../../index.html";
                 } else {
                     return response.json().then(function(data) {
