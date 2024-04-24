@@ -28,7 +28,7 @@ function setCookie(name, value, daysToLive, response) {
 }
 
 function manageRequest(request, response) {
-  console.log(request);
+  console.log(request.headers);
   console.log(request.url);
   if (request.method === "POST") {
     const path = request.url.split("?")[0];
@@ -97,7 +97,7 @@ async function handleSignIn(request, response) {
   request.on("end", async () => {
     const boundary = request.headers['content-type'].split('boundary=')[1];
     const formData = parseFormData(body, boundary);
-    console.log(formData);
+    console.log("Form DATA",formData);
 
     const login = formData.username;
     const mail = formData.password;
@@ -123,7 +123,9 @@ async function handleSignIn(request, response) {
         response.setHeader("Content-Type", "text/html");
         response.statusCode = 400;
         response.end(JSON.stringify({ error: "User already exists" } ));
-        console.log(response);
+        console.log(response.headers);
+        console.log(response.statusCode);
+        console.log("\n\n\n");
         return;
       }
       const token = jwt.sign(tokenPayload, login);
@@ -160,7 +162,9 @@ async function handleSignIn(request, response) {
       response.end(
         JSON.stringify({ message: "Login Successful" }),
       );
-      console.log(response);
+      console.log(response.headers);
+      console.log(response.statusCode);
+      console.log("\n\n\n");
     } catch (error) {
       console.error("Error while inserting data", error);
       response.statusCode = 500;
@@ -195,7 +199,7 @@ async function handleLogin(request, response) {
 
     const boundary = request.headers['content-type'].split('boundary=')[1];
     const formData = parseFormData(body, boundary);
-    console.log(formData);
+    console.log("Form DATA",formData);
     const login = formData.login;
     const password = formData.password;
     try {
@@ -206,7 +210,9 @@ async function handleLogin(request, response) {
         response.setHeader("Content-Type", "text/html");
         response.statusCode = 400;
         response.end(JSON.stringify({ error: "Wrong username" } ));
-        console.log(response);
+        console.log(response.headers);
+        console.log(response.statusCode);
+        console.log("\n\n\n");
         return;
       }
 
@@ -218,7 +224,9 @@ async function handleLogin(request, response) {
         response.setHeader("Content-Type", "text/html");
         response.statusCode = 400;
         response.end(JSON.stringify({ error: "Wrong username" } ));
-        console.log(response);
+        console.log(response.headers);
+        console.log(response.statusCode);
+        console.log("\n\n\n");
         return;
       }
 
@@ -231,6 +239,9 @@ async function handleLogin(request, response) {
         response.setHeader("Content-Type", "text/html");
         response.statusCode = 400;
         response.end(JSON.stringify({ error: "Wrong password" } ));
+        console.log(response.headers);
+      console.log(response.statusCode);
+      console.log("\n\n\n");
         return;
       }
       setCookie(
@@ -257,7 +268,9 @@ async function handleLogin(request, response) {
       response.end(
         JSON.stringify({ message: "Login Successful" }),
       );
-      console.log(response);
+      console.log(response.headers);
+      console.log(response.statusCode);
+      console.log("\n\n\n");
     } catch (error) {
       console.error("Erreur lors de la recherche de l'utilisateur", error);
       response.statusCode = 500;
