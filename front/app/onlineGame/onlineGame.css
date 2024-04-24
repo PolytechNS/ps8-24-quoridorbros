@@ -38,6 +38,14 @@
     margin-bottom: 4%;
 }
 
+#profile-container #profileUsername, #opponent-profile-container #profileUsername {
+    overflow-x: scroll;
+}
+
+#profile-container #profileUsername::-webkit-scrollbar, #opponent-profile-container #profileUsername::-webkit-scrollbar {
+    display: none;
+}
+
 #concede {
     margin: 10% 0;
     padding: 1.5%;
@@ -73,4 +81,58 @@
     border-radius: 50%;
     background-repeat: no-repeat;
     background-image: url("../../assets/images/bulles-de-chat.png");
+}
+
+@media (orientation: portrait) {
+    #online-game-container, #ai-game-container {
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .panel {
+        width: 100%;
+        height: 25vh;
+        margin: 2%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+
+    #profile-container, #opponent-profile-container {
+        height: 90%;
+        width: 50%;
+        padding: 0;
+    }
+
+    #profile-container img, #opponent-profile-container img {
+        height: 24vw;
+        /*60% of 40vh normally, for portrait*/
+        margin-bottom: 0;
+    }
+
+    #concede {
+        margin: 0;
+        padding: 1.5%;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-direction: column;
+        border: 4px solid black;
+        border-radius: 12px;
+    }
+
+    #timer-player, #timer-opponent {
+        width: 30%;
+        min-width: 95px;
+        padding: 1vh;
+    }
+}
+@media screen and (min-aspect-ratio:3/4) and (max-aspect-ratio:4/3) {
+    #profile-container img, #opponent-profile-container img {
+        display: none;
+    }
+
 }
