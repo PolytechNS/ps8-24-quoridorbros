@@ -28,6 +28,8 @@ function setCookie(name, value, daysToLive, response) {
 }
 
 function manageRequest(request, response) {
+  console.log(request);
+  console.log(request.url);
   if (request.method === "POST") {
     const path = request.url.split("?")[0];
     switch (path) {
@@ -93,9 +95,9 @@ async function handleSignIn(request, response) {
     body += chunk.toString();
   });
   request.on("end", async () => {
-    const parsedData = querystring.parse(body);
     const boundary = request.headers['content-type'].split('boundary=')[1];
     const formData = parseFormData(body, boundary);
+    console.log(formData);
 
     const login = formData.username;
     const mail = formData.password;
@@ -121,6 +123,7 @@ async function handleSignIn(request, response) {
         response.setHeader("Content-Type", "text/html");
         response.statusCode = 400;
         response.end(JSON.stringify({ error: "User already exists" } ));
+        console.log(response);
         return;
       }
       const token = jwt.sign(tokenPayload, login);
@@ -157,6 +160,7 @@ async function handleSignIn(request, response) {
       response.end(
         JSON.stringify({ message: "Login Successful" }),
       );
+      console.log(response);
     } catch (error) {
       console.error("Error while inserting data", error);
       response.statusCode = 500;
@@ -191,7 +195,7 @@ async function handleLogin(request, response) {
 
     const boundary = request.headers['content-type'].split('boundary=')[1];
     const formData = parseFormData(body, boundary);
-
+    console.log(formData);
     const login = formData.login;
     const password = formData.password;
     try {
@@ -202,6 +206,7 @@ async function handleLogin(request, response) {
         response.setHeader("Content-Type", "text/html");
         response.statusCode = 400;
         response.end(JSON.stringify({ error: "Wrong username" } ));
+        console.log(response);
         return;
       }
 
@@ -213,6 +218,7 @@ async function handleLogin(request, response) {
         response.setHeader("Content-Type", "text/html");
         response.statusCode = 400;
         response.end(JSON.stringify({ error: "Wrong username" } ));
+        console.log(response);
         return;
       }
 
@@ -251,6 +257,7 @@ async function handleLogin(request, response) {
       response.end(
         JSON.stringify({ message: "Login Successful" }),
       );
+      console.log(response);
     } catch (error) {
       console.error("Erreur lors de la recherche de l'utilisateur", error);
       response.statusCode = 500;
