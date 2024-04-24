@@ -22,7 +22,9 @@
       "android"
     ],
     "plugins": {
-      "cordova-plugin-advanced-http": {}
+      "cordova-plugin-advanced-http": {
+        "ANDROIDBLACKLISTSECURESOCKETPROTOCOLS": "SSLv3,TLSv1"
+      }
     }
   }
 }
