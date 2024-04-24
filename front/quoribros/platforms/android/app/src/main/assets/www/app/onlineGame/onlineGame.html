@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game</title>
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+    <link rel="stylesheet" type="text/css" href="./onlineGame.css">
+    <link rel="stylesheet" type="text/css" href="../clientBoard/clientBoard.css">
+    <link rel="stylesheet" type="text/css" href="../profileModal/profileModal.css">
+    <link rel="stylesheet" type="text/css" href="../messagesModal/messagesModal.css">
+
+
+
+
+
+</head>
+<body>
+<div class="background"></div>
+<div id="profile-modal-container"></div>
+<div id="messages-modal-container"></div>
+
+<div id="online-game-container">
+    <div id="leftPanel" class="panel">
+        <div id="profile-container">
+
+        </div>
+        <p id="timer-player"></p>
+        <button id="concede" onclick="concede()">
+            <p>
+                Concede
+            </p>
+            <img id="image-flag" src="../../assets/images/flag.png">
+        </button>
+    </div>
+
+    <div id="midPanel">
+        <div id="gameBoard" class="gameBoard"></div>
+    </div>
+    <div id="rightPanel" class="panel" >
+        <div id="opponent-profile-container">
+        </div>
+        <p id="timer-opponent"></p>
+        <button id="chat-notifications-button"></button>
+    </div>
+</div>
+
+
+    <script type="text/javascript" src="../sockets/socket.io.js"></script>
+    <script type="text/javascript" src="../../utils/utils.js"></script>
+    <script type="text/javascript" src="../clientBoard/clientBoard.js"></script>
+    <script type="text/javascript" src="../../utils/cookieManager.js"></script>
+    <script type="text/javascript" src="../sockets/ioManager.js"></script>
+    <script type="text/javascript" src="../sockets/gameEvents.js"></script>
+    <script type="text/javascript" src="./onlineGame.js"></script>
+    <script type="text/javascript" src="./duelProfiles.js"></script>
+    <script type="text/javascript" src="../profileModal/profileModal.js"></script>
+    <script type="text/javascript" src="../sockets/messagesEvents.js"></script>
+    <script type="text/javascript" src="../messagesModal/messagesModal.js"></script>
+    <script type="text/javascript" src="../services/friendsService.js"></script>
+
+
+
+
+
+</body>
+</html>

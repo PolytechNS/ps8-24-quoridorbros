@@ -1,0 +1,30 @@
+#profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+}
+
+#profilePhoto {
+    max-width: 75%;
+    width: auto;
+    height: auto;
+    margin-bottom: 20px;
+    border: 2px solid #f00;
+}
+
+#profileUsername {
+    display: inline-block;
+    font-size: 2em;
+    font-weight: bold;
+    padding: 5px 10px;
+    border: 1px solid #fff;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+    margin-bottom: 20px;
+}
+
+#profileElo {
+    margin-bottom: 20px;
+}
