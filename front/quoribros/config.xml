@@ -20,4 +20,5 @@
             target="/manifest/application">
         <application android:usesCleartextTraffic="true" />
     </edit-config>
+    <icon src="res/icon.png"/>
 </widget>
