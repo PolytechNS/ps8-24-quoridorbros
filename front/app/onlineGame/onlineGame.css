@@ -1,4 +1,4 @@
-#online-game-container, #ai-game-container {
+#online-game-container, #ai-game-container, #local-game-container {
     height: 100vh;
     display: flex;
     justify-content: space-around;
