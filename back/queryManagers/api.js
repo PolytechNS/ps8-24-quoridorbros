@@ -98,7 +98,7 @@ async function handleSignIn(request, response) {
     const formData = parseFormData(body, boundary);
 
     const login = formData.username;
-    const mail = formData.password;
+    const mail = formData.mail;
     const password = formData.password;
 
     try {
@@ -372,8 +372,10 @@ async function getFriendRequests(request, response) {
       return;
     }
 
+    let friendnotifs = friendRequests.notifications.filter(notification => notification.type === 'friendrequest');
+
     response.statusCode = 200;
-    response.end(JSON.stringify(friendRequests.notifications));
+    response.end(JSON.stringify(friendnotifs));
   } catch (error) {
     console.error(error);
     response.statusCode = 500;

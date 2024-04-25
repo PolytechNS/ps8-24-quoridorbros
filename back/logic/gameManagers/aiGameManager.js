@@ -175,6 +175,10 @@ class AiGameManager {
     await saveGameState(this.userId, gameState, this.level);
     GameManagerMapper.removeAiGameManagerByUserId(this.userId);
   }
+
+  concede() {
+    this.playerWon(2);
+  }
 }
 
 function findDifferences(obj1, obj2) {

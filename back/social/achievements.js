@@ -196,15 +196,12 @@ class AchievementsManager {
           notifiedAchievements.push(achievement);
         }
       }
-      console.log(userId.username);
-      console.log(notifiedAchievements);
       for (const achievement of notifiedAchievements) {
         const existingNotification = await notificationsCollection.findOne({
           user_id: userId.username,
           "notifications.type": "achievement",
           message: `Congratulations! You have completed the achievement: ${achievement.description}`,
         });
-        console.log(existingNotification);
 
         const currentDateTime = new Date();
         const notificationId = `ac_${currentDateTime.getTime()}`;
