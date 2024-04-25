@@ -2,18 +2,18 @@ const challengeModalContainer = document.getElementById(
   "challenge-modal-container",
 );
 
+let challengerName;
+
 function setUpChallengeModalClosingListeners() {
   document
     .getElementsByClassName("close")[0]
     .addEventListener("click", function () {
-      const usernamediv = document.getElementById("usernamechallenge");
-      declineChallenge(usernamediv.textContent);
+      declineChallenge(challengerName);
     });
 
   window.addEventListener("click", function (event) {
     if (event.target == document.getElementById("challenge-modal")) {
-      const usernamediv = document.getElementById("usernamechallenge");
-      declineChallenge(usernamediv.textContent);
+      declineChallenge(challengerName);
     }
   });
 }
@@ -29,6 +29,7 @@ function declineChallenge(username) {
 
 function displayChallenger(profileOpponent) {
   const challenger = profileOpponent;
+  challengerName = challenger.username;
 
   const challengerElement = document.getElementById("challenger-container");
 
