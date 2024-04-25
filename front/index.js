@@ -12,9 +12,21 @@ let leaderBoardButton = document.getElementById("leaderboard-button");
 let friendsButton = document.getElementById("friends-button");
 let notifsButton = document.getElementById("notifs-button");
 
+let notifsIndicator = document.getElementById("notifs-indicator");
+
 window.onload = function () {
   let connectedCookieValue = getCookie("connected");
   if (connectedCookieValue !== null) {
+    const userExist = async () => {
+      connectedCookieValue = JSON.parse(connectedCookieValue);
+      const response = await fetch(`/api/profile?of=${connectedCookieValue.user}`);
+      console.log(response.status);
+      if (response.status !== 200) {
+        logout();
+        throw new Error("Failed to fetch profile");
+      }
+    };
+    userExist();
     document
       .getElementById("friendSocketInitAnchor")
       .appendChild(document.createElement("script")).src =
@@ -45,6 +57,10 @@ window.onload = function () {
     playWithAIButton.style.display = "none";
     playLocalButton.style.display = "none";
     playOnlineButton.style.display = "none";
+    
+    notificationIndicator();
+    
+    
 
     playOnlineButton.disabled = false;
     playWithAIButton.disabled = false;
@@ -87,6 +103,7 @@ function logout() {
         leaderBoardButton.style.display = "none";
         friendsButton.style.display = "none";
         notifsButton.style.display = "none";
+        notifsIndicator.style.display = "none";
 
         playButton.style.display = "block";
         loginButton.style.display = "block";
@@ -97,6 +114,7 @@ function logout() {
         playOnlineButton.classList.add("mainButtonDisabledClass");
         playWithAIButton.classList.remove("mainButtonClass");
         playWithAIButton.classList.add("mainButtonDisabledClass");
+        window.location.href="./index.html";
       }
     })
     .catch((error) => console.error("Error:", error));
@@ -185,4 +203,25 @@ async function challengeCheck(param) {
       break;
     }
   }
+}
+
+const updateNotificationIndicator = async () => {
+  try {
+    const response = await fetch(`/api/notifications?userId=${getUsername()}`);
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch notifications');
+    }
+    const notifications = await response.json();
+    if (notifications.length > 0) {
+      notifsIndicator.style.display = "block";
+    } else {
+      notifsIndicator.style.display = "none";
+    }
+  } catch (error) {
+    console.error('Error fetching notifications:', error);
+  }
+}
+
+function notificationIndicator() {
+  updateNotificationIndicator();
 }

@@ -12,8 +12,11 @@ function configureAiGameEvents(socket, aiGameManager) {
   });
 
   socket.on("save-game", () => {
-    console.log(`save-game: ${socket.id}`);
     aiGameManager.saveGame();
+  });
+
+  socket.on("concede", () => {
+    aiGameManager.concede();
   });
 }
 

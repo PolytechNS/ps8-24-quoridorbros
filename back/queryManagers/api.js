@@ -372,8 +372,10 @@ async function getFriendRequests(request, response) {
       return;
     }
 
+    let friendnotifs = friendRequests.notifications.filter(notification => notification.type === 'friendrequest');
+
     response.statusCode = 200;
-    response.end(JSON.stringify(friendRequests.notifications));
+    response.end(JSON.stringify(friendnotifs));
   } catch (error) {
     console.error(error);
     response.statusCode = 500;
@@ -392,6 +394,11 @@ async function getNotifications(request, response) {
     const userProfileCollection = db.collection("user_profile");
     const users = db.collection("users");
     const profile = await users.findOne({ username: user });
+    if (!profile) {
+      response.statusCode = 400;
+      response.end(JSON.stringify({ message: "No user found" }));
+      return;
+    }
     const notificationsCollection = db.collection("notifications");
     const notifications = await notificationsCollection.findOne({ user_id: user });
 
@@ -428,6 +435,11 @@ async function getAchievements(request, response) {
 
   try {
     const profile = await getProfileOf(fromUsername);
+    if (!profile){
+      response.statusCode = 400;
+      response.end(JSON.stringify({ message: "No user found" }));
+      return;
+    }
     let achievements = profile.achievements;
     response.statusCode = 200;
     response.end(JSON.stringify({ achievements }));
@@ -610,6 +622,11 @@ async function getFriends(request, response) {
 
   try {
     const friendList = await getFriendList(fromUsername);
+    if (!friendList){
+      response.statusCode = 400;
+      response.end(JSON.stringify({ error: "User not found" }));
+      return;
+    }
     response.statusCode = 200;
     response.end(JSON.stringify(friendList));
     const db = getDb();
@@ -641,6 +658,11 @@ async function getProfile(request, response) {
 
   try {
     const profile = await getProfileOf(fromUsername);
+    if (!profile){
+      response.statusCode = 400;
+      response.end(JSON.stringify({ error: "User not found" }));
+      return;
+    }
     response.statusCode = 200;
     response.end(JSON.stringify({ profile }));
   } catch (error) {
