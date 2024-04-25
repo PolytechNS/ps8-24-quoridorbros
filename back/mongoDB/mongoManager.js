@@ -134,11 +134,13 @@ async function getFriendList(username) {
     const user = await userCollection.findOne({ username: username });
     if (!user) {
       throw new Error(`User with username '${username}' not found.`);
+      return null;
     }
 
     const userProfile = await userProfileCollection.findOne({ _id: user._id });
     if (!userProfile) {
       throw new Error(`User profile not found for user '${username}'.`);
+      return null;
     }
 
     const friends = await userCollection
@@ -191,8 +193,8 @@ async function getProfileOf(username) {
     const userProfileCollection = db.collection("user_profile");
 
     const user = await userCollection.findOne({ username: username });
-    const userProfile = await userProfileCollection.findOne({ _id: user._id });
-    if (userProfile) {
+    if (user) {
+      const userProfile = await userProfileCollection.findOne({ _id: user._id });
       let photoPath;
       if (userProfile.photo === "")
         photoPath = `./assets/images/profile/img1.webp`;
