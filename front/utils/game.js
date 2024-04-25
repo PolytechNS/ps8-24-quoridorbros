@@ -141,6 +141,8 @@ class Game {
   constructor(gameManager, savedGame) {
     this.gameManager = gameManager;
     this.playerConcede = undefined;
+    this.stopTimer = false;
+
     this.turn = 1;
     if (savedGame) {
       console.log("game: ", savedGame);
@@ -272,6 +274,7 @@ class Game {
 
   nextTurn() {
     if (this.isGameFinished()) {
+      this.stopTimer = true;
       this.gameManager.playerWon(this.currentPlayer.playerNumber);
       console.log(`\nLE JOUEUR ${this.currentPlayer.playerNumber} A GAGNE`);
     } else {
@@ -461,7 +464,8 @@ class Game {
   loadSavedGame() {}
 
   turnExpired(turn) {
-    if (this.turn === turn) {
+    if (this.turn === turn && !this.stopTimer) {
+      this.stopTimer = true;
       const otherPlayer = this.getOtherPlayer(this.currentPlayer);
       this.gameManager.playerWon(otherPlayer.playerNumber);
     }

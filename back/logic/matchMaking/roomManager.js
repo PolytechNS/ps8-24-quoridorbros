@@ -64,7 +64,7 @@ class RoomManager {
     } else {
       this.removePlayer(player.userId);
       this.removePlayer(otherPlayer.userId);
-      await createRoom(
+      await RoomManager.createRoom(
         player.userId,
         otherPlayer.userId,
         player.userProfile,
@@ -86,34 +86,34 @@ class RoomManager {
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
   }
-}
 
-async function createRoom(userId1, userId2, userProfile1, userProfile2) {
-  SocketSender.sendMessage(userId1, "RoomFull", userProfile2);
-  SocketSender.sendMessage(userId2, "RoomFull", userProfile1);
-  SocketMapper.removeSocketById(userId1);
-  SocketMapper.removeSocketById(userId2);
-  GameManagerFactory.createOneVOneOnlineGameManager(
-    userId1,
-    userId2,
-    userProfile1.elo,
-    userProfile2.elo,
-  );
-}
+  static async createRoom(userId1, userId2, userProfile1, userProfile2) {
+    SocketSender.sendMessage(userId1, "RoomFull", userProfile2);
+    SocketSender.sendMessage(userId2, "RoomFull", userProfile1);
+    SocketMapper.removeSocketById(userId1);
+    SocketMapper.removeSocketById(userId2);
+    GameManagerFactory.createOneVOneOnlineGameManager(
+      userId1,
+      userId2,
+      userProfile1.elo,
+      userProfile2.elo,
+    );
+  }
 
-async function challengeAccepted(userId1, userId2) {
-  const userProfile1 = await getProfileByUserId(userId1);
-  const userProfile2 = await getProfileByUserId(userId2);
-  SocketSender.sendMessage(userId1, "ChallengeBegin", userProfile2);
-  SocketSender.sendMessage(userId2, "ChallengeBegin", userProfile1);
-  SocketMapper.removeSocketById(userId1);
-  SocketMapper.removeSocketById(userId2);
-  GameManagerFactory.createOneVOneOnlineGameManager(
-    userId1,
-    userId2,
-    userProfile1.elo,
-    userProfile2.elo,
-  );
+  static async challengeAccepted(userId1, userId2) {
+    const userProfile1 = await getProfileByUserId(userId1);
+    const userProfile2 = await getProfileByUserId(userId2);
+    SocketSender.sendMessage(userId1, "ChallengeBegin", userProfile2);
+    SocketSender.sendMessage(userId2, "ChallengeBegin", userProfile1);
+    SocketMapper.removeSocketById(userId1);
+    SocketMapper.removeSocketById(userId2);
+    GameManagerFactory.createOneVOneOnlineGameManager(
+      userId1,
+      userId2,
+      userProfile1.elo,
+      userProfile2.elo,
+    );
+  }
 }
 
 exports.RoomManager = RoomManager;

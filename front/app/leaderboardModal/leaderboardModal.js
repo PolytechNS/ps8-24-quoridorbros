@@ -90,11 +90,19 @@ async function displayLeaderboardList() {
         profilePic.src = profile.photo;
         profilePic.style.maxHeight = "100px";
         profilePic.classList.add("profile-picture");
+        profilePic.addEventListener("click", () => {
+          leaderboardModalContainer.innerHTML = "";
+          loadProfileModal(profile.username);
+        });
         profileElement.appendChild(profilePic);
 
         const usernameElement = document.createElement("div");
         usernameElement.textContent = profile.username;
         usernameElement.classList.add("elo-username");
+        usernameElement.addEventListener("click", () => {
+          leaderboardModalContainer.innerHTML = "";
+          loadProfileModal(profile.username);
+        });
         profileElement.appendChild(usernameElement);
 
         const eloElement = document.createElement("div");
@@ -114,7 +122,7 @@ async function displayLeaderboardList() {
 }
 async function displayFriendLeaderboard() {
   try {
-    let elos = await getEloWorld();
+    let elos = await getFriendList();
     if (elos) {
       elos.sort((a, b) => {
         if (a.elo !== b.elo) {
@@ -145,21 +153,27 @@ async function displayFriendLeaderboard() {
         profilePic.src = profile.photo;
         profilePic.style.maxHeight = "100px";
         profilePic.classList.add("profile-picture");
+        profilePic.addEventListener("click", () => {
+          leaderboardModalContainer.innerHTML = "";
+          loadProfileModal(profile.username);
+        });
         profileElement.appendChild(profilePic);
 
         const usernameElement = document.createElement("div");
-        console.log(profile.username);
         usernameElement.textContent = profile.username;
         usernameElement.classList.add("elo-username");
+        usernameElement.addEventListener("click", () => {
+          leaderboardModalContainer.innerHTML = "";
+          loadProfileModal(profile.username);
+        });
         profileElement.appendChild(usernameElement);
 
         const eloElement = document.createElement("div");
         eloElement.textContent = profile.elo;
-        console.log(profile.elo);
         eloElement.classList.add("elo");
         profileElement.appendChild(eloElement);
 
-        globalLBTab.appendChild(profileElement);
+        friendLBTab.appendChild(profileElement);
         profilenumber++;
       });
     } else {
@@ -191,6 +205,7 @@ async function loadLeaderboardModal() {
   leaderboardModalContainer.innerHTML = html;
   setUpLeaderboardModalListeners();
   displayLBTabs();
+  displayFriendLeaderboard();
   document.getElementById("lbModal").style.display = "block";
 }
 
@@ -213,4 +228,24 @@ async function getEloWorld() {
   }
 }
 
+async function getFriendList() {
+  try {
+    let connectedCookieValue = getCookie("connected");
+    if (connectedCookieValue) {
+      connectedCookieValue = JSON.parse(connectedCookieValue);
+      const response = await fetch(`/api/friends?of=${connectedCookieValue.user}`);
+      if (response.status !== 200) {
+        throw new Error("Failed to fetch profile");
+      }
+
+      const profile = await fetch(`/api/profile?of=${connectedCookieValue.user}`);
+      const me = await profile.json();
+      const profiles = await response.json();
+      profiles.push(me.profile);
+      return profiles;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
 

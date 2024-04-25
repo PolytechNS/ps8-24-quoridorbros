@@ -67,7 +67,7 @@
     background-image: url("../../assets/images/luigi.png");
 }
 
-.gameBoard {
+.gameBoard, #gameBoard1, #gameBoard2 {
     display: grid;
     grid-template-columns: repeat(17, auto);
     gap: 0.3vh;
