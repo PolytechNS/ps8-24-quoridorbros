@@ -15,6 +15,7 @@ let notifsButton = document.getElementById("notifs-button");
 let notifsIndicator = document.getElementById("notifs-indicator");
 
 window.onload = function () {
+  checkInternetConnection();
   let connectedCookieValue = getCookie("connected");
   if (connectedCookieValue !== null) {
     const userExist = async () => {
@@ -225,3 +226,14 @@ const updateNotificationIndicator = async () => {
 function notificationIndicator() {
   updateNotificationIndicator();
 }
+
+function checkInternetConnection() {
+  if (!navigator.onLine) {
+    cordova.plugins.notification.local.schedule({
+      title: "No connexion",
+      text: "No connexion",
+      foreground: true
+  });
+  }
+}
+
