@@ -14,7 +14,7 @@ function setUpMessagesModalListeners() {
     });
 
   window.addEventListener("click", function (event) {
-    if (event.target == document.getElementById("myModal")) {
+    if (event.target == document.getElementById("messages-modal-content")) {
       clearInterval(intervalBeetweenFetch);
       messagesModalContainer.innerHTML = "";
     }

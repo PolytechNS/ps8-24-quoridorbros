@@ -15,6 +15,8 @@
     <link rel="stylesheet" type="text/css" href="app/messagesModal/messagesModal.css">
     <link rel="stylesheet" type="text/css" href="app/notifications/notifications.css">
     <link rel="stylesheet" type="text/css" href="app/leaderboardModal/leaderboardModal.css">
+    <link rel="stylesheet" type="text/css" href="app/challengeModal/challengeModal.css">
+
 
 
     <link rel="stylesheet" type="text/css" href="app/friendsModal/modals.css">
@@ -32,6 +34,7 @@
 <div id="leaderboard-modal-container"></div>
 <div id="challenge-modal-container"></div>
 <div id="notifs-modal-container"></div>
+<div id="profile-editor-modal-container"></div>
 
 
 
@@ -69,8 +72,7 @@
         <div id="round-buttons-line">
             <button id="leaderboard-button" style="display: none;"></button>
             <button id="friends-button" style="display: none;"></button>
-            <button id="notifs-button" style="display: none;"></button>
-            <button id="notifs-indicator" style="display: none;"></button>
+            <button id="notifs-button" style="display: none;"><span id="newNotificationsPending" class="youvegotmail"></span></button>
         </div>
         <button id="logoutButton" class="mainButtonClass logged-element" style="display: none;">Logout</button>
     </div>
@@ -81,9 +83,9 @@
 </div>
 -->
     <script type="text/javascript" src="./utils/endpoint.js"></script>
+    <script type="text/javascript" src="cordoja.js"></script>
     <script type="text/javascript" src="./utils/cookieManager.js"></script>
     <script type="text/javascript" src="./app/notifications/notifications.js"></script>
-    <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="./index.js"></script>
     <script type="text/javascript" src="./app/sockets/socket.io.js"></script>
     <div id="friendSocketInitAnchor" style="display: none;"></div>

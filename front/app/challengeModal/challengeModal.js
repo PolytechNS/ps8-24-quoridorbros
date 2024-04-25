@@ -2,18 +2,18 @@ const challengeModalContainer = document.getElementById(
   "challenge-modal-container",
 );
 
+let challengerName;
+
 function setUpChallengeModalClosingListeners() {
   document
     .getElementsByClassName("close")[0]
     .addEventListener("click", function () {
-      const usernamediv = document.getElementById("usernamechallenge");
-      declineChallenge(usernamediv.textContent);
+      declineChallenge(challengerName);
     });
 
   window.addEventListener("click", function (event) {
-    if (event.target == document.getElementById("challengeModal")) {
-      const usernamediv = document.getElementById("usernamechallenge");
-      declineChallenge(usernamediv.textContent);
+    if (event.target == document.getElementById("challenge-modal")) {
+      declineChallenge(challengerName);
     }
   });
 }
@@ -29,40 +29,38 @@ function declineChallenge(username) {
 
 function displayChallenger(profileOpponent) {
   const challenger = profileOpponent;
+  challengerName = challenger.username;
 
-  const challengerElement = document.createElement("div");
-  challengerElement.classList.add("challenger");
+  const challengerElement = document.getElementById("challenger-container");
 
   const profilePic = document.createElement("img");
   profilePic.src = challenger.photo;
   profilePic.classList.add("profile-picture");
   challengerElement.appendChild(profilePic);
 
-  const usernameElement = document.createElement("div");
-  usernameElement.textContent = challenger.username;
-  usernameElement.id = "usernamechallenge";
-  usernameElement.classList.add("username");
-  challengerElement.appendChild(usernameElement);
+  const textElement = document.createElement("p");
+  textElement.textContent = challenger.username + " challenges you !!";
+  textElement.id = "text-challenge";
+  challengerElement.appendChild(textElement);
+
+  const divButtons = document.createElement("div");
+  divButtons.classList.add("challenge-buttons");
 
   const acceptButton = document.createElement("button");
-  acceptButton.textContent = "Accept";
-  acceptButton.classList.add("mainButtonClass");
+  acceptButton.classList.add("accept-button");
   acceptButton.addEventListener("click", () => {
     acceptChallenge(challenger.username);
   });
-  challengerElement.appendChild(acceptButton);
 
   const declineButton = document.createElement("button");
-  declineButton.textContent = "Decline";
-  declineButton.classList.add("mainButtonClass");
+  declineButton.classList.add("decline-button");
   declineButton.addEventListener("click", () => {
     declineChallenge(challenger.username);
   });
-  challengerElement.appendChild(declineButton);
+  divButtons.appendChild(acceptButton);
+  divButtons.appendChild(declineButton);
 
-  document
-    .getElementById("challenger-container")
-    .appendChild(challengerElement);
+  challengerElement.appendChild(divButtons);
 }
 
 async function loadChallengeModal(profileOpponent) {
@@ -71,5 +69,5 @@ async function loadChallengeModal(profileOpponent) {
   challengeModalContainer.innerHTML = html;
   setUpChallengeModalClosingListeners();
   displayChallenger(profileOpponent);
-  document.getElementById("challengeModal").style.display = "block";
+  document.getElementById("challenge-modal").style.display = "block";
 }

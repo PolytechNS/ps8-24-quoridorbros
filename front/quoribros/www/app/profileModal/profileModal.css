@@ -92,6 +92,15 @@
 .achieved {
     color: green;
 }
+#edit-profile-button {
+    height: 9vh;
+    width: 9vh;
+    border: 0.5rem white solid;
+    background-size: contain;
+    border-radius: 50%;
+    background-repeat: no-repeat;
+    background-image: url("../../assets/images/edit.png");
+}
 
 @media (orientation: portrait) {
 

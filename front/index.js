@@ -213,9 +213,10 @@ const updateNotificationIndicator = async () => {
     }
     const notifications = await response.json();
     if (notifications.length > 0) {
-      notifsIndicator.style.display = "block";
+      document.getElementById("newNotificationsPending").style.display = "block";
+        document.getElementById("newNotificationsPending").textContent = notifications.length;
     } else {
-      notifsIndicator.style.display = "none";
+      document.getElementById("newNotificationsPending").style.display = "none";
     }
   } catch (error) {
     console.error('Error fetching notifications:', error);

@@ -67,7 +67,19 @@
     background-image: url("./assets/images/friends.png");
 }
 
+.youvegotmail{
+    width: 20%;
+    height: 20%;
+    background-color: #fa3e3e;
+    border-radius: 40%;
+    color: white;
 
+    padding: 1px 3px;
+    font-size: 10px;
+    position: relative;
+    top: -40%;
+    right: -80%;
+}
 
 
 .quoridor-title span {
@@ -174,7 +186,6 @@
     #friends-button {
         background-image: url("./assets/images/friends.png");
     }
-
 
 
 
