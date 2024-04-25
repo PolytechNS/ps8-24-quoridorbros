@@ -1,0 +1,123 @@
+.notifications-modal-content {
+    position: relative;
+    height: 80vh;
+    width: 80vw;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    margin: 10vh auto;
+    align-items: center;
+    background-color: #fefefe;
+    padding: 20px;
+    gap: 2vw;
+    border: 0.5rem solid orange;
+    border-radius: 20px;
+}
+
+#notifications {
+    height: 40vh;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.notifications-modal-content h2 {
+    font-size: 2.5vw
+}
+
+.notification-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4%;
+    border: #fda400 5px solid;
+    border-radius: 12px;
+
+}
+
+.notification-item div{
+    display: flex;
+    gap: 1rem;
+
+}
+
+.ok-button{
+    padding: 2%;
+    border: 0.1rem solid #020202;
+    border-radius: 12px;
+}
+.accept-button, .decline-button {
+    background-size: contain;
+    height: 5vw;
+    width: 5vw;
+    border: 0.1rem solid #020202;
+    border-radius: 50%;
+}
+
+.notification-item p{
+    width: 70%;
+
+}
+
+
+.accept-button{
+    background-image: url("../../assets/images/check.png");
+    background-color: #009e16;
+}
+
+.decline-button{
+    background-image: url("../../assets/images/cross.png");
+    background-color: #e32626;
+}
+
+
+
+@media (orientation: portrait) {
+
+    .notifications-modal-content {
+        height: 80vh;
+        width: 90vw;
+    }
+
+    #notifications {
+        height: 60vh;
+    }
+
+    .notifications-modal-content h2 {
+        font-size: 4vw
+    }
+
+    .notification-item {
+        font-size: 3.5vw;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+
+    .accept-button, .decline-button {
+        background-size: contain;
+        height: 10vw;
+        width: 10vw;
+        border: 0.1rem solid #020202;
+        border-radius: 50%;
+    }
+
+    .notification-item p{
+        width: 70%;
+
+    }
+
+
+    .accept-button{
+        background-image: url("../../assets/images/check.png");
+        background-color: #009e16;
+    }
+
+    .decline-button{
+        background-image: url("../../assets/images/cross.png");
+        background-color: #e32626;
+    }
+
+
+}
