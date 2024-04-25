@@ -17,6 +17,16 @@ let notifsIndicator = document.getElementById("notifs-indicator");
 window.onload = function () {
   let connectedCookieValue = getCookie("connected");
   if (connectedCookieValue !== null) {
+    const userExist = async () => {
+      connectedCookieValue = JSON.parse(connectedCookieValue);
+      const response = await fetch(`/api/profile?of=${connectedCookieValue.user}`);
+      console.log(response.status);
+      if (response.status !== 200) {
+        logout();
+        throw new Error("Failed to fetch profile");
+      }
+    };
+    userExist();
     document
       .getElementById("friendSocketInitAnchor")
       .appendChild(document.createElement("script")).src =
@@ -104,6 +114,7 @@ function logout() {
         playOnlineButton.classList.add("mainButtonDisabledClass");
         playWithAIButton.classList.remove("mainButtonClass");
         playWithAIButton.classList.add("mainButtonDisabledClass");
+        window.location.href="./index.html";
       }
     })
     .catch((error) => console.error("Error:", error));
