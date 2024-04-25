@@ -1,10 +1,10 @@
 const {
   GameManagerMapper,
 } = require("../logic/gameManagers/gameManagerMapper");
-const {getIdOfUser, getProfileByUserId} = require("../mongoDB/mongoManager");
-const {SocketMapper} = require("./socketMapper");
-const {SocketSender} = require("./socketSender");
-const {ChallengeManager} = require("../logic/matchMaking/challengeManager");
+const { getIdOfUser, getProfileByUserId } = require("../mongoDB/mongoManager");
+const { SocketMapper } = require("./socketMapper");
+const { SocketSender } = require("./socketSender");
+const { ChallengeManager } = require("../logic/matchMaking/challengeManager");
 
 function configureAiGameEvents(socket, aiGameManager) {
   socket.on("newMove", (move) => {
@@ -34,7 +34,8 @@ function configureChallengeEvents(socket) {
   });
 
   socket.on("cancelChallenge", async (challengedUsername) => {
-    await ChallengeManager.cancelChallenge(challengedUsername);
+    const userId = SocketMapper.getUserIdBySocketId(socket.id);
+    await ChallengeManager.cancelChallenge(userId);
   });
 }
 

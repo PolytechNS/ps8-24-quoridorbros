@@ -48,3 +48,7 @@
 .input-container button:hover {
     background-color: #000000;
 }
+
+.input-container button:active {
+    background-color: #000000;
+}

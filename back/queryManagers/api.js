@@ -239,8 +239,7 @@ async function handleLogin(request, response) {
         userProfileCollection,
         existingUser._id,
       );
-      let achievementNotifications =
-        await AchievementsManager.getNotifiedAchievements(
+      await AchievementsManager.getNotifiedAchievements(
           userProfileCollection,
           notificationsCollection,
           existingUser,
@@ -284,6 +283,12 @@ async function handleFriendRequest(request, response) {
 
   try {
     const receiverExists = await userExists(receiver);
+
+    if (sender === receiver) {
+      response.statusCode = 400;
+      response.end(JSON.stringify({ error: "You are already your own friend !" }));
+      return;
+    }
 
     if (!receiverExists) {
       response.statusCode = 400;
@@ -383,8 +388,22 @@ async function getNotifications(request, response) {
 
   try {
     const db = getDb();
-    const collection = db.collection("notifications");
-    const notifications = await collection.findOne({ user_id: user });
+
+    const userProfileCollection = db.collection("user_profile");
+    const users = db.collection("users");
+    const profile = await users.findOne({ username: user });
+    const notificationsCollection = db.collection("notifications");
+    const notifications = await notificationsCollection.findOne({ user_id: user });
+
+    await AchievementsManager.updateAchievementsList(
+        userProfileCollection,
+        profile._id,
+      );
+      await AchievementsManager.getNotifiedAchievements(
+          userProfileCollection,
+          notificationsCollection,
+          profile,
+        );
 
     if (!notifications || !notifications.notifications) {
       response.statusCode = 200;
@@ -461,6 +480,24 @@ async function handleFriendAcceptance(request, response) {
     await userProfileCollection.updateOne(
       { _id: toUserId },
       { $addToSet: { friends: fromUserId } },
+    );
+    await AchievementsManager.updateAchievementsList(
+      userProfileCollection,
+      fromUser._id,
+    );
+    await AchievementsManager.getNotifiedAchievements(
+      userProfileCollection,
+      notificationsCollection,
+      fromUser,
+    );
+    await AchievementsManager.updateAchievementsList(
+      userProfileCollection,
+      toUser._id,
+    );
+    await AchievementsManager.getNotifiedAchievements(
+      userProfileCollection,
+      notificationsCollection,
+      toUser,
     );
 
     response.statusCode = 200;
