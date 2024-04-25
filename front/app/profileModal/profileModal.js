@@ -50,6 +50,9 @@ async function displayAchievements(username) {
 
       const descriptionElement = document.createElement("p");
       descriptionElement.textContent = achievement.description;
+      if (achievement.progression >= achievement.out) {
+        descriptionElement.classList.add("achieved");
+      }
       achievementElement.appendChild(descriptionElement);
 
       achievementsContainer.appendChild(achievementElement);
