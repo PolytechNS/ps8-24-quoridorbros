@@ -33,7 +33,8 @@ class SocketManager {
       socket.on("cookie", async (cookie) => {
 
         const userId = await getIdOfUser(cookie.user);
-        SocketMapper.updateSocket(userId, socket);
+        if (userId) {
+          SocketMapper.updateSocket(userId, socket);
         SocketSender.sendMessage(userId, "cookieReceived");
         configureChallengeEvents(socket);
         configureMessagesEvents(socket);
@@ -55,6 +56,8 @@ class SocketManager {
         }
 
         SocketSender.resendAllPending(userId);
+
+        }
       });
 
       //Ai game
@@ -92,11 +95,14 @@ class SocketManager {
 
       socket.on("checkFriendConnectionStatus", async (username) => {
         const userId = await getIdOfUser(username);
-        SocketMapper.mapper.forEach((value, key) => {
-          if (key === userId) {
-            socket.emit("friendConnected", username);
-          }
-        });
+        if (userId) {
+          SocketMapper.mapper.forEach((value, key) => {
+            if (key === userId) {
+              socket.emit("friendConnected", username);
+            }
+          });
+        }
+        
       });
     });
   }
