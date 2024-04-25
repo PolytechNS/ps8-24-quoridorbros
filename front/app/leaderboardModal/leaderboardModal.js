@@ -16,7 +16,7 @@ function setUpLeaderboardModalClosingListeners() {
     });
 
   window.addEventListener("click", function (event) {
-    if (event.target == document.getElementById("leaderboard-modal-content")) {
+    if (event.target == document.getElementById("leaderboard-modal")) {
       leaderboardModalContainer.innerHTML = "";
     }
   });
