@@ -18,7 +18,7 @@ class RoomManager {
       return;
     }
     const userProfile = await getProfileByUserId(userId);
-    let player = { userId, userProfile, deltaElo: 50 };
+    let player = { userId, userProfile, deltaElo: 100 };
     RoomManager.players.push(player);
     this.findMatch(player);
   }

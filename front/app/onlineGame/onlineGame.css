@@ -20,17 +20,22 @@
 }
 
 #profile-container, #opponent-profile-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 1.2vw;
     height: 40vh;
     width: 100%;
     margin: 5%;
     padding: 5%;
-    border: 10px solid black;
+    border: 0.8vw solid black;
     border-radius: 10%;
     background: white;
-    overflow: hidden;
 }
 
 #options-container {
+    font-size: 1.5vw;
     height: 40vh;
     width: 50%;
     display: flex;
@@ -40,8 +45,8 @@
 }
 
 #profile-container img, #opponent-profile-container img {
-    height: 60%;
-    margin-bottom: 10%;
+    height: 7vw;
+    width: 7vw;
     border-radius: 50%;
 }
 
@@ -49,9 +54,6 @@
     margin-bottom: 4%;
 }
 
-#profile-container #profileUsername, #opponent-profile-container #profileUsername {
-    overflow-x: scroll;
-}
 
 #profile-container #profileUsername::-webkit-scrollbar, #opponent-profile-container #profileUsername::-webkit-scrollbar {
     display: none;
@@ -111,37 +113,50 @@
         flex-wrap: wrap;
     }
 
+    #chat-notifications-button {
+        height: 6vh;
+        width: 6vh;
+    }
+
+    #timer-opponent {
+        margin: 0 auto;
+    }
+
 
     #profile-container, #opponent-profile-container {
+        font-size: 2vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
         height: 90%;
         width: 50%;
         padding: 0;
         margin: 0;
+        border: black 1.4vw solid;;
     }
 
     #options-container {
+        font-size: 2vh;
         flex-direction: column;
         width: 50%;
         height: 90%;
-        overflow: hidden;
     }
 
     #profile-container img, #opponent-profile-container img {
-        height: 24vw;
-        /*60% of 40vh normally, for portrait*/
-        margin: 0;
+        width: 7vh;
+        height: 7vh;
     }
 
     #concede {
-        padding: 1.5%;
+        padding: 4%;
         display: flex;
         justify-content: space-around;
         align-items: center;
-        flex-direction: column;
         border: 4px solid black;
         border-radius: 12px;
         margin: 0;
-        gap: 0;
+        gap: 1vw;
     }
 
     #timer-player, #timer-opponent {
@@ -150,9 +165,41 @@
         padding: 1vh;
     }
 }
-@media screen and (min-aspect-ratio:3/4) and (max-aspect-ratio:4/3) {
-    #profile-container img, #opponent-profile-container img {
-        display: none;
+
+@media screen and (max-width: 500px) {
+
+
+
+    #profile-container, #opponent-profile-container {
+        font-size: 3vw;
     }
 
+    #options-container {
+        font-size: 2.4vw;
+        flex-direction: column;
+        width: 50%;
+        height: 90%;
+    }
+
+    #profile-container img, #opponent-profile-container img {
+        width: 7vh;
+        height: 7vh;
+    }
+
+    #concede {
+        padding: 4%;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        border: 4px solid black;
+        border-radius: 12px;
+        margin: 0;
+        gap: 1vw;
+    }
+
+    #timer-player, #timer-opponent {
+        width: 30%;
+        min-width: 95px;
+        padding: 1vh;
+    }
 }
