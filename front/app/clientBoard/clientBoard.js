@@ -57,6 +57,43 @@ class ClientBoard {
               this.onWallRemoveHover(x, y),
             );
 
+            // Add touchstart, touchmove, and touchend event listeners to your div
+            div.addEventListener("touchstart", (event) => {
+              event.preventDefault(); // Prevent default touch behavior (like scrolling)
+              this.onWallHover(x, y); // Trigger onWallHover when touched
+            });
+
+            div.addEventListener("touchmove", (event) => {
+              event.preventDefault(); // Prevent default touch behavior (like scrolling)
+              // Get the touch position relative to the div
+              const touch = event.touches[0];
+              const rect = div.getBoundingClientRect();
+              const touchX = touch.clientX - rect.left;
+              const touchY = touch.clientY - rect.top;
+
+              // Check if touch position is inside the div
+              if (touchX >= 0 && touchX <= div.offsetWidth && touchY >= 0 && touchY <= div.offsetHeight) {
+                this.onWallHover(x, y); // If inside, trigger onWallHover
+              } else {
+                this.onWallRemoveHover(x, y); // If outside, trigger onWallRemoveHover
+              }
+            });
+
+            div.addEventListener("touchend", (event) => {
+              event.preventDefault(); // Prevent default touch behavior (like scrolling)
+              // Get the touch position relative to the div
+              const touch = event.changedTouches[0];
+              const rect = div.getBoundingClientRect();
+              const touchX = touch.clientX - rect.left;
+              const touchY = touch.clientY - rect.top;
+
+              // Check if touch position is still inside the div
+              if (touchX >= 0 && touchX <= div.offsetWidth && touchY >= 0 && touchY <= div.offsetHeight) {
+                this.onWallClick(x, y); // If still inside, trigger onWallClick
+                this.onWallRemoveHover(x, y); // Sometimes still there
+              }
+            });
+
             if (y % 2 === 0) {
               div.classList.add("vertical");
             } else {
