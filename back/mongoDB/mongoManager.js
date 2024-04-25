@@ -45,7 +45,6 @@ async function loadGameState(userId) {
       token: userId,
     });
     if (!save) {
-      console.log("No game state found for this user token");
       return null;
     }
     return save;
@@ -62,7 +61,6 @@ async function userExists(userToken) {
     const userDocument = await collection.findOne({ username: userToken });
 
     if (!userDocument) {
-      console.log("No user found for the provided username:", userToken);
       return false;
     }
 
@@ -136,11 +134,13 @@ async function getFriendList(username) {
     const user = await userCollection.findOne({ username: username });
     if (!user) {
       throw new Error(`User with username '${username}' not found.`);
+      return null;
     }
 
     const userProfile = await userProfileCollection.findOne({ _id: user._id });
     if (!userProfile) {
       throw new Error(`User profile not found for user '${username}'.`);
+      return null;
     }
 
     const friends = await userCollection
@@ -193,8 +193,8 @@ async function getProfileOf(username) {
     const userProfileCollection = db.collection("user_profile");
 
     const user = await userCollection.findOne({ username: username });
-    const userProfile = await userProfileCollection.findOne({ _id: user._id });
-    if (userProfile) {
+    if (user) {
+      const userProfile = await userProfileCollection.findOne({ _id: user._id });
       let photoPath;
       if (userProfile.photo === "")
         photoPath = `./assets/images/profile/img1.webp`;
@@ -229,7 +229,6 @@ async function getUserById(userId) {
     const userDocument = await collection.findOne({ _id: objectIdUserId });
 
     if (!userDocument) {
-      console.log("No user found for the provided userId:", userId);
       return null;
     }
 
@@ -247,7 +246,6 @@ async function getIdOfUser(username) {
     const userDocument = await collection.findOne({ username });
 
     if (!userDocument) {
-      console.log("No user found for the provided username:", username);
       return null;
     }
 
@@ -445,9 +443,7 @@ async function sendMessage(senderId, receiverId, content) {
       read: false, // Marquer le message comme non lu lors de l'envoi
     };
     await collection.insertOne(message);
-    console.log("Message sent successfully.");
     const allMessages = await collection.find().toArray();
-    console.log("All messages in the collection:", allMessages);
     return true;
   } catch (error) {
     console.error("Error sending message:", error);
@@ -566,7 +562,6 @@ async function clearMessageCollection() {
     // Supprimer tous les documents de la collection
     const deleteResult = await collection.deleteMany({});
 
-    console.log("Message collection cleared.");
     return deleteResult.deletedCount; // Retourne le nombre de documents supprimés
   } catch (error) {
     console.error("Error clearing message collection:", error);

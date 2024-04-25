@@ -35,9 +35,7 @@ function configureMessagesEvents(socket) {
 
   socket.on("sendMessage", async (data) => {
     const userId = SocketMapper.getUserIdBySocketId(socket.id);
-    console.log("sendMessage", data);
     const receiverId = await getIdOfUser(data.receiverUsername);
-    console.log("receiverId", receiverId);
     await sendMessage(userId, receiverId, data.message);
   });
 }
