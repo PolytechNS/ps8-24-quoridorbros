@@ -22,4 +22,5 @@
     </edit-config>
     <icon src="res/icon.png"/>
     <preference name="AndroidWindowSplashScreenAnimatedIcon" value="res/icon.png"/>
+    <preference name="Fullscreen" value="true" />
 </widget>
