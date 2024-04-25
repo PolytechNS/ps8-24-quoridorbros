@@ -70,7 +70,7 @@ async function loadMessagesModal(username) {
   messagesContainer = document.getElementById("messages-container");
   const messageWithText = document.getElementById("message-with-text");
   messageWithText.textContent = "Messages with " + username;
-  document.getElementById("myModal").style.display = "block";
+  document.getElementById("messsages-modal").style.display = "block";
   setUpMessagesModalListeners();
   startFetchMessagesLoop();
 }
