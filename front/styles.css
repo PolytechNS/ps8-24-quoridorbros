@@ -145,6 +145,11 @@ button.mainButtonClass:hover:before {
     animation: glowing-button 20s linear infinite;
 }
 
+button.mainButtonClass:active:before {
+    opacity: 1; /* Show the rainbow effect on hover */
+    animation: glowing-button 20s linear infinite;
+}
+
 @keyframes glowing-button {
     0% {
         background-position: 0 0;
