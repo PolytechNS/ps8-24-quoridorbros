@@ -103,7 +103,7 @@ async function loadProfileModal(username) {
   const response = await fetch("../../app/profileModal/profileModal.html");
   const html = await response.text();
   profileModalContainer.innerHTML = html;
-  document.getElementById("myModal").style.display = "block";
+  document.getElementById("profile-modal").style.display = "block";
   setUpProfileModalClosingListeners();
   displayAchievements(username);
   displayProfileLine(username);
