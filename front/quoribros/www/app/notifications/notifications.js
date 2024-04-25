@@ -15,29 +15,6 @@ function setUpNotifModalClosingListeners() {
 }
 
 async function fetchNotifications() {
-<<<<<<< HEAD
-    try {
-      let connectedCookieValue = getCookie("connected");
-      if (connectedCookieValue) {
-        connectedCookieValue = JSON.parse(connectedCookieValue);
-        const sender = connectedCookieValue.user;
-        const response = await fetch(endpoint+`/api/notifications?userId=${sender}`);
-        if (response.status !== 200) {
-          throw new Error('Failed to fetch notifications');
-          return;
-        }
-        const notifications = await response.json()
-        const notificationsList = document.getElementById("notifications");
-        notificationsList.innerHTML = '';
-        console.log(notifications);
-        if (notifications) {
-        notifications.forEach(notification => {
-
-          const listItem = createNotification(sender,notification);
-          if (listItem)
-            notificationsList.appendChild(listItem);
-        });}
-=======
   try {
     let connectedCookieValue = getCookie("connected");
     if (connectedCookieValue) {
@@ -57,7 +34,6 @@ async function fetchNotifications() {
           const listItem = createNotification(sender, notification);
           if (listItem) notificationsList.appendChild(listItem);
         });
->>>>>>> 472fb6d0f3f8dfbe20dc0eefd464031ee6483e06
       }
     }
   } catch (error) {
