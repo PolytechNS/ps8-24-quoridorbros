@@ -8,7 +8,7 @@
 .cell {
     width: 7.5vh;
     height: 7.5vh;
-    background-image: url("../../assets/images/bloc.png");
+    background-image: url("../../assets/images/grass.png");
     background-size: 7.5vh;
 }
 
@@ -32,6 +32,11 @@
     background: black;
     /*background-image: url("../../assets/images/pipe-horizontal.png");*/
 }
+.wall.placed {
+    background-size: cover;
+    background-position: center;
+    background: black;
+}
 
 .wall.vertical.placed {
     height: 7.5vh;
@@ -42,7 +47,7 @@
 }
 
 .surbrillance {
-    background-color: aquamarine !important;
+    background-color: darkorange !important;
 }
 
 .fog {
@@ -128,6 +133,7 @@
     .wall.vertical.placed {
         height: 5vmin;
     }
+
 }
 
 
