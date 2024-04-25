@@ -17,8 +17,11 @@ function quitMatchMaking() {
   socket.emit("quitMatchMaking");
   window.location.href = "../../index.html";
 }
+
 function quitChallenging() {
-  socket.emit("cancelChallenge");
+  let challengedfriend = localStorage.getItem("challengedfriend");
+  localStorage.removeItem("challengedfriend");
+  socket.emit("cancelChallenge", challengedfriend);
   window.location.href = "../../index.html";
 }
 
@@ -36,12 +39,13 @@ socket.on("friendConnected", (msg) => {
     .classList.add("friendConnected");
 });
 
-socket.on("challengeAccepted", (msg) => {
+socket.on("ChallengeBegin", (msg) => {
   let profileOpponentDataString = JSON.stringify(msg.data);
   localStorage.setItem("profileOpponentString", profileOpponentDataString);
-  opponentFound(msg.data);
+  window.location.href = "../../app/onlineGame/onlineGame.html";
 });
 
 socket.on("challengeDeclined", (msg) => {
-  quitChallenging();
+  localStorage.removeItem("challengedfriend");
+  window.location.href = "../../index.html";
 });

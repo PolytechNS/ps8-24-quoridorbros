@@ -1,4 +1,5 @@
 const profileContainer = document.getElementById("profile-container");
+const optionsContainer = document.getElementById("options-container");
 const opponentProfileContainer = document.getElementById(
   "opponent-profile-container",
 );
@@ -14,11 +15,13 @@ function displayProfile() {
     profileUsernameElement.textContent = myProfile.username;
     profileUsernameElement.id = "profileUsername";
     const profileEloElement = document.createElement("div");
-    profileEloElement.textContent = `ELO: ${myProfile.elo}`;
     profileEloElement.id = "profileElo";
     profileContainer.appendChild(profilePhotoElement);
     profileContainer.appendChild(profileUsernameElement);
-    profileContainer.appendChild(profileEloElement);
+    if (myProfile.elo) {
+      profileEloElement.textContent = `ELO: ${myProfile.elo}`;
+      profileContainer.appendChild(profileEloElement);
+    }
   } catch (error) {
     console.error(error);
   }
@@ -32,11 +35,14 @@ function displayProfile() {
     opponentProfileUsernameElement.textContent = opponentProfile.username;
     opponentProfileUsernameElement.id = "opponentProfileUsername";
     const opponentProfileEloElement = document.createElement("div");
-    opponentProfileEloElement.textContent = `ELO: ${opponentProfile.elo}`;
+
     opponentProfileEloElement.id = "opponentProfileElo";
     opponentProfileContainer.appendChild(opponentProfilePhotoElement);
     opponentProfileContainer.appendChild(opponentProfileUsernameElement);
-    opponentProfileContainer.appendChild(opponentProfileEloElement);
+    if (opponentProfile.elo) {
+      opponentProfileEloElement.textContent = `ELO: ${opponentProfile.elo}`;
+      opponentProfileContainer.appendChild(opponentProfileEloElement);
+    }
   } catch (error) {
     console.error(error);
   }

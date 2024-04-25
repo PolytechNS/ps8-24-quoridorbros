@@ -1,7 +1,12 @@
+const antiCheatLocal = document.getElementById("anti-cheat-local");
+
 class LocalGameManager {
   constructor() {
     this.game = new Game(this);
     this.isGameFinished = false;
+    document
+      .getElementById("concede")
+      .addEventListener("click", () => this.concede());
   }
 
   initBoardPlayer1(gameState) {
@@ -42,6 +47,12 @@ class LocalGameManager {
     window.location.href = "../gameFinished/gameFinished.html";
   }
 
+  concede() {
+    const playerNumber = this.game.currentPlayer.playerNumber;
+    const otherPlayer = playerNumber == 1 ? 2 : 1;
+    this.playerWon(otherPlayer);
+  }
+
   onCellClick(x, y) {
     if (this.isGameFinished) return;
     this.game.onCellClick(x, y);
@@ -52,40 +63,29 @@ class LocalGameManager {
     this.game.onWallClick(x, y);
   }
 
-  antiCheat(message, callback) {
-    const overlay = document.createElement("div");
-    overlay.style.position = "fixed";
-    overlay.style.top = "0";
-    overlay.style.left = "0";
-    overlay.style.width = "100%";
-    overlay.style.height = "100%";
-    overlay.style.backgroundColor = "black";
-    overlay.style.color = "white";
-    overlay.style.display = "flex";
-    overlay.style.alignItems = "center";
-    overlay.style.justifyContent = "center";
-    overlay.style.zIndex = "999";
-    overlay.innerHTML = `<div>${message}</div>`;
-    overlay.addEventListener("click", function () {
-      overlay.parentNode.removeChild(overlay);
-      callback();
-    });
-    document.body.appendChild(overlay);
+  antiCheat(message) {
+    antiCheatLocal.textContent = message;
+    antiCheatLocal.style.display = "flex";
   }
 
   setBoardsVisibility() {
     if (this.clientBoard1.turnOf === 1) {
       this.clientBoard2.element.style.display = "none";
-      this.antiCheat("Player 1 turn : Click anywhere", () => {
-        this.clientBoard1.element.style.display = "grid";
-      });
+      this.antiCheat("Player 1 turn : Click anywhere");
+      this.clientBoard1.element.style.display = "grid";
     } else {
-      this.antiCheat("Player 2 turn : Click anywhere", () => {
-        this.clientBoard2.element.style.display = "grid";
-      });
+      this.clientBoard2.element.style.display = "grid";
+      this.antiCheat("Player 2 turn : Click anywhere");
       this.clientBoard1.element.style.display = "none";
     }
   }
 }
 
 let localGameManager = new LocalGameManager();
+window.addEventListener("DOMContentLoaded", function () {
+  window.addEventListener("click", function (event) {
+    if (event.target == antiCheatLocal) {
+      antiCheatLocal.style.display = "none";
+    }
+  });
+});

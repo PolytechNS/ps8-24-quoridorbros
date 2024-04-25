@@ -182,8 +182,9 @@ function checkFriendConnectionStatus(username) {
 }
 
 function sendChallenge(username) {
+  localStorage.setItem("challengedfriend", username);
   socket.emit("challengeFriend", username);
-  window.location.href = "./app/matchmaking/challengeMatchmaking.html";
+  window.location.href = "./app/challengeWaitingRoom/challengeWaitingRoom.html";
 }
 
 async function loadFriendsModal() {

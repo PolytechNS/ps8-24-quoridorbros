@@ -141,6 +141,8 @@ class Game {
   constructor(gameManager, savedGame) {
     this.gameManager = gameManager;
     this.playerConcede = undefined;
+    this.stopTimer = false;
+
     this.turn = 1;
     if (savedGame) {
       console.log("game: ", savedGame);
@@ -190,7 +192,8 @@ class Game {
     const currentTurn = this.turn;
     setTimeout(() => {
       this.turnExpired(currentTurn);
-    }, 60000);
+    }, 6000000);
+      // TODO : Change timeout value
   }
 
   onCellClick(x, y) {
@@ -271,6 +274,7 @@ class Game {
 
   nextTurn() {
     if (this.isGameFinished()) {
+      this.stopTimer = true;
       this.gameManager.playerWon(this.currentPlayer.playerNumber);
       console.log(`\nLE JOUEUR ${this.currentPlayer.playerNumber} A GAGNE`);
     } else {
@@ -304,15 +308,17 @@ class Game {
         const currentTurn = this.turn;
         setTimeout(() => {
           this.turnExpired(currentTurn);
-        }, 60000);
+        }, 6000000);
+          // TODO : Change timeout value
       }
     } else {
       const currentTurn = this.turn;
       setTimeout(() => {
         this.turnExpired(currentTurn);
-      }, 60000);
-      this.gameManager.updateGameStatePlayer1(gameStatePlayer1);
-      this.gameManager.updateGameStatePlayer2(gameStatePlayer2);
+      }, 6000000);
+      // TODO : Change timeout value
+    this.gameManager.updateGameStatePlayer1(gameStatePlayer1);
+    this.gameManager.updateGameStatePlayer2(gameStatePlayer2);
     }
   }
 
@@ -458,8 +464,8 @@ class Game {
   loadSavedGame() {}
 
   turnExpired(turn) {
-    console.log("this.turn", this.turn, "turn", turn);
-    if (this.turn === turn) {
+    if (this.turn === turn && !this.stopTimer) {
+      this.stopTimer = true;
       const otherPlayer = this.getOtherPlayer(this.currentPlayer);
       this.gameManager.playerWon(otherPlayer.playerNumber);
     }
