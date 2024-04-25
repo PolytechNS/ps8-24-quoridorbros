@@ -16,6 +16,7 @@
     "cordova-android": "^12.0.1",
     "cordova-plugin-advanced-http": "^3.3.1",
     "cordova-plugin-file": "^8.0.1",
+    "cordova-plugin-splashscreen": "^6.0.1",
     "cordova-plugin-vibration": "^3.1.1"
   },
   "cordova": {
@@ -26,7 +27,8 @@
       "cordova-plugin-advanced-http": {
         "ANDROIDBLACKLISTSECURESOCKETPROTOCOLS": "SSLv3,TLSv1"
       },
-      "cordova-plugin-vibration": {}
+      "cordova-plugin-vibration": {},
+      "cordova-plugin-splashscreen": {}
     }
   }
 }

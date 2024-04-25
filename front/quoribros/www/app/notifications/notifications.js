@@ -1,4 +1,20 @@
-const notificationcontainer = document.getElementById('notifications-container');
+const notifsModalContainer = document.getElementById(
+  "notifs-modal-container",
+);
+
+function setUpNotifModalClosingListeners() {
+  document
+    .getElementsByClassName("close")[0]
+    .addEventListener("click", function () {
+      notifsModalContainer.innerHTML = "";
+    });
+
+  window.addEventListener("click", function (event) {
+    if (event.target == document.getElementById("notifications-modal")) {
+      notifsModalContainer.innerHTML = "";
+    }
+  });
+}
 
 async function fetchNotifications() {
     try {
@@ -130,4 +146,13 @@ function createFriendNotification(user,notification){
   listItem.appendChild(declineButton);
   return listItem;
   
+}
+
+async function loadNotifsModal() {
+  const response = await fetch("../../app/notifications/notifications.html");
+  const html = await response.text();
+  notifsModalContainer.innerHTML = html;
+  document.getElementById("notifications-modal").style.display = "block";
+  setUpNotifModalClosingListeners();
+  await fetchNotifications();
 }

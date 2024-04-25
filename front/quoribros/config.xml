@@ -21,4 +21,5 @@
         <application android:usesCleartextTraffic="true" />
     </edit-config>
     <icon src="res/icon.png"/>
+    <preference name="AndroidWindowSplashScreenAnimatedIcon" value="res/icon.png"/>
 </widget>
