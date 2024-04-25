@@ -1,10 +1,26 @@
-const profileEditorContainer = document.getElementById('profile-editor-container');
+const profileEditorContainer = document.getElementById('profile-editor-modal-container');
 
 const images = [
     "./assets/images/profile/img1.webp",
     "./assets/images/profile/img2.webp",
-    "./assets/images/profile/img3.webp"
+    "./assets/images/profile/img3.webp",
+    "./assets/images/profile/img4.webp",
+    "./assets/images/profile/img5.webp",
 ];
+
+function setUpEditModalClosingListeners() {
+    document
+        .getElementsByClassName("close")[0]
+        .addEventListener("click", function () {
+            profileEditorContainer.innerHTML = "";
+        });
+
+    window.addEventListener("click", function (event) {
+        if (event.target == document.getElementById("friends-modal")) {
+            profileEditorContainer.innerHTML = "";
+        }
+    });
+}
 
 async function selectImage(profile, imageSrc) {
     const imgFileName = imageSrc.split("/").pop();
@@ -39,7 +55,7 @@ async function displayImagesFromDirectory() {
         }
         const { profile: profileData } = await response.json();
 
-        const ulElement = document.getElementById("imageList");
+        const ulElement = document.getElementById("profile-picture-tabs");
         images.forEach(imageSrc => {
             const liElement = document.createElement("li");
             const imgElement = document.createElement("img");
@@ -67,10 +83,10 @@ async function loadProfileEditor() {
         }
         const html = await response.text();
         profileEditorContainer.innerHTML = html;
+        setUpEditModalClosingListeners();
         await displayImagesFromDirectory();
+        document.getElementById("edit-modal").style.display = "block";
     } catch (error) {
         console.error('Error loading profile editor:', error);
     }
 }
-
-loadProfileEditor();

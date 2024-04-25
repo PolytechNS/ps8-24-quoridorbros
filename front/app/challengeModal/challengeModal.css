@@ -1,0 +1,61 @@
+.challenge-modal-content {
+    position: relative;
+    height: 80vh;
+    width: 80vw;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    margin: 10vh auto;
+    align-items: center;
+    background-color: #fefefe;
+    padding: 20px;
+    gap: 2vw;
+    border: 0.5rem solid orange;
+    border-radius: 20px;
+}
+
+.challenge-modal-content h2 {
+    font-size: 2.5vw;
+}
+.accept-button{
+    background-image: url("../../assets/images/check.png");
+    background-color: #009e16;
+}
+
+.decline-button{
+    background-image: url("../../assets/images/cross.png");
+    background-color: #e32626;
+}
+
+#challenger-container {
+    height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    font-size: 2vw;
+}
+
+#challenger-container img {
+    height: 15vw;
+    border-radius: 50%;
+}
+
+.challenge-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 40vw;
+}
+
+
+@media (orientation: portrait) {
+
+    #challenger-container {
+        font-size: 4vw;
+    }
+
+    #challenger-container img {
+        height: 30vw;
+        border-radius: 50%;
+    }
+
+}

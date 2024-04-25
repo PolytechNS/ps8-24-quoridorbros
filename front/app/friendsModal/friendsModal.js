@@ -178,7 +178,6 @@ async function sendFriendRequest(event) {
 
 function checkFriendConnectionStatus(username) {
   socket.emit("checkFriendConnectionStatus", username);
-  console.log("checkFriendConnectionStatus" + username);
 }
 
 function sendChallenge(username) {

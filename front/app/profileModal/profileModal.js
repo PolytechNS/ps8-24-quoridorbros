@@ -85,6 +85,12 @@ async function displayProfileLine(username) {
           profileModalContainer.innerHTML = "";
           logout();
         });
+      document
+          .getElementById("edit-profile-button")
+          .addEventListener("click", function () {
+            profileModalContainer.innerHTML = "";
+            loadProfileEditor();
+          });
       document.getElementById("add-as-friend-button").style.display = "none";
     } else {
       document
@@ -93,6 +99,7 @@ async function displayProfileLine(username) {
           FriendsService.sendFriendRequest(getUsername(), profileData.username);
         });
       document.getElementById("logout-button").style.display = "none";
+      document.getElementById("edit-profile-button").style.display = "none";
     }
   } catch (error) {
     console.error(error);
