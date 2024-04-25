@@ -158,7 +158,7 @@ profileButton.addEventListener("click", function () {
 });
 
 notifsButton.addEventListener("click", function () {
-  loadNotifications();
+  loadNotifsModal();
 });
 
 function closeAllModals() {
