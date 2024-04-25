@@ -45,7 +45,6 @@ async function loadGameState(userId) {
       token: userId,
     });
     if (!save) {
-      console.log("No game state found for this user token");
       return null;
     }
     return save;
@@ -62,7 +61,6 @@ async function userExists(userToken) {
     const userDocument = await collection.findOne({ username: userToken });
 
     if (!userDocument) {
-      console.log("No user found for the provided username:", userToken);
       return false;
     }
 
@@ -229,7 +227,6 @@ async function getUserById(userId) {
     const userDocument = await collection.findOne({ _id: objectIdUserId });
 
     if (!userDocument) {
-      console.log("No user found for the provided userId:", userId);
       return null;
     }
 
@@ -247,7 +244,6 @@ async function getIdOfUser(username) {
     const userDocument = await collection.findOne({ username });
 
     if (!userDocument) {
-      console.log("No user found for the provided username:", username);
       return null;
     }
 
@@ -445,9 +441,7 @@ async function sendMessage(senderId, receiverId, content) {
       read: false, // Marquer le message comme non lu lors de l'envoi
     };
     await collection.insertOne(message);
-    console.log("Message sent successfully.");
     const allMessages = await collection.find().toArray();
-    console.log("All messages in the collection:", allMessages);
     return true;
   } catch (error) {
     console.error("Error sending message:", error);
@@ -566,7 +560,6 @@ async function clearMessageCollection() {
     // Supprimer tous les documents de la collection
     const deleteResult = await collection.deleteMany({});
 
-    console.log("Message collection cleared.");
     return deleteResult.deletedCount; // Retourne le nombre de documents supprimés
   } catch (error) {
     console.error("Error clearing message collection:", error);

@@ -372,8 +372,10 @@ async function getFriendRequests(request, response) {
       return;
     }
 
+    let friendnotifs = friendRequests.notifications.filter(notification => notification.type === 'friendrequest');
+
     response.statusCode = 200;
-    response.end(JSON.stringify(friendRequests.notifications));
+    response.end(JSON.stringify(friendnotifs));
   } catch (error) {
     console.error(error);
     response.statusCode = 500;
