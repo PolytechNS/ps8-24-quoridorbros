@@ -5,11 +5,13 @@ function setUpNotifModalClosingListeners() {
     .getElementsByClassName("close")[0]
     .addEventListener("click", function () {
       notifsModalContainer.innerHTML = "";
+      notificationIndicator();
     });
 
   window.addEventListener("click", function (event) {
     if (event.target == document.getElementById("notifications-modal")) {
       notifsModalContainer.innerHTML = "";
+      notificationIndicator();
     }
   });
 }

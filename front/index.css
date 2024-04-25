@@ -44,6 +44,8 @@
     border-radius: 50%;
     background: #ffb347 no-repeat center;
     background-size: contain;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
 }
 
