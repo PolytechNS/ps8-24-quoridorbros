@@ -51,7 +51,7 @@ h2 {
     gap: 6vh;
 }
 
-@media screen and (max-width: 768px) {
+@media (min-aspect-ratio: 1/1) {
     #ai-game-settings-container {
         flex-direction: column;
         gap: 2%;
@@ -79,7 +79,7 @@ h2 {
         flex-direction: column;
     }
 }
-@media screen and (max-width: 500px) {
+@media (min-aspect-ratio: 3/4 ){
     .ai-content {
         width: 90vw;
 
