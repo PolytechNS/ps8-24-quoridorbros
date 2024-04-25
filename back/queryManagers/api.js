@@ -98,7 +98,7 @@ async function handleSignIn(request, response) {
     const formData = parseFormData(body, boundary);
 
     const login = formData.username;
-    const mail = formData.password;
+    const mail = formData.mail;
     const password = formData.password;
 
     try {
