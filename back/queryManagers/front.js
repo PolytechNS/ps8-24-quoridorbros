@@ -65,7 +65,7 @@ function manageRequest(request, response) {
         // If the file is OK, let's set the MIME type and send it.
         response.setHeader(
           "Content-type",
-          mimeTypes[extension] || mimeTypes["default"]
+          mimeTypes[extension] || mimeTypes["default"],
         );
         response.end(data);
       }

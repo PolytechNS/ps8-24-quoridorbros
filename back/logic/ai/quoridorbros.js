@@ -26,9 +26,6 @@ let movesSinceLastKnownPosition = null;
 let otherPlayerPreviousNbWalls = 10;
 const defaultMove = { action: "move", value: "58" };
 
-let goal_line;
-let gameState = null;
-
 function getInitialMove() {
   let position;
   if (numPlayer === 1) {
@@ -104,7 +101,7 @@ async function nextMove(vellaGameState) {
       let positionOtherPlayer = findPlayer(
         gameState,
         lastKnownPosition,
-        movesSinceLastKnownPosition
+        movesSinceLastKnownPosition,
       );
       if (positionOtherPlayer !== null) {
         gameState.otherPlayer.x = positionOtherPlayer.x;
@@ -135,7 +132,7 @@ async function nextMove(vellaGameState) {
           const newGameState = cloneAndApplyMove(
             gameState,
             wallMove[0],
-            wallMove[1]
+            wallMove[1],
           );
 
           const heuristicValue = deltaDistanceHeuristic(newGameState);
@@ -177,12 +174,12 @@ function calculateBestMove(gameState) {
   const possibleMoves = BoardUtils.getReachableCells(
     gameState.player,
     gameState.otherPlayer,
-    gameState.board
+    gameState.board,
   );
   const bestMove = findShortestPathMove(
     possibleMoves,
     gameState.board,
-    numPlayer
+    numPlayer,
   );
 
   return bestMove[0];

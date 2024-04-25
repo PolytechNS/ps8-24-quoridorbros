@@ -1,130 +1,118 @@
 const { GameManagerFactory } = require("../gameManagers/gameManagerFactory.js");
 const { SocketMapper } = require("../../socket/socketMapper.js");
-const { getProfileOf, getUserById, getProfileByUserId } = require("../../mongoDB/mongoManager.js");
-const {SocketSender} = require("../../socket/socketSender");
+const {
+  getProfileOf,
+  getUserById,
+  getProfileByUserId,
+} = require("../../mongoDB/mongoManager.js");
+const { SocketSender } = require("../../socket/socketSender");
 
 class RoomManager {
-  static io;
-  static rooms = [];
-
-  static initialize(ioInstance) {
-    RoomManager.io = ioInstance;
-  }
+  static players = [];
+  static actionInprogress = false;
 
   static async enterMatchmaking(userId) {
-    console.log("enterMatchmaking", userId);
-    try {
-      if (RoomManager.playerAlreadyInARoom(userId)) {
-        console.log("the player is already in a room");
-        return;
-      }
-      await this.findRoom(userId);
-    } catch (error) {
-      console.error("An error occurred while entering matchmaking:", error);
-      // Handle the error as needed
+    //console.log("enterMatchmaking", userId);
+    if (RoomManager.playerAlreadyWaiting(userId)) {
+      console.log("the player is already in a room");
+      return;
     }
+    const userProfile = await getProfileByUserId(userId);
+    let player = { userId, userProfile, deltaElo: 100 };
+    RoomManager.players.push(player);
+    this.findMatch(player);
   }
 
   static quitMatchmaking(userId) {
-    try {
-      const existingRoom = RoomManager.findPlayerRoom(userId);
-      if (!existingRoom) {
-        console.log("the player was not in a room");
-        return;
-      }
-
-      RoomManager.removeRoom(existingRoom);
-    } catch (error) {
-      console.error("An error occurred while quitting matchmaking:", error);
-    }
-  }
-
-  static findPlayerRoom(userId) {
-    return RoomManager.rooms.find((room) => room.players.includes(userId));
-  }
-
-  static playerAlreadyInARoom(userId) {
-    const playerRoom = RoomManager.findPlayerRoom(userId);
-    return !!playerRoom;
-  }
-
-  static createRoomAndJoin(userId, userElo) {
-    let newRoom = new Room(userId, userElo);
-    RoomManager.rooms.push(newRoom);
-  }
-
-  static async findRoom(userId) {
-    const userProfile = await getProfileByUserId(userId);
-    const userElo = userProfile.elo;
-
-    const room = RoomManager.rooms.find((room) =>
-        Math.abs(room.elo - userElo) <= room.deltaElo
-    );
-
-
-    if(!room){
-      this.createRoomAndJoin(userId, userElo);
+    const player = RoomManager.findPlayer(userId);
+    if (!this.playerAlreadyWaiting(userId)) {
+      console.log("the player was not in matchmaking");
       return;
     }
-    room.add_player(userId);
-    const userProfile1 = await getProfileByUserId(room.players[0]);
-    const userProfile2 = await getProfileByUserId(room.players[1]);
-    await room.createSocketRoom(userProfile1, userProfile2);
-    room.initGame(userProfile1.elo, userProfile2.elo);
-    RoomManager.removeRoom(room);
-
+    RoomManager.removePlayer(userId);
   }
 
-  static removeRoom(room) {
-    RoomManager.rooms = RoomManager.rooms.filter((element) => {
-      return room.roomId !== element.roomId;
+  static findPlayer(userId) {
+    return RoomManager.players.find((player) => player.userId === userId);
+  }
+
+  static playerAlreadyWaiting(userId) {
+    const player = RoomManager.findPlayer(userId);
+    return !!player;
+  }
+
+  static async findMatch(player) {
+    await this.waitIfActionInProgress();
+
+    this.actionInprogress = true;
+
+    //si le joueur a trouvé un opponent
+    if (!this.playerAlreadyWaiting(player.userId)) {
+      this.actionInprogress = false;
+      return;
+    }
+
+    const otherPlayer = RoomManager.players.find(
+      (otherPlayer) =>
+        Math.abs(otherPlayer.userProfile.elo - player.userProfile.elo) <=
+          player.deltaElo && otherPlayer.userId !== player.userId,
+    );
+
+    if (!otherPlayer) {
+      player.deltaElo *= 2;
+      setTimeout(() => this.findMatch(player), 4000);
+    } else {
+      this.removePlayer(player.userId);
+      this.removePlayer(otherPlayer.userId);
+      await RoomManager.createRoom(
+        player.userId,
+        otherPlayer.userId,
+        player.userProfile,
+        otherPlayer.userProfile,
+      );
+    }
+
+    this.actionInprogress = false;
+  }
+
+  static removePlayer(userId) {
+    RoomManager.players = RoomManager.players.filter((player) => {
+      return player.userId !== userId;
     });
   }
-}
 
-class Room {
-  constructor(userId, userElo) {
-    this.roomId = this.generateRoomId(userId);
-    this.elo = userElo;
-    this.deltaElo = 500;
-    this.players = [];
-    this.players.push(userId);
+  static async waitIfActionInProgress() {
+    while (this.actionInprogress) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
   }
 
-  generateRoomId(userId) {
-    return "Room-" + Math.floor(Math.random() * 1000) + "-" + userId;
+  static async createRoom(userId1, userId2, userProfile1, userProfile2) {
+    SocketSender.sendMessage(userId1, "RoomFull", userProfile2);
+    SocketSender.sendMessage(userId2, "RoomFull", userProfile1);
+    SocketMapper.removeSocketById(userId1);
+    SocketMapper.removeSocketById(userId2);
+    GameManagerFactory.createOneVOneOnlineGameManager(
+      userId1,
+      userId2,
+      userProfile1.elo,
+      userProfile2.elo,
+    );
   }
 
-  add_player(userId) {
-    if (this.players.length < 2) this.players.push(userId);
-  }
-
-  removePlayer(userId) {
-    this.players = this.players.filter((playerId) => playerId !== userId);
-  }
-
-
-  initGame(eloPlayer1, eloPlayer2) {
-
-
-      GameManagerFactory.createOneVOneOnlineGameManager(
-            this.players[0],
-            this.players[1],
-            eloPlayer1,
-            eloPlayer2
-        );
-  }
-
-  async createSocketRoom(userProfile1, userProfile2) {
-    SocketMapper.toString();
-    SocketSender.sendMessage(this.players[0], "RoomFull", userProfile2);
-    SocketSender.sendMessage(this.players[1], "RoomFull", userProfile1);
-    SocketMapper.removeSocketById(this.players[0]);
-    SocketMapper.removeSocketById(this.players[1]);
-
-
-    //const profilePlayer1 = getProfileById()
-
+  static async challengeAccepted(userId1, userId2) {
+    const userProfile1 = await getProfileByUserId(userId1);
+    const userProfile2 = await getProfileByUserId(userId2);
+    SocketSender.sendMessage(userId1, "ChallengeBegin", userProfile2);
+    SocketSender.sendMessage(userId2, "ChallengeBegin", userProfile1);
+    SocketMapper.removeSocketById(userId1);
+    SocketMapper.removeSocketById(userId2);
+    GameManagerFactory.createOneVOneOnlineGameManager(
+      userId1,
+      userId2,
+      userProfile1.elo,
+      userProfile2.elo,
+    );
   }
 }
 

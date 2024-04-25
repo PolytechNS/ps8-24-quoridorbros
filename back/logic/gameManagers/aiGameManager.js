@@ -16,34 +16,53 @@ const {
   deltaWallsHeuristic,
 } = require("../ai/heuristics.js");
 
-const {
-  setup,
-  nextMove,
-  correction,
-  updateBoard,
-} = require("../ai/quoridorbros.js");
 const { SocketSender } = require("../../socket/socketSender.js");
-const {GameManagerMapper} = require("./gameManagerMapper");
+const { GameManagerMapper } = require("./gameManagerMapper");
+const { SocketMapper } = require("../../socket/socketMapper");
 
 class AiGameManager {
-  constructor(userId, loadGame = false) {
+  constructor(userId, level, loadGame = false) {
     this.userId = userId;
     this.isGameFinished = false;
+    this.isFirstTurn = true;
+    this.level = level;
+
     const initializeGame = async () => {
       if (loadGame) {
-        let gameState = await loadGameState(userId);
-        this.game = new Game(this, gameState);
+        let save = await loadGameState(userId);
+        this.level = save.level;
+        this.game = new Game(this, save.game);
+        this.isFirstTurn = false;
       } else {
         this.game = new Game(this);
       }
+
+      let aiFunctions;
+      switch (this.level) {
+        case 0:
+          aiFunctions = require("../ai/randomQuoridorbros");
+          break;
+        case 1:
+          aiFunctions = require("../ai/shortestPathQuoridorbros");
+          break;
+        case 2:
+          aiFunctions = require("../ai/quoridorbros");
+          break;
+        default:
+          // Default to beginner level if the specified level is invalid
+          aiFunctions = require("../ai/quoridorbros");
+          break;
+      }
+      this.setup = aiFunctions.setup;
+      this.nextMove = aiFunctions.nextMove;
     };
-    this.isFirstTurn = true;
 
     // Call the async function
     initializeGame();
   }
 
   initBoardPlayer1(gameState) {
+    SocketMapper.removeSocketById(this.userId);
     SocketSender.sendMessage(this.userId, "initBoard", gameState);
   }
   initBoardPlayer2(gameState) {}
@@ -66,8 +85,8 @@ class AiGameManager {
 
     const winningMessageClient = {
       type: "ai",
-      result:(playerNumber === 1) ? true : false,
-    }
+      result: playerNumber === 1 ? true : false,
+    };
 
     SocketSender.sendMessage(this.userId, "winner", winningMessageClient);
   }
@@ -88,7 +107,7 @@ class AiGameManager {
     if (this.isFirstTurn) {
       this.isFirstTurn = false;
       const startTime = Date.now();
-      const vellaMove = await setup(2);
+      const vellaMove = await this.setup(2);
       const endTime = Date.now();
       console.log("time ");
       console.log(endTime - startTime);
@@ -96,7 +115,7 @@ class AiGameManager {
       this.game.onCellClick(ourMove.x, ourMove.y);
     } else {
       const startTime = Date.now();
-      const vellaMove = await nextMove(vellaGameState);
+      const vellaMove = await this.nextMove(vellaGameState);
       const endTime = Date.now();
       console.log("time ");
       console.log(endTime - startTime);
@@ -151,9 +170,14 @@ class AiGameManager {
     return ourMove;
   }
 
-  async saveGame(userId) {
+  async saveGame() {
     const gameState = this.game.generateGameState();
-    saveGameState(userId, gameState);
+    await saveGameState(this.userId, gameState, this.level);
+    GameManagerMapper.removeAiGameManagerByUserId(this.userId);
+  }
+
+  concede() {
+    this.playerWon(2);
   }
 }
 
@@ -168,12 +192,12 @@ function findDifferences(obj1, obj2) {
       if (typeof value1 === "object" && typeof value2 === "object") {
         compareObjects(value1, value2, [...path, key]);
       } else if (value1 !== value2) {
-          differences.push({
-            path: [...path, key],
-            obj1Value: value1,
-            obj2Value: value2,
-          });
-        }
+        differences.push({
+          path: [...path, key],
+          obj1Value: value1,
+          obj2Value: value2,
+        });
+      }
     }
   }
 

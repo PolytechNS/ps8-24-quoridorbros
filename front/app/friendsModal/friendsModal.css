@@ -1,0 +1,240 @@
+.friends-modal-content {
+    position: relative;
+    height: 80vh;
+    width: 80vw;
+    display: flex;
+    flex-direction: column;
+    margin: 10vh auto;
+    align-items: center;
+    background-color: #fefefe;
+    padding: 20px;
+    border: 0.5rem solid orange;
+    border-radius: 20px;
+}
+
+#tab-buttons {
+    width: 60vw;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 2vw;
+    border-bottom: 2px dashed black;
+    margin-bottom: 2vw;
+    gap: 2vw;
+}
+
+
+
+#tab-buttons button {
+    font-size: 1.5vw;
+    width: 15vw;
+}
+
+.disabled {
+    padding: 0.5rem;
+    color: white;
+    border: 0.3rem solid #dadada;
+    border-radius:12px;
+    background-color: #bcbcbc;
+    touch-action: manipulation;
+}
+
+#friends-tabs {
+    height: 60vh;
+    width: 60vw;
+    overflow-y: scroll;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#friend-requests-tab, #friend-list-tab, #add-friend-tab {
+    height: 100%;
+    width: 60vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4vh;
+}
+
+.friend .profile-picture{
+    height: 4vw;
+    border-radius: 50%;
+}
+
+.username {
+    border-bottom: black 2px solid;
+}
+
+.message-button, .challenge-button {
+    height: 4vw;
+    width: 4vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 0.1rem black solid;
+    border-radius: 50%;
+}
+
+.message-button img, .challenge-button img{
+    height: 3vw;
+    width: 2.5vw;
+
+}
+
+.challenge-button {
+    display: none;
+}
+
+.friendConnected .challenge-button {
+    display: flex;
+}
+
+#add-friend-tab form {
+    font-size: 1.5vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+#addFriendForm div {
+    font-size: 1.5vw;
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+#newFriendUsername{
+    font-size: 1.2vw;
+    padding: 1vw;
+    border: 0.1rem black solid;
+    border-radius: 5px;
+}
+
+.friend-request, .friend {
+    width: 50vw;
+    padding: 2%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffc283;
+    border: 0.3rem solid #fd9a3b;
+    border-radius: 12px;
+}
+
+.friend-request {
+    font-size: 2vw;
+}
+
+.friend-requests-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 15vw;
+}
+.friend-requests-buttons button{
+    background-size: contain;
+    height: 5vw;
+    width: 5vw;
+    border: 0.1rem solid #020202;
+    border-radius: 50%;
+}
+
+.accept-button{
+    background-image: url("../../assets/images/check.png");
+    background-color: #009e16;
+}
+
+.decline-button{
+    background-image: url("../../assets/images/cross.png");
+    background-color: #e32626;
+}
+
+
+
+.friends-modal-content h2{
+    padding: 4%;
+    border-radius: 50px;
+    color: white;
+    background: #FF5722;
+}
+
+@media (orientation: portrait) {
+
+    .friends-modal-content {
+        height: 70vh;
+        width: 94vw;
+    }
+
+    #tab-buttons {
+        width: 85vw;
+        padding-bottom: 4vw;
+        margin-bottom: 4vw;
+    }
+
+    #tab-buttons button {
+        font-size: 3vw;
+        width: 26vw;
+    }
+
+    #friends-tabs {
+        height: 55vh;
+        width: 85vw;
+    }
+
+    #friend-requests-tab, #friend-list-tab, #add-friend-tab {
+        width: 80vw;
+        gap: 4vw;
+    }
+
+    .friend{
+        width:80vw;
+    }
+
+    .friend .profile-picture{
+        height: 12vw;
+    }
+
+    .message-button, .challenge-button {
+        height: 14vw;
+        width: 14vw;
+    }
+
+    .message-button img, .challenge-button img{
+        height: 7vw;
+        width: 7vw;
+    }
+
+    #add-friend-tab form {
+        font-size: 5vw;
+        gap: 2rem;
+    }
+
+    #addFriendForm div {
+        width: 70vw;
+        font-size: 5vw;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    #newFriendUsername{
+        font-size: 5vw;
+    }
+
+    .friend-request, .friend {
+        width: 80vw;
+    }
+
+    .friend-request {
+        font-size: 3vw;
+    }
+    .friend-requests-buttons {
+        width: 25vw;
+    }
+    .friend-requests-buttons button{
+        height: 10vw;
+        width: 10vw;
+    }
+
+
+}
+

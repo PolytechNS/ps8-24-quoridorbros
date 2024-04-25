@@ -5,23 +5,23 @@ function deltaDistanceHeuristic(gameState) {
   const possibleMovesPlayer = BoardUtils.getReachableCells(
     gameState.player,
     gameState.otherPlayer,
-    gameState.board
+    gameState.board,
   );
   const bestMovePlayer = findShortestPathMove(
     possibleMovesPlayer,
     gameState.board,
-    gameState.player.playerNumber
+    gameState.player.playerNumber,
   );
 
   const possibleMovesOtherPlayer = BoardUtils.getReachableCells(
     gameState.otherPlayer,
     gameState.player,
-    gameState.board
+    gameState.board,
   );
   const bestMoveOtherPlayer = findShortestPathMove(
     possibleMovesOtherPlayer,
     gameState.board,
-    gameState.otherPlayer.playerNumber
+    gameState.otherPlayer.playerNumber,
   );
 
   return bestMoveOtherPlayer[1] - bestMovePlayer[1];

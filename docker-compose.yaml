@@ -6,8 +6,8 @@ services:
       - 8000:8000
   mongodb:
     image: mongo:latest
-    ports:
-      - 27017:27017
+#    ports:
+#      - 27017:27017
     volumes:
       - mongo-data:/data/db
 volumes:

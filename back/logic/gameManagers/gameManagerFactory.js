@@ -3,28 +3,33 @@ const { GameManagerMapper } = require("./gameManagerMapper.js");
 const { OneVOneOnlineGameManager } = require("./OneVOneOnlineGameManager.js");
 
 class GameManagerFactory {
-  static createAiGameManager(userId, loadGame = false) {
-    const aiGameManager = new AiGameManager(userId, loadGame);
+  static createAiGameManager(userId, level, loadGame = false) {
+    const aiGameManager = new AiGameManager(userId, level, loadGame);
     GameManagerMapper.updateAiGameManager(userId, aiGameManager);
     return aiGameManager;
   }
 
-  static createOneVOneOnlineGameManager(idClient1, idClient2, eloPlayer1, eloPlayer2) {
+  static createOneVOneOnlineGameManager(
+    idClient1,
+    idClient2,
+    eloPlayer1,
+    eloPlayer2,
+  ) {
     const oneVOneOnlineGameManager = new OneVOneOnlineGameManager(
-        idClient1,
-        idClient2,
-        eloPlayer1,
-        eloPlayer2
+      idClient1,
+      idClient2,
+      eloPlayer1,
+      eloPlayer2,
     );
     GameManagerMapper.updateOnlineGameManager(
       idClient1,
       1,
-      oneVOneOnlineGameManager
+      oneVOneOnlineGameManager,
     );
     GameManagerMapper.updateOnlineGameManager(
       idClient2,
       2,
-      oneVOneOnlineGameManager
+      oneVOneOnlineGameManager,
     );
 
     return oneVOneOnlineGameManager;
