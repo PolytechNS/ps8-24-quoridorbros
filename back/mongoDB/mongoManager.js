@@ -191,8 +191,8 @@ async function getProfileOf(username) {
     const userProfileCollection = db.collection("user_profile");
 
     const user = await userCollection.findOne({ username: username });
-    const userProfile = await userProfileCollection.findOne({ _id: user._id });
-    if (userProfile) {
+    if (user) {
+      const userProfile = await userProfileCollection.findOne({ _id: user._id });
       let photoPath;
       if (userProfile.photo === "")
         photoPath = `./assets/images/profile/img1.webp`;
