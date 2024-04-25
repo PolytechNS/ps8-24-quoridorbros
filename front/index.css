@@ -6,7 +6,7 @@
 
 #top-line {
     height: 10vh;
-    margin: 0 2vh 0 2vh;
+    padding: 2vh;
     display: flex;
     justify-content: space-between;
 }
