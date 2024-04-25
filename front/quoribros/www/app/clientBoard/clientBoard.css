@@ -1,0 +1,139 @@
+
+.cell, .wall {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cell {
+    width: 7.5vh;
+    height: 7.5vh;
+    background-image: url("../../assets/images/grass.png");
+    background-size: 7.5vh;
+}
+
+.wall {
+    width: 1.5vh;
+    height: 1.5vh;
+}
+
+.wall.horizontal {
+    width: 7.5vh;
+}
+
+.wall.vertical {
+    height: 7.5vh;
+}
+
+.wall.horizontal.placed {
+    width: 7.5vh;
+    background-size: cover;
+    background-position: center;
+    background: black;
+    /*background-image: url("../../assets/images/pipe-horizontal.png");*/
+}
+.wall.placed {
+    background-size: cover;
+    background-position: center;
+    background: black;
+}
+
+.wall.vertical.placed {
+    height: 7.5vh;
+    background-size: cover;
+    background-position: center;
+    background: black;
+    /*background-image: url("../../assets/images/pipe-vertical.png");*/
+}
+
+.surbrillance {
+    background-color: darkorange !important;
+}
+
+.fog {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-image: url("../../assets/images/cloud.png");
+}
+
+#joueur-1, #joueur-2 {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+    color: transparent;
+}
+
+#joueur-1 {
+    background-image: url("../../assets/images/mario.png");
+}
+
+#joueur-2 {
+    background-image: url("../../assets/images/luigi.png");
+}
+
+.gameBoard, #gameBoard1, #gameBoard2 {
+    display: grid;
+    grid-template-columns: repeat(17, auto);
+    gap: 0.3vh;
+    justify-content: center;
+    background-image: url("../../assets/images/water.png");
+    background-size: cover;
+    padding: 1vh;
+    border-radius: 2%;
+}
+
+@media (orientation: portrait) {
+    .cell {
+        width: 7.5vw;
+        height: 7.5vw;
+        background-size: 7.5vw;
+    }
+    .wall {
+        width: 1.5vw;
+        height: 1.5vw;
+    }
+
+    .wall.horizontal {
+        width: 7.5vw;
+    }
+
+    .wall.vertical {
+        height: 7.5vw;
+    }
+    .wall.horizontal.placed {
+        width: 7.5vw;
+    }
+    .wall.vertical.placed {
+        height: 7.5vw;
+    }
+}
+
+@media screen and (min-aspect-ratio:9/16) and (max-aspect-ratio:16/9) {
+    .cell {
+        width: 4vmin;
+        height: 4vmin;
+        background-size: 4vmin;
+    }
+    .wall {
+        width: 1vmin;
+        height: 1vmin;
+    }
+
+    .wall.horizontal {
+        width: 5vmin;
+    }
+
+    .wall.vertical {
+        height: 5vmin;
+    }
+    .wall.horizontal.placed {
+        width: 5vmin;
+    }
+    .wall.vertical.placed {
+        height: 5vmin;
+    }
+
+}
+
+

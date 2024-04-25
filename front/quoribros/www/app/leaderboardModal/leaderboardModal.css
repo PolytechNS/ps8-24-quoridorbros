@@ -1,0 +1,87 @@
+.leaderboard-modal-content {
+    position: relative;
+    height: 80vh;
+    width: 80vw;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    margin: 10vh auto;
+    align-items: center;
+    background-color: #fefefe;
+    padding: 20px;
+    gap: 2vw;
+    border: 0.5rem solid orange;
+    border-radius: 20px;
+}
+
+#leaderboards {
+    height: 60vh;
+    width: 60vw;
+    overflow-y: scroll;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5vw
+}
+
+#friend-leaderboard-tab, #global-leaderboard-tab{
+    height: 100%;
+    width: 80vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2vw;
+}
+
+
+.leaderboard-client {
+    width: 60vw;
+    padding: 2%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffc283;
+    border: 0.3rem solid #fd9a3b;
+    border-radius: 12px;
+}
+
+.leaderboard-client img{
+    height: 9vw;
+    border-radius: 50%;
+}
+
+.leaderboard-client .username{
+    border-bottom: black 4px solid;
+}
+
+
+@media (orientation: portrait) {
+
+    .leaderboard-modal-content {
+        height: 70vh;
+        width: 94vw;
+    }
+
+    #leaderboards {
+        height: 60vh;
+        width: 80vw;
+        align-items: center;
+        font-size: 2.5vw
+    }
+
+    #friend-leaderboard-tab, #global-leaderboard-tab {
+        width: 80vw;
+        gap: 4vw;
+    }
+
+
+    .leaderboard-client {
+        width: 80vw;
+    }
+
+    .leaderboard-client img{
+        height: 14vw;
+        border-radius: 50%;
+    }
+
+}

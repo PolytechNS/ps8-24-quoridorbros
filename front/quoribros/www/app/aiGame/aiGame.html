@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Game</title>
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+    <link rel="stylesheet" type="text/css" href="../clientBoard/clientBoard.css">
+    <link rel="stylesheet" type="text/css" href="../onlineGame/onlineGame.css">
+
+</head>
+<body>
+
+<div class="background"></div>
+
+<div id="ai-game-container">
+    <div id="leftPanel" class="panel">
+        <div id="profile-container">
+
+        </div>
+        <div id="options-container">
+            <p id="timer-player"></p>
+            <button id="concede" onclick="concede()">
+                <p>
+                    Concede
+                </p>
+                <img id="image-flag" src="../../assets/images/flag.png">
+            </button>
+            <button id="saveButton" class="btn--secondary">Save  & Quit</button>
+        </div>
+    </div>
+
+    <div id="midPanel">
+        <div id="gameBoard" class="gameBoard"></div>
+    </div>
+    <div id="rightPanel" class="panel" >
+        <div id="opponent-profile-container">
+        </div>
+        <p id="timer-opponent"></p>
+    </div>
+</div>
+
+
+
+    <script type="text/javascript" src="../sockets/socket.io.js"></script>
+    <script type="text/javascript" src="../../utils/utils.js"></script>
+    <script type="text/javascript" src="../clientBoard/clientBoard.js"></script>
+    <script type="text/javascript" src="../../utils/cookieManager.js"></script>
+    <script type="text/javascript" src="../sockets/ioManager.js"></script>
+    <script type="text/javascript" src="../sockets/aiEvents.js"></script>
+    <script type="text/javascript" src="../sockets/gameEvents.js"></script>
+    <script type="text/javascript" src="../onlineGame/duelProfiles.js"></script>
+    <script type="text/javascript" src="./aiGame.js"></script>
+
+
+
+
+</body>
+</html>

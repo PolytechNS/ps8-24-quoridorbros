@@ -1,0 +1,205 @@
+#online-game-container, #ai-game-container, #local-game-container {
+    height: 100vh;
+    display: flex;
+    justify-content: space-around;
+
+}
+
+.panel {
+    width: 25%;
+    margin: 2%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 1;
+}
+
+#midPanel {
+    display: flex;
+    align-items: center;
+}
+
+#profile-container, #opponent-profile-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 1.2vw;
+    height: 40vh;
+    width: 100%;
+    margin: 5%;
+    padding: 5%;
+    border: 0.8vw solid black;
+    border-radius: 10%;
+    background: white;
+}
+
+#options-container {
+    font-size: 1.5vw;
+    height: 40vh;
+    width: 50%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+}
+
+#profile-container img, #opponent-profile-container img {
+    height: 7vw;
+    width: 7vw;
+    border-radius: 50%;
+}
+
+#profile-container div, #opponent-profile-container div {
+    margin-bottom: 4%;
+}
+
+
+#profile-container #profileUsername::-webkit-scrollbar, #opponent-profile-container #profileUsername::-webkit-scrollbar {
+    display: none;
+}
+
+#concede {
+    margin: 10% 0;
+    padding: 1.5%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 20px;
+    border: 4px solid black;
+    border-radius: 12px;
+}
+
+#concede img {
+    width: 40px;
+    object-fit: cover;
+}
+
+#timer-player, #timer-opponent {
+    color: white;
+    width: 80%;
+    padding: 10px;
+    background: red;
+    border-radius: 5px
+}
+
+#chat-notifications-button {
+    position: fixed;
+    bottom: 2vh;
+    right: 2vw;
+    height: 10vh;
+    width: 10vh;
+    border: 1vh white solid;
+    background-size: contain;
+    border-radius: 50%;
+    background-repeat: no-repeat;
+    background-image: url("../../assets/images/bulles-de-chat.png");
+}
+
+@media (orientation: portrait) {
+    #online-game-container, #ai-game-container, #local-game-container{
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .panel {
+        width: 90%;
+        height: 25vh;
+        margin: 2% 2% 0;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    #chat-notifications-button {
+        height: 6vh;
+        width: 6vh;
+    }
+
+    #timer-opponent {
+        margin: 0 auto;
+    }
+
+
+    #profile-container, #opponent-profile-container {
+        font-size: 2vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        height: 90%;
+        width: 50%;
+        padding: 0;
+        margin: 0;
+        border: black 1.4vw solid;;
+    }
+
+    #options-container {
+        font-size: 2vh;
+        flex-direction: column;
+        width: 50%;
+        height: 90%;
+    }
+
+    #profile-container img, #opponent-profile-container img {
+        width: 7vh;
+        height: 7vh;
+    }
+
+    #concede {
+        padding: 4%;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        border: 4px solid black;
+        border-radius: 12px;
+        margin: 0;
+        gap: 1vw;
+    }
+
+    #timer-player, #timer-opponent {
+        width: 30%;
+        min-width: 95px;
+        padding: 1vh;
+    }
+}
+
+@media screen and (max-width: 500px) {
+
+
+
+    #profile-container, #opponent-profile-container {
+        font-size: 3vw;
+    }
+
+    #options-container {
+        font-size: 2.4vw;
+        flex-direction: column;
+        width: 50%;
+        height: 90%;
+    }
+
+    #profile-container img, #opponent-profile-container img {
+        width: 7vh;
+        height: 7vh;
+    }
+
+    #concede {
+        padding: 4%;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        border: 4px solid black;
+        border-radius: 12px;
+        margin: 0;
+        gap: 1vw;
+    }
+
+    #timer-player, #timer-opponent {
+        width: 30%;
+        min-width: 95px;
+        padding: 1vh;
+    }
+}

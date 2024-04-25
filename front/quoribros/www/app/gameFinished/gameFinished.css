@@ -1,0 +1,76 @@
+#background {
+    height: 100vh;
+    width: 100vw;
+    background-image: url("../../assets/images/win.png");
+    background-color: #F8E0B0;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    position: fixed;
+    z-index: -1;
+    margin: 0;
+    padding: 0;
+}
+
+
+#game-finished-container {
+    width: 80vw;
+    height: 100vh;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+#results-container {
+    height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4vh;
+}
+
+.navigation-buttons {
+    width: 80vw;
+    height: 40vh;
+    overflow: visible;
+    display: flex;
+    gap: 10vw;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#elo-text{
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 20px;
+    border: #111 solid 4px;
+    font-size: 3rem;
+}
+
+#result-text, #elo-text{
+    font-family: 'Mario64', sans-serif;
+}
+
+#result-text{
+    text-shadow: 2px 0 #fff, -2px 0 #fff, 0 2px #fff, 0 -2px #fff,
+    1px 1px #fff, -1px -1px #fff, 1px -1px #fff, -1px 1px #fff;
+
+    font-size: 5rem;
+}
+
+
+
+
+@media only screen and (max-width: 600px) {
+
+    .navigation-buttons {
+        height: 30vh;
+        flex-direction: column;
+        gap: 4vh;
+    }
+
+}
