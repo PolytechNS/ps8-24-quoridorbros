@@ -1,6 +1,4 @@
-const notifsModalContainer = document.getElementById(
-  "notifs-modal-container",
-);
+const notifsModalContainer = document.getElementById("notifs-modal-container");
 
 function setUpNotifModalClosingListeners() {
   document
@@ -17,102 +15,113 @@ function setUpNotifModalClosingListeners() {
 }
 
 async function fetchNotifications() {
-    try {
-      let connectedCookieValue = getCookie("connected");
-      if (connectedCookieValue) {
-        connectedCookieValue = JSON.parse(connectedCookieValue);
-        const sender = connectedCookieValue.user;
-        const response = await fetch(`/api/notifications?userId=${sender}`);
-        if (response.status !== 200) {
-          throw new Error('Failed to fetch notifications');
-          return;
-        }
-        const notifications = await response.json()
-        const notificationsList = document.getElementById("notifications");
-        notificationsList.innerHTML = '';
-        console.log(notifications);
-        if (notifications) {
-        notifications.forEach(notification => {
-
-          const listItem = createNotification(sender,notification);
-          if (listItem)
-            notificationsList.appendChild(listItem);
-        });}
+  try {
+    let connectedCookieValue = getCookie("connected");
+    if (connectedCookieValue) {
+      connectedCookieValue = JSON.parse(connectedCookieValue);
+      const sender = connectedCookieValue.user;
+      const response = await fetch(`/api/notifications?userId=${sender}`);
+      if (response.status !== 200) {
+        throw new Error("Failed to fetch notifications");
+        return;
       }
-    } catch (error) {
-      console.error(error);
+      const notifications = await response.json();
+      const notificationsList = document.getElementById("notifications");
+      notificationsList.innerHTML = "";
+      console.log(notifications);
+      if (notifications) {
+        notifications.forEach((notification) => {
+          const listItem = createNotification(sender, notification);
+          if (listItem) notificationsList.appendChild(listItem);
+        });
+      }
     }
+  } catch (error) {
+    console.error(error);
   }
-
-async function loadNotifications() {
-    const response = await fetch('./app/notifications/notifications.html');
-    const html = await response.text();
-    notificationcontainer.innerHTML = html;
-    await fetchNotifications();
-    console.log("Affiche notifs");
 }
 
-function createNotification(user,notification){
+async function loadNotifications() {
+  const response = await fetch("./app/notifications/notifications.html");
+  const html = await response.text();
+  notificationcontainer.innerHTML = html;
+  await fetchNotifications();
+  console.log("Affiche notifs");
+}
+
+function createNotification(user, notification) {
   console.log(notification.type);
-  switch (notification.type){
+  switch (notification.type) {
     case "friendrequest":
-      return createFriendNotification(user,notification);
+      return createFriendNotification(user, notification);
     case "achievement":
-      return createAchievementNotification(user,notification);
+      return createAchievementNotification(user, notification);
   }
   return null;
 }
 
-function createAchievementNotification(user,notification){
-  const listItem = document.createElement("li");
-  listItem.textContent = notification.message;
+function createAchievementNotification(user, notification) {
+  const notificationItem = document.createElement("div");
+  notificationItem.classList.add("notification-item");
 
-  const acceptButton = document.createElement("button");
-  acceptButton.textContent = "V";
-  acceptButton.addEventListener("click", async () => {
+  const notificationText = document.createElement("p");
+  notificationText.textContent = notification.message;
+
+  const okButton = document.createElement("button");
+  okButton.classList.add("ok-button");
+
+  okButton.textContent = "Ok";
+  okButton.addEventListener("click", async () => {
     try {
       const requestURL = `/api/notification/del?notif=${encodeURIComponent(notification._id)}&of=${encodeURIComponent(user)}`;
       const response = await fetch(requestURL, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       });
-      
+
       if (response.status === 200) {
-        listItem.remove();
+        notificationItem.remove();
       } else {
-        throw new Error('Failed to remove notification');
+        throw new Error("Failed to remove notification");
       }
     } catch (error) {
       console.error("Error removing notification:", error);
     }
   });
-  listItem.appendChild(acceptButton);
-  return listItem;
+  notificationItem.appendChild(notificationText);
+  notificationItem.appendChild(okButton);
+  return notificationItem;
 }
 
-function createFriendNotification(user,notification){
-  const listItem = document.createElement("li");
-  listItem.textContent = notification.message;
+function createFriendNotification(user, notification) {
+  const notificationItem = document.createElement("div");
+  notificationItem.classList.add("notification-item");
+
+  const notificationText = document.createElement("p");
+
+  notificationText.textContent = notification.message;
+
+  const buttonsItem = document.createElement("div");
 
   const acceptButton = document.createElement("button");
-  acceptButton.textContent = "Accept";
+  acceptButton.classList.add("accept-button");
   acceptButton.addEventListener("click", async () => {
     try {
       const requestURL = `/api/friend/accept?from=${encodeURIComponent(notification.sender)}&to=${encodeURIComponent(user)}`;
       const response = await fetch(requestURL, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       });
-      
+
       if (response.status === 200) {
         alert(`Accepted friend request from ${notification.sender}`);
-        listItem.remove();
+        notificationItem.remove();
       } else {
-        throw new Error('Failed to accept friend request');
+        throw new Error("Failed to accept friend request");
       }
     } catch (error) {
       console.error("Error accepting friend request:", error);
@@ -120,32 +129,33 @@ function createFriendNotification(user,notification){
   });
 
   const declineButton = document.createElement("button");
-  declineButton.textContent = "Decline";
+  declineButton.classList.add("decline-button");
   declineButton.addEventListener("click", async () => {
     try {
       const requestURL = `/api/friend/decline?from=${encodeURIComponent(notification.sender)}&to=${encodeURIComponent(user)}`;
       const response = await fetch(requestURL, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       });
-      
+
       if (response.status === 200) {
         alert(`Declined friend request from ${notification.sender}`);
-        listItem.remove();
+        notificationItem.remove();
       } else {
-        throw new Error('Failed to decline friend request');
+        throw new Error("Failed to decline friend request");
       }
     } catch (error) {
       console.error("Error declining friend request:", error);
     }
   });
 
-  listItem.appendChild(acceptButton);
-  listItem.appendChild(declineButton);
-  return listItem;
-  
+  notificationItem.appendChild(notificationText);
+  buttonsItem.appendChild(acceptButton);
+  buttonsItem.appendChild(declineButton);
+  notificationItem.appendChild(buttonsItem);
+  return notificationItem;
 }
 
 async function loadNotifsModal() {
