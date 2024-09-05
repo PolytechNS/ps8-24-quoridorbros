@@ -19,7 +19,9 @@ window.onload = function () {
   if (connectedCookieValue !== null) {
     const userExist = async () => {
       connectedCookieValue = JSON.parse(connectedCookieValue);
-      const response = await fetch(`/api/profile?of=${connectedCookieValue.user}`);
+      const response = await fetch(
+        `/api/profile?of=${connectedCookieValue.user}`,
+      );
       console.log(response.status);
       if (response.status !== 200) {
         logout();
@@ -57,10 +59,8 @@ window.onload = function () {
     playWithAIButton.style.display = "none";
     playLocalButton.style.display = "none";
     playOnlineButton.style.display = "none";
-    
+
     notificationIndicator();
-    
-    
 
     playOnlineButton.disabled = false;
     playWithAIButton.disabled = false;
@@ -72,7 +72,7 @@ window.onload = function () {
     playButton.style.display = "block";
 
     const storeProfile = async () => {
-      const response = await fetch(endpoint+`/api/profile?of=${getUsername()}`);
+      const response = await fetch(`/api/profile?of=${getUsername()}`);
       if (response.status !== 200) {
         throw new Error("Failed to fetch profile");
       }
@@ -88,7 +88,7 @@ window.onload = function () {
 };
 
 function logout() {
-  fetch(endpoint+"/api/logout", {
+  fetch("/api/logout", {
     method: "POST",
   })
     .then((response) => {
@@ -114,7 +114,7 @@ function logout() {
         playOnlineButton.classList.add("mainButtonDisabledClass");
         playWithAIButton.classList.remove("mainButtonClass");
         playWithAIButton.classList.add("mainButtonDisabledClass");
-        window.location.href="./index.html";
+        window.location.href = "./index.html";
       }
     })
     .catch((error) => console.error("Error:", error));
@@ -209,19 +209,21 @@ const updateNotificationIndicator = async () => {
   try {
     const response = await fetch(`/api/notifications?userId=${getUsername()}`);
     if (response.status !== 200) {
-      throw new Error('Failed to fetch notifications');
+      throw new Error("Failed to fetch notifications");
     }
     const notifications = await response.json();
     if (notifications.length > 0) {
-      document.getElementById("newNotificationsPending").style.display = "block";
-        document.getElementById("newNotificationsPending").textContent = notifications.length;
+      document.getElementById("newNotificationsPending").style.display =
+        "block";
+      document.getElementById("newNotificationsPending").textContent =
+        notifications.length;
     } else {
       document.getElementById("newNotificationsPending").style.display = "none";
     }
   } catch (error) {
-    console.error('Error fetching notifications:', error);
+    console.error("Error fetching notifications:", error);
   }
-}
+};
 
 function notificationIndicator() {
   updateNotificationIndicator();

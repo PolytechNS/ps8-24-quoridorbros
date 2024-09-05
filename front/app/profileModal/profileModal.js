@@ -18,7 +18,7 @@ function setUpProfileModalClosingListeners() {
 
 async function getAchievements(username) {
   try {
-    const response = await fetch(endpoint+`/api/achievements?of=${username}`);
+    const response = await fetch(`/api/achievements?of=${username}`);
     if (response.status !== 200) {
       throw new Error("Failed to fetch profile");
     }
@@ -64,7 +64,7 @@ async function displayAchievements(username) {
 
 async function displayProfileLine(username) {
   try {
-    const response = await fetch(endpoint+`/api/profile?of=${username}`);
+    const response = await fetch(`/api/profile?of=${username}`);
     if (response.status !== 200) {
       throw new Error("Failed to fetch profile");
     }
@@ -89,11 +89,11 @@ async function displayProfileLine(username) {
           logout();
         });
       document
-          .getElementById("edit-profile-button")
-          .addEventListener("click", function () {
-            profileModalContainer.innerHTML = "";
-            loadProfileEditor();
-          });
+        .getElementById("edit-profile-button")
+        .addEventListener("click", function () {
+          profileModalContainer.innerHTML = "";
+          loadProfileEditor();
+        });
       document.getElementById("add-as-friend-button").style.display = "none";
     } else {
       document

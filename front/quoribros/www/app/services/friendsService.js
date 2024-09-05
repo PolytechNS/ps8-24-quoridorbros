@@ -1,20 +1,20 @@
 const FriendsService = {
   async getFriends(username) {
-    const response = await fetch(endpoint+`/api/friends?of=${username}`);
+    const response = await fetch(`/api/friends?of=${username}`);
     if (response.status !== 200) {
       throw new Error("Failed to fetch friends");
     }
     return response.json();
   },
   async getFriendRequests(username) {
-    const response = await fetch(endpoint+`/api/friendRequests?userId=${username}`);
+    const response = await fetch(`/api/friendRequests?userId=${username}`);
     if (response.status !== 200) {
       throw new Error("Failed to friend requests");
     }
     return response.json();
   },
   async sendFriendRequest(sender, receiver) {
-    const requestURL = endpoint+`/api/friend?sender=${encodeURIComponent(sender)}&receiver=${encodeURIComponent(receiver)}`;
+    const requestURL = `/api/friend?sender=${encodeURIComponent(sender)}&receiver=${encodeURIComponent(receiver)}`;
 
     const response = await fetch(requestURL, {
       method: "POST",
@@ -24,7 +24,6 @@ const FriendsService = {
     });
     const responseData = await response.text();
     if (response.status === 200) {
-      alert("Friend request sent successfully!");
     } else if (response.status === 400) {
       const errorResponse = JSON.parse(responseData);
       alert(`Bad request: ${errorResponse.error}`);
@@ -35,7 +34,7 @@ const FriendsService = {
     }
   },
   async acceptFriendRequest(sender, receiver) {
-    const requestURL = endpoint+`/api/friend/accept?from=${encodeURIComponent(sender)}&to=${encodeURIComponent(receiver)}`;
+    const requestURL = `/api/friend/accept?from=${encodeURIComponent(sender)}&to=${encodeURIComponent(receiver)}`;
     const response = await fetch(requestURL, {
       method: "POST",
       headers: {
@@ -44,13 +43,12 @@ const FriendsService = {
     });
 
     if (response.status === 200) {
-      alert(`Accepted friend request from ${sender}`);
     } else {
       throw new Error("Failed to accept friend request");
     }
   },
   async declineFriendRequest(sender, receiver) {
-    const requestURL = endpoint+`/api/friend/decline?from=${encodeURIComponent(sender)}&to=${encodeURIComponent(receiver)}`;
+    const requestURL = `/api/friend/decline?from=${encodeURIComponent(sender)}&to=${encodeURIComponent(receiver)}`;
     const response = await fetch(requestURL, {
       method: "POST",
       headers: {
@@ -59,7 +57,6 @@ const FriendsService = {
     });
 
     if (response.status === 200) {
-      alert(`Declined friend request from ${sender}`);
     } else {
       throw new Error("Failed to decline friend request");
     }

@@ -219,7 +219,7 @@ async function getEloWorld() {
   try {
     let connectedCookieValue = getCookie("connected");
     if (connectedCookieValue) {
-      const response = await fetch(endpoint+`/api/world`);
+      const response = await fetch(`/api/world`);
       if (response.status !== 200) {
         throw new Error("Failed to fetch profile");
       }

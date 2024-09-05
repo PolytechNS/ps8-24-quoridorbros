@@ -75,9 +75,7 @@ function createAchievementNotification(user, notification) {
   okButton.textContent = "Ok";
   okButton.addEventListener("click", async () => {
     try {
-      const requestURL =
-        endpoint +
-        `/api/notification/del?notif=${encodeURIComponent(notification._id)}&of=${encodeURIComponent(user)}`;
+      const requestURL = `/api/notification/del?notif=${encodeURIComponent(notification._id)}&of=${encodeURIComponent(user)}`;
       const response = await fetch(requestURL, {
         method: "POST",
         headers: {
@@ -113,9 +111,7 @@ function createFriendNotification(user, notification) {
   acceptButton.classList.add("accept-button");
   acceptButton.addEventListener("click", async () => {
     try {
-      const requestURL =
-        endpoint +
-        `/api/friend/accept?from=${encodeURIComponent(notification.sender)}&to=${encodeURIComponent(user)}`;
+      const requestURL = `/api/friend/accept?from=${encodeURIComponent(notification.sender)}&to=${encodeURIComponent(user)}`;
       const response = await fetch(requestURL, {
         method: "POST",
         headers: {
@@ -124,7 +120,6 @@ function createFriendNotification(user, notification) {
       });
 
       if (response.status === 200) {
-        alert(`Accepted friend request from ${notification.sender}`);
         notificationItem.remove();
       } else {
         throw new Error("Failed to accept friend request");
@@ -138,9 +133,7 @@ function createFriendNotification(user, notification) {
   declineButton.classList.add("decline-button");
   declineButton.addEventListener("click", async () => {
     try {
-      const requestURL =
-        endpoint +
-        `/api/friend/decline?from=${encodeURIComponent(notification.sender)}&to=${encodeURIComponent(user)}`;
+      const requestURL = `/api/friend/decline?from=${encodeURIComponent(notification.sender)}&to=${encodeURIComponent(user)}`;
       const response = await fetch(requestURL, {
         method: "POST",
         headers: {
@@ -149,7 +142,6 @@ function createFriendNotification(user, notification) {
       });
 
       if (response.status === 200) {
-        alert(`Declined friend request from ${notification.sender}`);
         notificationItem.remove();
       } else {
         throw new Error("Failed to decline friend request");
