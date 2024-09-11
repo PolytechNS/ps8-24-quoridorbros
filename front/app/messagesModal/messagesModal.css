@@ -36,7 +36,7 @@
     flex-shrink:0;
     font-size: 2vw;
     padding: 2vw;
-    max-width: 40%;
+    max-width: 72%;
     display: flex;
     color: white;
     justify-content: center;
@@ -96,7 +96,7 @@
     .message {
         font-size: 4vw;
         padding: 2vw;
-        max-width: 45%;
+        max-width: 74%;
     }
 
     .message p {
